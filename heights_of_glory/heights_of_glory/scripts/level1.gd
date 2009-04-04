@@ -14,7 +14,15 @@ onready var gem_container = $gem_container
 #preload the hud for joystick
 onready var hud = preload("res://scenes/hud.tscn")
 
+onready var police_enemy_scene = preload("res://scenes/enemy.tscn")
+
+var list_of_enemy=[]
+
+var list_of_enemy_position =[]
+
 func _ready():
+	#spawn the enemy at a position and add it to a dictionary
+	spawn_enemy_at_position()
 	
 	#all level1 signals are in this function
 	all_signals()
@@ -30,9 +38,8 @@ func _ready():
 	_on_gem_spawn_time_timeout()
 	
 	#setting the target to player
-	get_node("enemy_container/enemy").target_player = get_node("player")
 	get_node("enemy_z").target_player = get_node("player")
-	get_node("enemy_container/enemy2").target_player = get_node("player")
+
 	
 
 	set_process(true)
@@ -180,4 +187,47 @@ func all_signals():
 	#checking player collision points
 	$player.connect("collided",self, "on_character_collided")
 	
+	pass
+	
+func spawn_enemy_at_position():
+	list_of_enemy = []
+	
+	for i in range(5):
+		
+		randomize()
+		
+		#create an instance of the police_enemy_scene
+		var police_enemy = police_enemy_scene.instance()
+		$police_enemy_container.add_child(police_enemy)
+		
+		#set the target of that enemy to the player
+		police_enemy.target_player=get_node("player")
+		
+		#add the enemy to a list
+		list_of_enemy.append(police_enemy)
+		
+		print("inside the list: ", list_of_enemy)
+		
+		#create a spawn position for the enemy
+		var spawn_position = Position2D.new()
+		add_child(spawn_position)
+		
+		#add the position to a list
+		list_of_enemy_position.append(spawn_position)
+		
+		#create a variable to spawn the positions at a random_position
+		var position_to_spawn_the_created_position = Vector2()
+		
+		position_to_spawn_the_created_position.x = rand_range(16, get_viewport().get_visible_rect().size.x-16)
+		position_to_spawn_the_created_position.y = rand_range(16, get_viewport().get_visible_rect().size.y-16)
+		
+		#set the spawn position to that random position
+		spawn_position.position = position_to_spawn_the_created_position
+		
+		#set the instances of the police enemy to that spawn position
+		police_enemy.position = spawn_position.position
+		 
+		
+		#var number_of_position= randi() % list_of_enemy_position.size()
+		
 	pass

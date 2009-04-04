@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scripts/level1.gd" type="Script" id=1]
 [ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=9]
 [ext_resource path="res://scenes/enemy_z.tscn" type="PackedScene" id=10]
 [ext_resource path="res://scenes/button_hud.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/enemy.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 81.6724, 108.997 )
@@ -132,13 +131,9 @@ position = Vector2( 540, 440 )
 
 [node name="button_hud" parent="." instance=ExtResource( 11 )]
 
-[node name="enemy_container" type="Node" parent="."]
+[node name="police_enemy_container" type="Node" parent="."]
 
-[node name="enemy" parent="enemy_container" instance=ExtResource( 12 )]
-position = Vector2( 1124.22, 351.113 )
-
-[node name="enemy2" parent="enemy_container" instance=ExtResource( 12 )]
-position = Vector2( 914.22, 121.113 )
+[node name="police_enemy_pos" type="Node" parent="."]
 
 [connection signal="body_entered" from="door_area" to="." method="_on_door_area_body_entered"]
 [connection signal="body_entered" from="ladder_area" to="." method="_on_ladder_area_body_entered"]

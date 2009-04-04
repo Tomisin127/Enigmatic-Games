@@ -34,10 +34,11 @@ const CLIMB_SPEED = 3
 
 #player's attribute
 var player_health : int =5000
-var player_mana : int = 100
-var mana_regen : int = 100
+var player_mana : float = 100
+var mana_regen : float = 4.0
 var player_health_regen : int= 2
 
+var player_mana_divisions : int = player_mana /4
 
 # signal works best with health changes using global is overkill and will cause problem later
 signal sg_health_change
@@ -73,37 +74,13 @@ var joystick_direction : Vector2
 
 func _ready() -> void:
 	
-	#player shoot by button
-	button_hud.connect("shoot_by_button",self,"auto_shoot")
-	
-	#player shoot by dragging shoot button
-	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
-	
-	#auto attack for the player when he taps the shoot analog
-	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
-	
-	#revive  the player after death, signal
-	connect("revive",self,"revive_player")
-	
-	#this emits signal for the player to be moved by the joysick
-	
-	
-	connect("sg_player_dead",get_parent(),"revive_player")
-	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
-	
-	#set the health to 5000 at the beginning of the game
-	emit_signal("sg_health_change",player_health)
-	
+	player_signals()
 	
 	screensize = get_viewport_rect().size
 	
 	set_physics_process(true)
 	
 	pass
-
-
-
-
 
 
 
@@ -172,12 +149,19 @@ func _physics_process(delta):
 		
 		#print("joy_diagonal: ", joy_diagonal)
 		
+		#if the analog is dragged diagonally
 		if joy_diagonal==0.5:
 			
+			#start the timer
 			diagonal_timer +=delta
-			#print(diagonal_timer)
+			
+			#if timer is less than 1, jump diagonally
 			if diagonal_timer < 1:
 				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
+				
+			#if timer is more than 1 and is on the floor jump immediately upon landing
+			#reset the timer back to zero
+			
 			elif diagonal_timer >1 and is_on_floor():
 				diagonal_timer=0
 				
@@ -190,21 +174,22 @@ func _physics_process(delta):
 				diagonal_timer=0
 			
 			
+			#if  up, the jump up
 		elif joystick_direction.y ==-1 and is_on_floor():
 			
 			#print(joy_diagonal)
 			acceleration.y =JUMP_HEIGHT
 			
+			#move right
 		elif joystick_direction.x ==1 and is_on_floor():
 			acceleration.x += ACCEL 
 			$sprite.flip_h=0
 			
-		elif joystick_direction.x ==-1 and is_on_floor() and joy_diagonal==0.5:
-
+			#move left
+		elif joystick_direction.x ==-1 and is_on_floor():
 			acceleration.x -=ACCEL
 			$sprite.flip_h=1
-
-				
+			
 		
 	
 	elif Input.is_action_pressed("ui_accept"):
@@ -377,7 +362,7 @@ func auto_shoot(activate):
 			#print("zombie distance is less: ", bullet_distance_to_enemy_zombie )
 			
 		#reduce shooting mana
-		player_mana -= 10
+		player_mana -= player_mana_divisions
 		
 	else:
 		
@@ -402,7 +387,7 @@ func shoot(shoot_activate):
 	
 	if shoot_activate==true:
 		#reduce shooting mana
-		player_mana -= 10
+		player_mana -= player_mana_divisions
 		
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
@@ -449,8 +434,8 @@ func dead_or_alive():
 	
 	if is_alive():
 		#regenerate player health a little
-		player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,100)
-	
+		#player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,100)
+		pass
 	# player_dies
 	if not is_alive():
 		die(is_dead)
@@ -488,26 +473,26 @@ func die(is_dead):
 	pass
 
 func mana_delay_and_regenerate(change):
-	if player_mana >=5:
+	print("the player mana : " , player_mana)
+	print("the divisions: ",player_mana_divisions)
+	if player_mana >=75:
 	#	regenerate mana very time the player mana goes down but not below 5
-		player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
+		player_mana =min(player_mana + mana_regen *change ,100)
 		
-		
-	#when the player_mana is low, wait for 5 seconds and recharge the mana
-	elif player_mana <=5:
-		
+	elif player_mana >=50:
+		player_mana = min(player_mana + mana_regen *change,100)
+	
+	elif player_mana >=25:
+		player_mana = min(player_mana + mana_regen *change ,100)
+	
+	#elif player_mana <=0:
+		#player_mana=0
 		#update wait_timer with delta(change)
-		wait_timer +=change
-		if wait_timer>1 and wait_timer < 5:
-			player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
-			wait_timer=0
-			
+		#wait_timer +=change
+		#if wait_timer>1 and wait_timer < 5:
 		
-		
-	elif player_mana ==0:
-		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
-		#print("mana is zero")
-		
+		#player_mana += min(player_mana + 50,100)
+		#wait_timer=0
 		pass
 	
 		
@@ -558,3 +543,28 @@ func _on_death_wait_time_timeout():
 	set_physics_process(true)
 	emit_signal("revive")
 	pass # Replace with function body.
+
+func player_signals():
+	
+	#player shoot by button
+	button_hud.connect("shoot_by_button",self,"auto_shoot")
+	
+	#player shoot by dragging shoot button
+	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
+	
+	#auto attack for the player when he taps the shoot analog
+	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
+	
+	#revive  the player after death, signal
+	connect("revive",self,"revive_player")
+	
+	#this emits signal for the player to be moved by the joysick
+	
+	connect("sg_player_dead",get_parent(),"revive_player")
+	
+	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
+	
+	#set the health to 5000 at the beginning of the game
+	emit_signal("sg_health_change",player_health)
+	
+	pass

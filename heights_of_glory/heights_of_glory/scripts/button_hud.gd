@@ -13,13 +13,10 @@ var is_shooting:bool
 
 var on_floor_timer =0
 
-var dictionary_of_enemy={}
 
 onready var level1 = get_parent()
 
 func _ready():
-	
-	dictionary_of_enemy = {"police0" : level1.get_node("enemy_container/enemy"), "police1" : level1.get_node("enemy_container/enemy2")}
 	
 	#var cont_rect = get_node("CanvasLayer/Control/button_container").rect_size
 	#print("cont_rect: ", cont_rect)
@@ -51,8 +48,9 @@ func _process(delta):
 	
 	button_controller()
 	#calculate the distance to the first and second enemy in the list
-	var player_distance_to_police0 =player.position.distance_to(dictionary_of_enemy.get("police0").position)
-	var player_distance_to_police1 = player.position.distance_to(dictionary_of_enemy.get("police1").position)
+	
+	#var player_distance_to_police0 = player.position.distance_to(level1.list_of_enemy[0].position if level1.list_of_enemy[0] else null)
+	#print("distance to the enemy: ", player_distance_to_police0 , level1.list_of_enemy[0])
 	
 	pass
 
