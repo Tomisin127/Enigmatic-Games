@@ -85,17 +85,7 @@ func getIsDrag(event):
 		return true
 
 func _on_Pressed(event):
-
-	#THIS CODE EMIT SIGNAL THAT WILL FLIP THE SPRITE ACCORDING TO THE MOVEMENT OF THE ANALOG
-	#IT WORKS BUT NOT PERFECTLY
 	
-	#if event.get_position().x <270:
-		#emit_signal("flip_left")
-			
-	#elif event.get_position().x >290:
-		#emit_signal("flip_right")
-		
-		
 	var eventPos = event.get_position()
 
 	if not eventPos or not eventPos.x or not eventPos.y:

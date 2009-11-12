@@ -78,6 +78,9 @@ one_shot = true
 [node name="collision" type="CollisionShape2D" parent="attack_area"]
 shape = SubResource( 3 )
 
+[node name="bubble_gem_container" type="Node" parent="."]
+
+[connection signal="area_entered" from="zombie" to="." method="_on_zombie_area_entered"]
 [connection signal="body_entered" from="zombie" to="." method="_on_zombie_body_entered"]
 [connection signal="timeout" from="bullet_ray/timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="flytimer" to="." method="_on_flytimer_timeout"]

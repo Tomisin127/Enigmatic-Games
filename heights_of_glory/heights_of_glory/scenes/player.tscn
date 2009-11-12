@@ -46,7 +46,6 @@ position = Vector2( 30, 20 )
 [node name="player_bullet_container" type="Node" parent="."]
 
 [node name="player_area" type="Area2D" parent="."]
-editor/display_folded = true
 
 [node name="collision" type="CollisionShape2D" parent="player_area"]
 position = Vector2( 0, 20 )
