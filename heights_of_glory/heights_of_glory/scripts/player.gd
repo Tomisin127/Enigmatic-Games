@@ -317,7 +317,7 @@ func take_damage(hit:int):
 	#player_health-=50
 	#Lazy 
 	#clamp set a limit for the value
-	#player_health = clamp((player_health - hit),0,100)
+	player_health = clamp((player_health - hit),0,100)
 	emit_signal("sg_health_change",player_health)
 	
 	#stagger animation can go here too
