@@ -68,6 +68,10 @@ var joystick_direction : Vector2
 
 
 func _ready() -> void:
+	
+	#player shoot by dragging shoot button
+	get_parent().get_node("hud/CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
+	
 	#revive  the player after death, signal
 	connect("revive",self,"revive_player")
 	
@@ -278,6 +282,7 @@ func shoot_a():
 	
 	# this is the real shoot function////shooting bullet 
 func shoot(shoot_activate):
+	
 	#if shoot is true, then shoot, dont mind all the nonsense like "if $sprite.flip_h==false"
 	#it is used for testing something, like wen the player flips position,
 	#the shoot direction should flip too
@@ -294,7 +299,9 @@ func shoot(shoot_activate):
 			
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
+		
 		print("disable shooting")
+		
 		return
 		
 

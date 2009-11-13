@@ -148,8 +148,8 @@ func shoot():
 #on ray timer timeout,shoot at player, this will be removed too
 #because zombies dont shoot
 func _on_timer_timeout():
-	shoot()
-	#pass # Replace with function body.
+	#shoot()
+	pass # Replace with function body.
 
 #enemy is damaged by the player bullet
 func enemy_take_damage(hit:int):

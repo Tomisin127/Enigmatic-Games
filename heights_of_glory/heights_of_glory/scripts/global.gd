@@ -17,3 +17,5 @@ var enemy_damage_to_player: int =100
 var player_damage_to_enemy:int =70
 
 var shoot_position 
+
+var control_vec:Vector2
