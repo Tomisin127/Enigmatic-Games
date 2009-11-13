@@ -314,7 +314,7 @@ func is_able_to_use_magmum_skills() -> bool:
 
 #this is the function that takes
 func take_damage(hit:int):
-	player_health-=50
+	#player_health-=50
 	#Lazy 
 	#clamp set a limit for the value
 	#player_health = clamp((player_health - hit),0,100)
