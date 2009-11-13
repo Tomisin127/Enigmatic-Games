@@ -125,7 +125,7 @@ func _on_timer_timeout():
 	shoot()
 	#pass # Replace with function body.
 
-
+#enemy is damaged by the player bullet
 func enemy_take_damage(hit:int):
 	if is_alive():
 		enemy_health -= hit
@@ -173,6 +173,7 @@ func enemy_death():
 	if not is_alive():
 		disintegrate()
 	pass
+	
 	
 func enemy_jump_over_boxes(box_collision):
 	if box_collide==true:

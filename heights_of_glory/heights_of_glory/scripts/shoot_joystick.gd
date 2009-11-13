@@ -1,6 +1,5 @@
 extends Node2D
 
-
 signal dir_changed
 # Declare member variables here. Examples:
 # var a = 2
@@ -14,16 +13,21 @@ var eve_iAn_range = false
 
 
 
-
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready(): 
+	
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
 
 
 
+func _process(delta):
+	#pass the shoot position in the function to the global script
+	check_small_circle_pos()
 
+	pass
+	
 func _input(event):
 	if active:
 		
@@ -40,6 +44,8 @@ func _input(event):
 				self.position = event.position
 				pressed = true
 				$Timer.stop()
+				
+				
 			if  not event.is_pressed() && control_limits(event,"small_circle"):
 				pressed = false
 				$Timer.start()
@@ -62,8 +68,6 @@ func _input(event):
 				$SmallCircle.set_position(toBeSmallPos.normalized() * halfBigCircle_x)
 			else:
 				$SmallCircle.set_position(toBeSmallPos)
-		
-		
 		
 			emit_signal("dir_changed",check_small_circle_pos())
 	
@@ -90,6 +94,7 @@ func check_small_circle_pos() -> Vector2:
 	var small_pos = $SmallCircle.global_position
 	var big_pos = $BigCircle.global_position
 	var smallPos_bigPos = small_pos - big_pos
+	
 	var control : Vector2 = Vector2(0,0)
 	
 	if smallPos_bigPos.x > 30:
@@ -109,6 +114,10 @@ func check_small_circle_pos() -> Vector2:
 	
 #	if smallPos_bigPos.y <30 and small_pos.y > -30:
 #		control.y = 0
+	#passs shoot position to the global script
+	global.shoot_position = smallPos_bigPos
+	
+	#print(smallPos_bigPos)
 	
 	
 	
@@ -146,6 +155,6 @@ func show_control():
 
 func manage_events(event):
 	
-	
 	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
 		pass
+		

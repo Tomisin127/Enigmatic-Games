@@ -8,8 +8,7 @@ var joystickVector
 var screensize
 export var speed = 400
 
-#getting the player_bullet_class
-var t = player_bullet_class.new()
+
 
 var wait_timer= 0
 
@@ -78,6 +77,7 @@ func _ready() -> void:
 	connect("sg_player_dead",get_parent(),"revive_player")
 	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
 	
+	#set the health to 5000 at the beginning of the game
 	emit_signal("sg_health_change",player_health)
 	
 	
@@ -133,6 +133,9 @@ func _physics_process(delta):
 			acceleration.x -= ACCEL
 			get_node("sprite").flip_h =1
 			
+		#elif joystick_direction.y ==-1:
+			#acceleration.y =JUMP_HEIGHT
+
 	
 	
 	
@@ -286,16 +289,17 @@ func shoot(shoot_activate):
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
 		
-		if $sprite.flip_h==false:
-			b.start(rotation,get_node("bullet_spawn_pos").global_position)
-		elif $sprite.flip_h==true:
-			b.start(rotation,get_node("bullet_spawn_pos").global_position)
-			t.velocity=Vector2(t.speed,0).rotated(t.rotation -PI)
+		#the shoot analog angle and point the bullet to that angle
+		b.start(global.shoot_position.angle(),get_node("bullet_spawn_pos").global_position)
 			
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
 		print("disable shooting")
 		return
+		
+
+
+
 #magmum skill is the super ability of the player
 func is_able_to_use_magmum_skills() -> bool:
 	"""
@@ -303,19 +307,26 @@ func is_able_to_use_magmum_skills() -> bool:
 	"""
 	return global.magnum_skills == 500
 
+
+
+
+
+
 #this is the function that takes
 func take_damage(hit:int):
-	
+	player_health-=50
 	#Lazy 
 	#clamp set a limit for the value
-	player_health = clamp((player_health - hit),0,5000)
+	#player_health = clamp((player_health - hit),0,100)
 	emit_signal("sg_health_change",player_health)
 	
 	#stagger animation can go here too
 	
 	print(player_health)
-
 	pass
+
+
+
 
 
 #dead or alive function called in the processs function
@@ -394,51 +405,6 @@ func boost_up_super(value):
 		return 
 		
 	pass
-
-	
-#	#no explanation yet
-# i am turning this to a comment for now
-#func move(delta):
-#
-#	var velocity = Vector2()
-#	var nextPosition = position
-#
-#	if joystickVector and joystickVector.length() != 0:
-#		velocity += joystickVector
-#	if velocity.length() > 0:
-#		velocity = velocity * speed
-#
-#	nextPosition += velocity * delta
-#	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
-#	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
-#
-#	position = nextPosition
-#
-#
-#func _on_JoystickMove(vector):
-#	joystickVector = vector
-#
-#
-##this function are emitted when the analog is flipped
-#func flip_sprite_left():
-#	print("function is emitted")
-#	$sprite.flip_h=1
-#	pass
-#func flip_sprite_right():
-#	$sprite.flip_h=0
-#	pass
-
-#	if joystickVector and joystickVector.length() != 0:
-#		velocity += joystickVector
-#	if velocity.length() > 0:
-#		velocity = velocity * speed
-#
-#	nextPosition += velocity * delta
-#	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
-#	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
-#
-#	position = nextPosition
-#
 
 func _on_JoystickMove(vector):
 	joystickVector = vector

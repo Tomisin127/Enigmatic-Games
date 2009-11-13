@@ -13,7 +13,7 @@ onready var gem_container = $gem_container
 
 
 func _ready():
-	#connect the signal that will flip the sprite when the analogy is moved
+
 	
 	_on_gem_spawn_time_timeout()
 	

@@ -12,6 +12,8 @@ var endurance : int = 300
 #player skills
 var magnum_skills:int = 0
 
-var enemy_damage_to_player: int =200
+var enemy_damage_to_player: int =100
 
 var player_damage_to_enemy:int =70
+
+var shoot_position 
