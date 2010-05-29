@@ -52,6 +52,7 @@ exterminate the zombies and therefore end the epidemic...
 character selection screen #
 
 QQQ (male) #sample name, should be changed# -- DEFAULT CHARACTER
+Nationality -- Iran
 DEFAULT STATS #can be modified if need be#
 STRENGTH > 55/100 (max. 75) 
 SPEED > 70/100 (max. 90)
@@ -60,7 +61,8 @@ ENDURANCE > 50/100 (max. 70)
 # Character should look skinny.
 
 
-YYY (female) #sample name, should be changed#
+Minera (female)
+Nationality -- America
 DEFAULT STATS #can be modified if need be#
 STRENGTH > 50/100 (max. 70)
 SPEED > 75/100 (max. 95)
@@ -70,6 +72,7 @@ ENDURANCE > 65/100 (max. 85)
 
 
 XXX (male) #sample name, should be changed#
+Nationality -- Nigeria
 DEFAULT STATS #can be modified if need be#
 STRENGTH > 70/100 (max. 90)
 SPEED > 55/100 (max. 75)
@@ -80,6 +83,7 @@ unlocked.
 
 
 Agent X (unknown) # would like very much if this name is used #
+Nationality -- Unknown
 DEFAULT STATS
 STRENGTH > 100/100
 SPEED > 100/100

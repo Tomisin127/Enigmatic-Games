@@ -4,7 +4,6 @@
 
 [sub_resource type="RectangleShape2D" id=1]
 
-
 [node name="bullet" type="Area2D"]
 
 [node name="Sprite" type="Sprite" parent="."]

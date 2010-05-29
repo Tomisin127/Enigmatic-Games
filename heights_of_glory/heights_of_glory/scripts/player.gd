@@ -1,5 +1,14 @@
 extends KinematicBody2D
 
+var joystickVector
+var screensize
+export var speed = 400
+
+class_name player
+
+var t = player_bullet_class.new()
+var wait_timer= 0
+
 signal damage_enemy
 
 const ACCEL =500
@@ -8,6 +17,21 @@ const FRICTION = -50000
 var GRAVITY :float = 9.81
 const JUMP_HEIGHT =-400
 const CLIMB_SPEED = 3
+
+
+
+
+#lazy edits
+var health : int
+# signal works best with health changes using global is overkill and will cause problem later
+signal sg_health_change
+signal sg_player_dead
+
+
+
+
+
+const BOOST_UP = -2000
 
 var acceleration = Vector2()
 
@@ -28,10 +52,20 @@ onready var player_bullet_script = load("res://scripts/player_bullet.gd").new()
 
 
 var on_ladder:bool = false
-
+var on_boost_up:bool = true
+var is_shooting:bool = true
 
 func _ready() -> void:
+	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
 	
+	#lazy
+	connect("sg_player_dead",get_parent(),"revive_player")
+	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
+	health = 100
+	emit_signal("sg_health_change",health)
+	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
+	
+	screensize = get_viewport_rect().size
 
 	set_physics_process(true)
 	
@@ -39,9 +73,15 @@ func _ready() -> void:
 
 func _physics_process(delta):
 	
-	print(on_ladder)
-	 
+	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =global.mana
+	
+	move(delta)
+	
+	#rotation = (rotation +PI *2 *delta)
+	get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
 
+	get_tile_on_position(position.x,position.y)
+	
 	#drag player down by gravity
 	acceleration.y += GRAVITY
 	
@@ -53,14 +93,28 @@ func _physics_process(delta):
 		acceleration.x += ACCEL *delta
 		get_node("sprite").flip_h =0
 		
-	elif Input.is_action_pressed("ui_accept") and global.mana>0:
-		if $shoot_timer.time_left<0.1:
-			shoot(true)
+	elif Input.is_action_pressed("ui_accept"):
+		#if $shoot_timer.time_left==0:
+		if global.mana > 0:
+			is_shooting=true
+			
 		
-	elif Input.is_action_pressed("ui_accept") and global.mana<=0:
-		shoot(false)
+		elif is_shooting and global.mana <= 5:
+			print("so freaking true")
+			is_shooting =false
+			
+		elif global.mana>=5 :
+			is_shooting=true
+		
+		shoot(is_shooting)
 		
 		
+	elif Input.is_action_pressed("ui_home"):
+		boost_up_super(on_boost_up)
+		#if its boosting up then set it to false
+		#this means you can only boost up once tru out the game
+		if on_boost_up:
+			on_boost_up=false
 		
 	#slowing down with linear interpolation
 	else:
@@ -87,7 +141,7 @@ func _physics_process(delta):
 		player_bullet_script.start()
 		
 	
-	mana_delay_and_regenerate()
+	mana_delay_and_regenerate(delta)
 	
 	#ladder_climbing
 	if on_ladder ==true:
@@ -116,10 +170,21 @@ func get_tile_on_position(x,y):
 		var id = tilemap.get_cellv(map_pos)
 		if id > -1:
 			var tilename = tilemap.get_tileset().tile_get_name(id)
-			print("tilename : ", tilename)
+#			print("tilename : ", tilename)
 			return tilename
 		else:
 			return ""
+
+	
+func shoot_a():
+	var b= player_bullet.instance()
+	player_bullet_container.add_child(b)
+	b.start(rotation,get_node("bullet_spawn_pos").global_position)
+	#reduce shooting mana
+	global.mana -= 10
+	
+	
+	pass
 
 	
 	# shooting bullet 
@@ -128,12 +193,22 @@ func shoot(shoot_activate):
 	if shoot_activate==true:
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
-		b.start(rotation,get_node("bullet_spawn_pos").global_position)
+		
+		if $sprite.flip_h==false:
+			b.start(rotation,get_node("bullet_spawn_pos").global_position)
+		elif $sprite.flip_h==true:
+			b.start(rotation,get_node("bullet_spawn_pos").global_position)
+			t.velocity=Vector2(t.speed,0).rotated(t.rotation -PI)
+			
+			
+			
 		
 		#reduce shooting mana
 		global.mana -= 10
 		
-	else:
+	elif shoot_activate==false:
+		print("did i return here")
+
 		return
 
 func is_able_to_use_magmum_skills() -> bool:
@@ -153,26 +228,52 @@ func take_damage(hit:int):
 		
 	else:
 		self.player_death_animation()"""
+		
+	
+	#Lazy 
+	
+	#clamp set a limit for the value
+	health = clamp((health - hit),0,100)
+	emit_signal("sg_health_change",health)
+	if health == 0:
+		die()
+	else:
+		#play hurt animation
+		pass
 
 func _on_health_depleted():
 	if global.player_health < 0:
 		set_physics_process(false)
 		
 
-func mana_delay_and_regenerate():
+func mana_delay_and_regenerate(change):
 	if global.mana >=1:
 	#	regenerate mana 
 		global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		#print("VALUE OF MANA",global.mana)
 		
-	elif global.mana <=0:
+	elif global.mana <=5:
 		global.mana =0
+		
+		wait_timer +=change
+		
+		if wait_timer>5:
+			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
+			wait_timer=0
+			
+		print(wait_timer)
 		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
 	if global.mana ==0:
+		pass
+		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
+		
+		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		print("mana is zero")
 		
 func is_alive()->bool:
+	
+	#dieing is better if the player tells us by itself before dieing
 	return global.player_health >0
 	
 func _get_player_health():
@@ -186,4 +287,41 @@ func _get_mana_regen():
 func _get_player_health_regen():
 	return global.player_health_regen
 
+func boost_up_super(value):
+	if value ==true:
+		acceleration.y = BOOST_UP
+		
+	else:
+		return 
+		
+	pass
+
+#lazy
+func die():
+	#a dead man cant be walking around, downside is that no gravity is also applied to the body
+	set_physics_process(false)
+	#plays death animation
+	#use yield to hold the method
+	emit_signal("sg_player_dead",position)
+	queue_free()
+	
+	pass
+	
+func move(delta):
+	var velocity = Vector2()
+	var nextPosition = position
+
+	if joystickVector and joystickVector.length() != 0:
+		velocity += joystickVector
+	if velocity.length() > 0:
+		velocity = velocity * speed
+	
+	nextPosition += velocity * delta
+	nextPosition.x = clamp(nextPosition.x, 0, screensize.x)
+	nextPosition.y = clamp(nextPosition.y, 0, screensize.y)
+
+	position = nextPosition
+
+func _on_JoystickMove(vector):
+	joystickVector = vector
 

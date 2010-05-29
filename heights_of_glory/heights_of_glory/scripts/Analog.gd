@@ -1,153 +1,93 @@
 extends Node2D
 
-const INACTIVE_IDX = -1;
-export var isDynamicallyShowing = false
-export var listenerNodePath = ""
-export var nam = ""
+signal move
 
-var ball
-var bg 
-var animation_player
-var parent
-var listenerNode
+onready var bigCircle = $BigCircle
+onready var smallCircle = $SmallCircle
 
-var centerPoint = Vector2(0,0)
-var currentForce = Vector2(0,0)
-var halfSize = Vector2()
-var ballPos = Vector2()
-var squaredHalfSizeLenght = 0
-var currentPointerIDX = INACTIVE_IDX;
+var resetPosCircle
+var pressed = 0
+var halfBigCircleSize
+var thereIsEventInput = false
+var vectorToEmit
+var bigCircPos
+var distance
 
 func _ready():
-	
-	
-	set_process_input(true)
-	bg = get_node("bg")
-	ball = get_node("ball")
-	animation_player = get_node("AnimationPlayer")
-	parent = get_parent();
-	halfSize = bg.texture.get_size()/2;
-	squaredHalfSizeLenght = halfSize.x*halfSize.y;
-	
-	
-	if (listenerNodePath != "" && listenerNodePath!=null):
-		listenerNodePath = get_node(listenerNodePath)
-	elif listenerNodePath=="":
-		listenerNodePath = null
+	halfBigCircleSize = bigCircle.texture.get_size().x / 2
+	updateCachedCirclesPositions()
 
-	#isDynamicallyShowing = isDynamicallyShowing and parent extends Control
-	
-	if isDynamicallyShowing:
-		modulate = Color(1,1,1,0);
-#		hide()
-
-func get_force():
-	return currentForce
-	
 func _input(event):
-	
-	var incomingPointer = extractPointerIdx(event)
-	if incomingPointer == INACTIVE_IDX:
-		
+	if event is InputEventKey:
 		return
 	
-	if need2ChangeActivePointer(event):
-		if (currentPointerIDX != incomingPointer) and event.is_pressed():
-			currentPointerIDX = incomingPointer;
-			showAtPos(Vector2(event.x, event.y));
-			
-
-	var theSamePointer = currentPointerIDX == incomingPointer
-	if isActive() and theSamePointer:
-		process_input(event)
-
-func need2ChangeActivePointer(event): #touch down inside analog
-	var mouseButton = event.type == InputEventMouseButton
-	var touch = event.type == InputEventScreenTouch
+	_on_Pressed(event)
 	
-	if mouseButton or touch:
-		if isDynamicallyShowing:
-			
-			return get_parent().get_visible_rect().has_point(Vector2(event.x, event.y))
+	if event is InputEventScreenTouch:
+		toggleVisible(event.pressed)
+		setSelfPosition(event.position)
+		updateCachedCirclesPositions()
+		if not event.pressed:
+			emit_signal_move(Vector2(0, 0))
+			return
+
+	if getIsDrag(event) and pressed == 1:
+		var dirBigCir_dirEnvt = event.position - bigCircle.get_global_position()
+		distance = getDistance(dirBigCir_dirEnvt.x, 0, dirBigCir_dirEnvt.y, 0)
+		if distance > halfBigCircleSize:
+			smallCircle.set_position(dirBigCir_dirEnvt.normalized() * halfBigCircleSize)
 		else:
-			var lenght = (global_position - Vector2(event.x, event.y)).length_squared();
-			return lenght < squaredHalfSizeLenght
-	else:
-	 return false
+			smallCircle.set_global_position(event.position)
+			
+	if isReleased(event):
+		pressed = 0
+		smallCircle.set_global_position(resetPosCircle)
 
-func isActive():
-	return currentPointerIDX != INACTIVE_IDX
+	vectorToEmit = smallCircle.get_position()
+	thereIsEventInput = true if event else false
 
+func _process(delta):
+		#normalized() reduces the magnitude of the vector to 1 while maintaining the direction
+		if thereIsEventInput and vectorToEmit:
+			emit_signal_move(vectorToEmit / halfBigCircleSize)
+			
 
-func extractPointerIdx(event):
-	var touch = event == InputEventScreenTouch
-	var drag = event == InputEventScreenDrag
-	var mouseButton = event == InputEventMouseButton
-	var mouseMove = event == InputEventMouseMotion
+func toggleVisible(value):
+	self.visible = value
+
+func setSelfPosition(position):
+	self.position = position
+	smallCircle.set_global_position(position)
+
+func updateCachedCirclesPositions():
+	resetPosCircle = smallCircle.get_global_position()
+	bigCircPos = bigCircle.get_global_position()
+
+func easing(t):
+	return t*t*t
+
+func emit_signal_move(value):
+	emit_signal('move', easing(value))
+
+func getIsDrag(event):
+	if event is InputEventMouseMotion or event is InputEventScreenDrag:
+		return true
+
+func _on_Pressed(event):
+	var eventPos = event.get_position()
+
+	if not eventPos or not eventPos.x or not eventPos.y:
+		return
 	
-	if touch or drag:
-		return event.index
-	elif mouseButton or mouseMove:
-		#plog("SOMETHING IS VERYWRONG??, I HAVE MOUSE ON TOUCH DEVICE")
-		return 0
-	else:
-		return INACTIVE_IDX
-		
-func process_input(event):
-	calculateForce(event.x - self.global_position.x, event.y - self.global_position.y)
-	updateBallPos()
+	var distCirc_eventPos = getDistance(eventPos.x, bigCircPos.x, bigCircPos.y, eventPos.y)
 	
-	var isReleased = isReleased(event)
-	if isReleased:
-		reset()
-
-
-func reset():
-	currentPointerIDX = INACTIVE_IDX
-	calculateForce(0, 0)
-
-	if isDynamicallyShowing:
-		hide()
-	else:
-		updateBallPos()
-
-func showAtPos(pos):
-	if isDynamicallyShowing:
-		animation_player.play("alpha_in", 0.2)
-		global_position=pos
-	
-#func hide():
-	#animation_player.play("alpha_out", 0.2) 
-
-func updateBallPos():
-	ballPos.x = halfSize.x * currentForce.x #+ halfSize.x
-	ballPos.y = halfSize.y * -currentForce.y #+ halfSize.y
-	#ball.set_pos(ballPos)
-	get_node("ball").position=ballPos
-func calculateForce(var x, var y):
-	#get direction
-	currentForce.x = (x - centerPoint.x)/halfSize.x
-	
-	currentForce.y = -(y - centerPoint.y)/halfSize.y
-	
-	#limit 
-	if currentForce.length_squared()>1:
-		currentForce=currentForce/currentForce.length()
-	
-	sendSignal2Listener()
-
-func sendSignal2Listener():
-	if (listenerNodePath != null):
-		listenerNodePath.analog_force_change(currentForce, self)
-
-func isPressed(event):
-	if event.type == InputEventMouseMotion:
-		return (event.button_mask==1)
-	elif event.type == InputEventScreenTouch:
-		return event.pressed
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
+		if distCirc_eventPos <= halfBigCircleSize:
+			pressed = 1
 
 func isReleased(event):
-	if event.type == InputEventScreenTouch:
+	if event is InputEventScreenTouch or event is InputEventMouseButton:
 		return !event.pressed
-	elif event.type == InputEventMouseButton:
-		return !event.pressed
+
+func getDistance(x1, x2, y1, y2):
+	return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))

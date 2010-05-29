@@ -1,22 +1,27 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
 [ext_resource path="res://sprites/zombie002.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 37.857, 77.0887 )
+extents = Vector2( 46.2446, 77.0887 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 37.857, 78.0887 )
+extents = Vector2( 46.1927, 78.0887 )
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 252.054
 
 [node name="enemy" type="KinematicBody2D"]
 position = Vector2( 294.216, 221.113 )
+collision_mask = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="zombie" type="Area2D" parent="."]
+editor/display_folded = true
 
 [node name="sprite" type="Sprite" parent="zombie"]
 scale = Vector2( 0.2, 0.2 )
@@ -63,11 +68,15 @@ position = Vector2( 40, 10 )
 enabled = true
 cast_to = Vector2( 0, 70 )
 
-[node name="fall_from_sky_timer" type="Timer" parent="."]
-wait_time = 5.0
+[node name="flytimer" type="Timer" parent="."]
 one_shot = true
-autostart = true
+
+[node name="attack_area" type="Area2D" parent="."]
+
+[node name="collision" type="CollisionShape2D" parent="attack_area"]
+shape = SubResource( 3 )
 
 [connection signal="body_entered" from="zombie" to="." method="_on_zombie_body_entered"]
 [connection signal="timeout" from="bullet_ray/timer" to="." method="_on_timer_timeout"]
-[connection signal="timeout" from="fall_from_sky_timer" to="." method="_on_fall_timer_timeout"]
+[connection signal="timeout" from="flytimer" to="." method="_on_flytimer_timeout"]
+[connection signal="body_entered" from="attack_area" to="." method="_on_attack_area_body_entered"]
