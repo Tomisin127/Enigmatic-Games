@@ -72,6 +72,9 @@ var joystick_direction : Vector2
 
 func _ready() -> void:
 	
+	#player shoot by button
+	button_hud.connect("shoot_by_button",self,"auto_shoot")
+	
 	#player shoot by dragging shoot button
 	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
 	

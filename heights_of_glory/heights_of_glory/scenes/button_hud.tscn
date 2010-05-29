@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/button_hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/HUD_sprites/up_btn.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://sprites/HUD_sprites/left_btn.png" type="Texture" id=4]
 [ext_resource path="res://sprites/HUD_sprites/right_btn.png" type="Texture" id=5]
 [ext_resource path="res://icon.png" type="Texture" id=6]
+[ext_resource path="res://sprites/HUD_sprites/attack.png" type="Texture" id=7]
+[ext_resource path="res://sprites/HUD_sprites/super_attack.png" type="Texture" id=8]
 
 [node name="button_hud" type="Node"]
 script = ExtResource( 1 )
@@ -16,7 +18,12 @@ script = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 
+[node name="player_mana" type="TextureProgress" parent="CanvasLayer/Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+
 [node name="button_container" type="Control" parent="CanvasLayer/Control"]
+editor/display_folded = true
 margin_top = 460.0
 margin_right = 173.0
 margin_bottom = 602.0
@@ -67,12 +74,42 @@ margin_bottom = 106.0
 rect_scale = Vector2( 0.5, 0.5 )
 texture_normal = ExtResource( 6 )
 
-[node name="player_mana" type="TextureProgress" parent="CanvasLayer/Control"]
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="keys" type="Control" parent="CanvasLayer/Control"]
+margin_left = 784.0
+margin_top = 420.0
+margin_right = 1011.0
+margin_bottom = 589.0
+__meta__ = {
+"_edit_group_": true
+}
 
-[connection signal="pressed" from="CanvasLayer/Control/button_container/up" to="." method="_on_up_pressed"]
+[node name="shoot" type="TextureButton" parent="CanvasLayer/Control/keys"]
+margin_left = 110.0
+margin_top = 10.0
+margin_right = 434.0
+margin_bottom = 334.0
+rect_scale = Vector2( 0.3, 0.3 )
+texture_normal = ExtResource( 7 )
+
+[node name="super_attack" type="TextureButton" parent="CanvasLayer/Control/keys"]
+margin_left = 20.0
+margin_top = 80.0
+margin_right = 344.0
+margin_bottom = 404.0
+rect_scale = Vector2( 0.2, 0.2 )
+disabled = true
+toggle_mode = true
+texture_normal = ExtResource( 8 )
+
+[connection signal="button_down" from="CanvasLayer/Control/button_container/up" to="." method="_on_up_button_down"]
+[connection signal="button_up" from="CanvasLayer/Control/button_container/up" to="." method="_on_up_button_up"]
 [connection signal="button_down" from="CanvasLayer/Control/button_container/left" to="." method="_on_left_button_down"]
+[connection signal="button_up" from="CanvasLayer/Control/button_container/left" to="." method="_on_left_button_up"]
 [connection signal="gui_input" from="CanvasLayer/Control/button_container/left" to="." method="_on_left_gui_input"]
-[connection signal="pressed" from="CanvasLayer/Control/button_container/right" to="." method="_on_right_pressed"]
-[connection signal="pressed" from="CanvasLayer/Control/button_container/center" to="." method="_on_center_pressed"]
+[connection signal="button_down" from="CanvasLayer/Control/button_container/right" to="." method="_on_right_button_down"]
+[connection signal="button_up" from="CanvasLayer/Control/button_container/right" to="." method="_on_right_button_up"]
+[connection signal="button_down" from="CanvasLayer/Control/button_container/center" to="." method="_on_center_button_down"]
+[connection signal="button_up" from="CanvasLayer/Control/button_container/center" to="." method="_on_center_button_up"]
+[connection signal="button_down" from="CanvasLayer/Control/keys/shoot" to="." method="_on_shoot_button_down"]
+[connection signal="button_up" from="CanvasLayer/Control/keys/shoot" to="." method="_on_shoot_button_up"]
+[connection signal="toggled" from="CanvasLayer/Control/keys/super_attack" to="." method="activate_skill_button"]

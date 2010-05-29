@@ -5,7 +5,9 @@ class_name player_bullet_class
 onready var player = get_parent().get_parent()
 
 var velocity = Vector2()
-var speed =400
+var speed = 400
+
+export var GRAVITY =3
 
 func _ready():
 
@@ -18,12 +20,17 @@ func start(dir,pos):
 	velocity = Vector2(speed,0).rotated(dir + 2*PI)
 	
 func _process(delta):
+	#give bullet gravity
 	
+	velocity.y +=GRAVITY
+	
+	#print("velocity,y : ", velocity.y) 
+
 	randomize()
 	#bullet movement
 	position = (position+velocity *delta)
 	rotation = (rotation +PI *2 *delta)
-
+	
 	pass
 	
 func _on_lifetimer_timeout():
@@ -36,7 +43,6 @@ func _on_player_bullet_area_entered(area):
 		
 		#add a  minimum of 10 for the magum skill every time the bullet hit the enemy
 		#add it should not pass 100, if it reach 100 it should stay at 100
-		
 		global.magnum_skills += min(10,100) if !player.is_able_to_use_magnum_skills() else 0
 		
 		print("the magnum: ",global.magnum_skills)

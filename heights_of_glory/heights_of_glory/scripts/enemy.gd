@@ -60,11 +60,6 @@ var can_enemy_see_player:bool =false
 
 func _ready():
 	
-	
-	
-	#there is no need to set physics process to true it true by defualt
-#	set_physics_process(true)
-	
 	#setting default scale of sprite
 	default_sprite_scale = $zombie/enemyBody_Part.scale 
 	
@@ -245,19 +240,6 @@ func enemy_death():
 		disintegrate()
 	pass
 	
-	
-#func enemy_jump_over_boxes(box_collision):
-#	if box_collide==true:
-		#print("jump over boxes")
-		#linear_velocity.y-=10
-
-	
-	#elif box_collide==false:
-		#box_collide=false
-		#print("body collide is now false")
-
-	#pass
-
 
 func _on_zombie_body_entered(body):
 	

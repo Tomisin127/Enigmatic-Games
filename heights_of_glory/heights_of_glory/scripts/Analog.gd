@@ -1,12 +1,7 @@
 extends Node2D
 
-var pressed_in_two_secs = 0
-
 var press_count=0
 signal dir_changed
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 var halfBigCircle_x 
 var pressed = false
@@ -20,14 +15,14 @@ onready var player = get_parent().get_parent().get_parent().get_parent().get_nod
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("playerL :", player)
+	#print("playerL :", player)
 	
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
 	
 func _process(delta):
-
+	
 	check_small_circle_pos()
 	
 	pass
@@ -91,7 +86,7 @@ func getIsDrag(event):
 		return true
 		
 	if event is InputEventScreenTouch:
-		print("screen tpuchj")
+		#print("screen tpuchj")
 		
 		
 		if event.is_pressed() and control_limits(event, "small_circle"):
@@ -100,12 +95,12 @@ func getIsDrag(event):
 			
 			press_count +=1
 			
-			print("press_timer_wait_time: ", $press_timer.time_left)
+			#print("press_timer_wait_time: ", $press_timer.time_left)
 			
 			#if press count is equal to 2 and time is greater than 0, then jump
 			if press_count ==2 and $press_timer.time_left >0 and player.is_on_floor():
-				print("pressed time : ", pressed_in_two_secs)
-				print("press_count: ", press_count)
+				
+				#print("press_count: ", press_count)
 				player.acceleration.y = player.JUMP_HEIGHT
 				
 				
@@ -179,12 +174,10 @@ func show_control():
 
 
 func manage_events(event):
-	
-	
 	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
 		pass
 
 func _on_press_timer_timeout():
 	press_count=0
-	print("timeout")
+	#print("timeout")
 	pass # Replace with function body.

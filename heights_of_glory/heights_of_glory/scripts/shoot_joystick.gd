@@ -33,11 +33,12 @@ func _ready():
 func _process(delta):
 	
 	
-	print("present state: ", p)
+	#print("present state: ", p)
 	
 	#pass the shoot position in the function to the global script
 	check_small_circle_pos()
 	
+	#id the shoot drag length is greater than 70, store the value in variable p
 	if global.shoot_position.length() >70:
 		p = global.shoot_position.length()
 	
