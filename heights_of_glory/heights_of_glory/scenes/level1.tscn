@@ -105,9 +105,7 @@ position = Vector2( 921, 498.224 )
 [node name="hud" parent="." instance=ExtResource( 9 )]
 
 [node name="elevatonx" type="StaticBody2D" parent="."]
-
 editor/display_folded = true
-
 visible = false
 position = Vector2( 720, 210 )
 

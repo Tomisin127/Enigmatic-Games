@@ -1,16 +1,19 @@
 extends KinematicBody2D
 
+class_name player
+
 var joystickVector
 var screensize
 export var speed = 400
 
-class_name player
-
+#getting the player_bullet_class
 var t = player_bullet_class.new()
+
 var wait_timer= 0
 
 signal damage_enemy
 
+#all the physics variable for the players
 const ACCEL =500
 const MAX_SPEED = 300
 const FRICTION = -50000
@@ -21,15 +24,15 @@ const CLIMB_SPEED = 3
 
 
 
-#lazy edits
-var health : int
+#player's attribute
+var player_health : int =5000
+var player_mana : int = 100
+var mana_regen : int = 100
+var player_health_regen : int= 2
+
 # signal works best with health changes using global is overkill and will cause problem later
 signal sg_health_change
 signal sg_player_dead
-
-
-
-
 
 const BOOST_UP = -2000
 
@@ -41,8 +44,6 @@ onready var player_bullet = preload("res://scenes/player_bullet.tscn")
 
 #bullet script
 onready var player_bullet_script = load("res://scripts/player_bullet.gd").new()
-
-#export var starting_stats : Resource
 
 #export(Array, String) var starting_skills
 
@@ -56,30 +57,36 @@ var on_boost_up:bool = true
 var is_shooting:bool = true
 
 func _ready() -> void:
+	#this emits signal for the player to be moved by the joysick
 	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
-	
-	#lazy
-	connect("sg_player_dead",get_parent(),"revive_player")
-	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
-	health = 100
-	emit_signal("sg_health_change",health)
 	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
 	
+	
+	connect("sg_player_dead",get_parent(),"revive_player")
+	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
+	
+	emit_signal("sg_health_change",player_health)
+	
+	
 	screensize = get_viewport_rect().size
-
+	
 	set_physics_process(true)
 	
 	pass
 
 func _physics_process(delta):
 	
-	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =global.mana
+	#update the player's mana bar
+	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =player_mana
 	
+	#this function for the shoot joystick
 	move(delta)
 	
 	#rotation = (rotation +PI *2 *delta)
-	get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
-
+	#get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
+	
+	#this will be used to know the tile that the player steps on
+	#its not working well yet
 	get_tile_on_position(position.x,position.y)
 	
 	#drag player down by gravity
@@ -94,15 +101,17 @@ func _physics_process(delta):
 		get_node("sprite").flip_h =0
 		
 	elif Input.is_action_pressed("ui_accept"):
-		#if $shoot_timer.time_left==0:
-		if global.mana > 0:
+		
+		#if the player still as mana , then he is able to shoot
+		if player_mana > 0:
 			is_shooting=true
 			
-		
-		elif is_shooting and global.mana <= 5:
-			print("so freaking true")
+		#if the player is shooting while mana is low
+		#disable shooting
+		elif is_shooting and player_mana <= 5:
 			is_shooting =false
 			
+		#if the mana recharges when its low, enable shooting
 		elif global.mana>=5 :
 			is_shooting=true
 		
@@ -114,13 +123,14 @@ func _physics_process(delta):
 		#if its boosting up then set it to false
 		#this means you can only boost up once tru out the game
 		if on_boost_up:
+			#after using boost up once, disable it 
 			on_boost_up=false
 		
 	#slowing down with linear interpolation
 	else:
 		acceleration.x = lerp(acceleration.x, 0, 0.2)
 	
-	
+	#jumping settings
 	if is_on_floor() and ground_ray.is_colliding():
 		if Input.is_action_pressed("ui_up"):
 			acceleration.y = JUMP_HEIGHT
@@ -135,12 +145,11 @@ func _physics_process(delta):
 	#using the magnum skill
 	if is_able_to_use_magmum_skills():
 		global.magmum_skills = 0
-		
 		#skill animation here and damage here
 		emit_signal("damage_enemy")
-		player_bullet_script.start()
+		#player_bullet_script.start()
 		
-	
+	#this is use to delay and regenerate mana, see the function below
 	mana_delay_and_regenerate(delta)
 	
 	#ladder_climbing
@@ -157,12 +166,10 @@ func _physics_process(delta):
 		
 	else:
 		GRAVITY=9.81
-	
-	
-
-	
 	pass
 
+#this function helps to know the exact tile the player is stepping on
+#this function isnt working well yet but it will soon
 func get_tile_on_position(x,y):
 	var tilemap = get_parent().get_node("TileMap")
 	if not tilemap == null:
@@ -175,22 +182,27 @@ func get_tile_on_position(x,y):
 		else:
 			return ""
 
-	
+#this is another shoot function for testing the second shoot joystick
+#but it will be removed
 func shoot_a():
 	var b= player_bullet.instance()
 	player_bullet_container.add_child(b)
 	b.start(rotation,get_node("bullet_spawn_pos").global_position)
 	#reduce shooting mana
-	global.mana -= 10
-	
-	
+	player_mana -= 10
 	pass
 
 	
-	# shooting bullet 
+	# this is the real shoot function////shooting bullet 
 func shoot(shoot_activate):
+	#if shoot is true, then shoot, dont mind all the nonsense like "if $sprite.flip_h==false"
+	#it is used for testing something, like wen the player flips position,
+	#the shoot direction should flip too
 	
 	if shoot_activate==true:
+		#reduce shooting mana
+		player_mana -= 10
+		
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
 		
@@ -200,28 +212,23 @@ func shoot(shoot_activate):
 			b.start(rotation,get_node("bullet_spawn_pos").global_position)
 			t.velocity=Vector2(t.speed,0).rotated(t.rotation -PI)
 			
-			
-			
-		
-		#reduce shooting mana
-		global.mana -= 10
-		
+	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
-		print("did i return here")
-
+		print("disable shooting")
 		return
-
+#magmum skill is the super ability of the player
 func is_able_to_use_magmum_skills() -> bool:
 	"""
 	Returns true if the battler can perform an action
 	"""
 	return global.magnum_skills == 500
 
+#this is the function that takes
 func take_damage(hit:int):
-	global.player_health -= hit
+	player_health -= hit
 	
-	if _get_player_health() > 0:
-		global.player_health = min(_get_player_health() + _get_player_health_regen() * get_physics_process_delta_time()  ,5000)
+	if player_health > 0:
+		player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,5000)
 	# prevent playing both stagger and death animation if health <= 0
 	"""if global.player_health > 0:
 		self.player_stagger_animation()
@@ -233,60 +240,51 @@ func take_damage(hit:int):
 	#Lazy 
 	
 	#clamp set a limit for the value
-	health = clamp((health - hit),0,100)
-	emit_signal("sg_health_change",health)
-	if health == 0:
+	player_health = clamp((player_health - hit),0,5000)
+	emit_signal("sg_health_change",player_health)
+	if player_health == 0:
 		die()
 	else:
 		#play hurt animation
 		pass
 
+#player as died
 func _on_health_depleted():
-	if global.player_health < 0:
+	if player_health < 0:
 		set_physics_process(false)
 		
 
 func mana_delay_and_regenerate(change):
-	if global.mana >=1:
-	#	regenerate mana 
-		global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
-		#print("VALUE OF MANA",global.mana)
+	if player_mana >=5:
+	#	regenerate mana very time the player mana goes down but not below 5
+		player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
 		
-	elif global.mana <=5:
-		global.mana =0
+	#when the player_mana is low, wait for 5 seconds and recharge the mana
+	elif player_mana <=5:
+		player_mana =0
 		
+		#update wait_timer with delta(change)
 		wait_timer +=change
-		
 		if wait_timer>5:
-			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
+			player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
 			wait_timer=0
 			
+		
 		print(wait_timer)
-		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
-	if global.mana ==0:
-		pass
-		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		
+	if player_mana ==0:
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		print("mana is zero")
 		
+		pass
+		
+	#check if the player is alive
 func is_alive()->bool:
-	
 	#dieing is better if the player tells us by itself before dieing
-	return global.player_health >0
-	
-func _get_player_health():
-	return global.player_health
-func _get_mana():
-	return global.mana
-	
-func _get_mana_regen():
-	return global.mana_regen
-	
-func _get_player_health_regen():
-	return global.player_health_regen
+	return player_health >0
 
+#function to make the player fly so high, it works only once, when the value is true 
 func boost_up_super(value):
 	if value ==true:
 		acceleration.y = BOOST_UP
@@ -307,6 +305,7 @@ func die():
 	
 	pass
 	
+	#no explanation yet
 func move(delta):
 	var velocity = Vector2()
 	var nextPosition = position
