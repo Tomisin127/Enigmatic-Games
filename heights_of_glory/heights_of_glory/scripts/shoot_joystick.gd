@@ -18,6 +18,8 @@ var eve_iAn_range = false
 
 onready var player = get_parent().get_parent().get_parent().get_parent().get_node("player")
 
+var p = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
 	print()
@@ -29,10 +31,16 @@ func _ready():
 
 
 func _process(delta):
-
+	
+	
+	print("present state: ", p)
 	
 	#pass the shoot position in the function to the global script
 	check_small_circle_pos()
+	
+	if global.shoot_position.length() >70:
+		p = global.shoot_position.length()
+	
 
 	pass
 	
@@ -91,11 +99,16 @@ func getIsDrag(event):
 	#shoot if the small circle  is dragged 75m away from the the center
 	#then it shoots the target in any direction
 	if event is InputEventScreenDrag:
-		print("relative event: ", event.relative.length())
+		
+
+		#print("relative event: ", event.relative.length())
+		print(global.shoot_position.length())
 		if control_limits(event,"small_circle"):
+			
 			#is shoot analog is dragged and player mana is above 0, shoot
 			if global.shoot_position.length()>75 and global.player_mana_copy > 0:
 				emit_signal("player_shoot", true)
+				
 				print("player_mana: ", global.player_mana_copy)
 			
 			#elif the above statement is not true, disable shooting
@@ -106,6 +119,7 @@ func getIsDrag(event):
 		elif !control_limits(event,"small_circle"):
 			if global.shoot_position.length()<75:
 				emit_signal("player_shoot",false)
+				
 				#global.control_vec=Vector2(0,0)
 		
 		return true
@@ -116,12 +130,21 @@ func getIsDrag(event):
 		
 		if event.pressed==true and global.player_mana_copy >0:
 			emit_signal("auto_attack",false)
+			
 		
+		#if pressed is released , then it shoots staright
 		elif  !event.pressed and global.control_vec==Vector2(0,0) and global.player_mana_copy >0:
-			emit_signal("auto_attack",true)
+			
+			#if the present length of the drag isnt up to 75, it shoot straight
+			#else it does not shoot straight wen released, until it is pressed again
+			
+			emit_signal("auto_attack",true if not p > 75 else false )
+			#shoot until it is pressed again
+			p = 0
 			
 		elif event.pressed== true and global.player_mana_copy < 0:
 			emit_signal("auto_attack",false)
+			
 			
 			
 

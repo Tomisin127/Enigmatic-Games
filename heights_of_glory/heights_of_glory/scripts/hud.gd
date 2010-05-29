@@ -1,20 +1,29 @@
 extends Node
 
 
-
+onready var player = get_parent().get_node("player")
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	print("player: ", player)
 	#if user did not select joystick analog
-	joystick_analog_not_selected()
+	joystick_analog_selected()
 	
-	
+	set_process(true)
 	#this signal will activate the magnum button when the abillity as charged
 	get_parent().get_node("player").connect("activate_magnum_skill",self, "activate_skill_button")
 	
 	
 	pass
+
+func _process(delta):
+	#set the player mana bar
+	get_node("CanvasLayer/Control/player_mana").value = player.player_mana
+	
+	#set the collected gems on the screen
+	get_node("CanvasLayer/Control/gems_collected").text=str(global.collected_gems)
+	pass 
 
 #change player health upon attack from enemy
 func health_change(health: int):
@@ -42,12 +51,21 @@ func activate_skill_button(button_pressed):
 	pass
 
 
-func joystick_analog_not_selected():
+func joystick_analog_selected():
 	
 	if global.use_joystick==false:
 		$CanvasLayer/Control.hide()
-		get_viewport().gui_disable_input=true
+		queue_free()
+		print("JOYSTICK HUD DELETED")
+		#get_viewport().gui_disable_input=true
+		
+
+	elif global.use_joystick==true:
+		$CanvasLayer/Control.show()
+		#get_viewport().gui_disable_input=false
 	
 	pass
+
+
 
 

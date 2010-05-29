@@ -50,7 +50,8 @@ onready var ground_ray = get_node("ground_ray")
 onready var player_bullet_container = get_node("player_bullet_container")
 onready var player_bullet = preload("res://scenes/player_bullet.tscn")
 
-
+onready var joystick_hud = get_parent().get_node("hud")
+onready var button_hud = get_parent().get_node("button_hud")
 
 #export(Array, String) var starting_skills
 
@@ -72,10 +73,10 @@ var joystick_direction : Vector2
 func _ready() -> void:
 	
 	#player shoot by dragging shoot button
-	get_parent().get_node("hud/CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
+	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
 	
 	#auto attack for the player when he taps the shoot analog
-	get_parent().get_node("hud/CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
+	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
 	
 	#revive  the player after death, signal
 	connect("revive",self,"revive_player")
@@ -117,8 +118,7 @@ func _physics_process(delta):
 		$sprite.flip_h=true
 		
 	
-	#update the player's mana bar
-	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =player_mana
+	
 	
 	#this function for the shoot joystick
 	#rotation = (rotation +PI *2 *delta)

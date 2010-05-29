@@ -7,6 +7,10 @@ func _ready():
 
 var use_joystick:bool
 
+
+var use_button:bool 
+
+
 #gems collected by the player
 var collected_gems = 0
 

@@ -20,7 +20,7 @@ func _ready():
 		print("using joystick is true")
 		
 	else:
-			print("not using joystick")
+		print("use_buttons")
 		
 		
 	#checking player collision points
@@ -35,7 +35,9 @@ func _ready():
 	
 	#connect the health changes signal to the player
 	$player.connect("sg_health_change",$hud,"health_change")
+	
 	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
+	
 	set_process(true)
 	
 	#when the player dies, drop the collected gems
@@ -47,8 +49,8 @@ func _ready():
 func _process(delta):
 	#if global.use_joystick ==true:
 		#print("using joystick is true")
-	#set the collected gems on the screen
-	$hud/CanvasLayer/Control/gems_collected.text=str(global.collected_gems)
+
+	
 	
 	pass
 	
