@@ -13,7 +13,6 @@ func _ready():
 	pass
 	
 func _process(delta):
-<<<<<<< refs/remotes/origin/master
 	pass
 
 
@@ -23,16 +22,12 @@ func revive(pos : Vector2):
 	add_child(player)
 	_ready()
 	
-
-
-=======
 	
 	$hud/CanvasLayer/Control/player_health.value=global.player_health
 	$hud/CanvasLayer/Control/player_mana.value=global.mana
 	pass
 
 
->>>>>>> scripting changes in enemy scene and others
 func _on_ladder_area_body_entered(body):
 	if body.name == "player":
 		$player.on_ladder=true

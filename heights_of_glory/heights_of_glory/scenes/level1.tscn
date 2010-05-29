@@ -105,10 +105,9 @@ position = Vector2( 921, 498.224 )
 [node name="hud" parent="." instance=ExtResource( 9 )]
 
 [node name="elevatonx" type="StaticBody2D" parent="."]
-<<<<<<< refs/remotes/origin/master
+
 editor/display_folded = true
-=======
->>>>>>> scripting changes in enemy scene and others
+
 visible = false
 position = Vector2( 720, 210 )
 

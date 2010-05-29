@@ -17,8 +17,6 @@ const FRICTION = -50000
 var GRAVITY :float = 9.81
 const JUMP_HEIGHT =-400
 const CLIMB_SPEED = 3
-const BOOST_UP = -2000
-
 
 
 
@@ -60,27 +58,22 @@ var is_shooting:bool = true
 func _ready() -> void:
 	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
 	
-<<<<<<< refs/remotes/origin/master
 	#lazy
 	connect("sg_player_dead",get_parent(),"revive_player")
 	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
 	health = 100
 	emit_signal("sg_health_change",health)
-
-	
-
-=======
 	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
 	
 	screensize = get_viewport_rect().size
->>>>>>> joystick and some other level changes
-	
 
 	set_physics_process(true)
 	
 	pass
 
 func _physics_process(delta):
+	
+	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =global.mana
 	
 	move(delta)
 	
@@ -107,11 +100,7 @@ func _physics_process(delta):
 			
 		
 		elif is_shooting and global.mana <= 5:
-<<<<<<< refs/remotes/origin/master
-#			print("so freaking true")
-=======
 			print("so freaking true")
->>>>>>> scripting changes in enemy scene and others
 			is_shooting =false
 			
 		elif global.mana>=5 :
@@ -218,11 +207,8 @@ func shoot(shoot_activate):
 		global.mana -= 10
 		
 	elif shoot_activate==false:
-<<<<<<< refs/remotes/origin/master
-#		print("did i return here")
-=======
 		print("did i return here")
->>>>>>> scripting changes in enemy scene and others
+
 		return
 
 func is_able_to_use_magmum_skills() -> bool:
@@ -275,24 +261,15 @@ func mana_delay_and_regenerate(change):
 			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 			wait_timer=0
 			
-<<<<<<< refs/remotes/origin/master
-#		print(wait_timer)
-=======
 		print(wait_timer)
->>>>>>> scripting changes in enemy scene and others
-		
 		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
 	if global.mana ==0:
-<<<<<<< refs/remotes/origin/master
 		pass
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
-#		print("mana is zero")
-=======
 		
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		print("mana is zero")
->>>>>>> scripting changes in enemy scene and others
 		
 func is_alive()->bool:
 	
@@ -319,7 +296,6 @@ func boost_up_super(value):
 		
 	pass
 
-<<<<<<< refs/remotes/origin/master
 #lazy
 func die():
 	#a dead man cant be walking around, downside is that no gravity is also applied to the body
@@ -328,7 +304,9 @@ func die():
 	#use yield to hold the method
 	emit_signal("sg_player_dead",position)
 	queue_free()
-=======
+	
+	pass
+	
 func move(delta):
 	var velocity = Vector2()
 	var nextPosition = position
@@ -346,4 +324,4 @@ func move(delta):
 
 func _on_JoystickMove(vector):
 	joystickVector = vector
->>>>>>> joystick and some other level changes
+
