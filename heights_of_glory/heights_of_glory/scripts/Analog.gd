@@ -22,7 +22,12 @@ func _ready():
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
-
+	
+func _process(delta):
+	
+	check_small_circle_pos()
+	
+	pass
 
 
 
@@ -77,6 +82,7 @@ func _input(event):
 func getIsDrag(event):
 	
 	if event is InputEventScreenDrag:
+		
 		return true
 
 
@@ -111,7 +117,9 @@ func check_small_circle_pos() -> Vector2:
 	else:
 		control= Vector2(0,0)
 		$SmallCircle.position = Vector2(0,0)
-
+		
+	global.move_analog_center = $SmallCircle.position
+	global.move_big_circumference = $BigCircle.position
 	return control
 
 

@@ -11,8 +11,19 @@ onready var gems = preload("res://scenes/gems.tscn")
 #gem container
 onready var gem_container = $gem_container
 
+#preload the hud for joystick
+onready var hud = preload("res://scenes/hud.tscn")
 
 func _ready():
+	
+	if global.use_joystick ==true:
+		print("using joystick is true")
+		
+	else:
+			print("not using joystick")
+		
+		
+	#checking player collision points
 	$player.connect("collided",self, "on_character_collided")
 	
 	_on_gem_spawn_time_timeout()
@@ -34,6 +45,8 @@ func _ready():
 	pass
 	
 func _process(delta):
+	#if global.use_joystick ==true:
+		#print("using joystick is true")
 	#set the collected gems on the screen
 	$hud/CanvasLayer/Control/gems_collected.text=str(global.collected_gems)
 	
@@ -73,7 +86,7 @@ func spawn_gems(amount):
 			
 			
 		#the gem will spawn every 7 seconds
-		$gem_spawn_time.wait_time=1
+		$gem_spawn_time.wait_time=7
 		$gem_spawn_time.start()
 		print($gem_spawn_time.time_left)
 		

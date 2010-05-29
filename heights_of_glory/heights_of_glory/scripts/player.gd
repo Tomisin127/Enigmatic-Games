@@ -42,7 +42,7 @@ var player_health_regen : int= 2
 signal sg_health_change
 signal sg_player_dead
 
-const BOOST_UP = -2000
+const BOOST_UP = -1000
 
 var acceleration = Vector2()
 
@@ -50,8 +50,7 @@ onready var ground_ray = get_node("ground_ray")
 onready var player_bullet_container = get_node("player_bullet_container")
 onready var player_bullet = preload("res://scenes/player_bullet.tscn")
 
-#bullet script
-onready var player_bullet_script = load("res://scripts/player_bullet.gd").new()
+
 
 #export(Array, String) var starting_skills
 
@@ -106,16 +105,26 @@ func _ready() -> void:
 
 
 func _physics_process(delta):
-
+	#pass player mana status to global script
+	global.player_mana_copy = player_mana
+	
+	#if the shoot analog is dragged in the left or the right direction 
+	#the player faces that direction
+	if global.control_vec.x ==1:
+		$sprite.flip_h=false
+		
+	elif global.control_vec.x == -1:
+		$sprite.flip_h=true
+		
 	
 	#update the player's mana bar
 	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =player_mana
 	
 	#this function for the shoot joystick
-	
-	
 	#rotation = (rotation +PI *2 *delta)
 	#get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
+
+	
 	
 	#this will be used to know the tile that the player steps on
 	#its not working well yet
@@ -135,7 +144,23 @@ func _physics_process(delta):
 	#adding joystick control
 	
 	if joystick_direction:
+		
+		#the distance from the center of the move analog which is the small_circle
+		#from the direction that the joystick is pointing
+		var joy_distance = (global.move_analog_center - joystick_direction)
+		
+		
+		#var joy_diagonal = rad2deg(global.move_analog_center.angle_to(joystick_direction))
+		
+		#rotate the player acceleration to the angle where the joystick is pointing
+		acceleration.rotated(joy_distance.angle())
+		
+		#accelerate in that direction
+		acceleration = Vector2(joy_distance.x, joy_distance.y)
+		
+		#this code below doesnt work properly, it is still in development
 		if joystick_direction.x == 1:
+			
 			acceleration.x += ACCEL
 			get_node("sprite").flip_h =0
 			
@@ -143,13 +168,8 @@ func _physics_process(delta):
 			acceleration.x -= ACCEL
 			get_node("sprite").flip_h =1
 			
-		
 		elif joystick_direction.y ==-1 and is_on_floor():
 			acceleration.y =JUMP_HEIGHT
-
-	
-	
-	
 	
 	
 	elif Input.is_action_pressed("ui_accept"):
@@ -167,6 +187,7 @@ func _physics_process(delta):
 		elif player_mana>=5 :
 			is_shooting=true
 		
+		#if global.shoot_position.length() > 70:
 		shoot(is_shooting)
 		
 		
@@ -176,7 +197,7 @@ func _physics_process(delta):
 		#this means you can only boost up once tru out the game
 		if on_boost_up:
 			#after using boost up once, disable it 
-			on_boost_up=false
+			on_boost_up=true
 		
 	
 	
@@ -185,8 +206,6 @@ func _physics_process(delta):
 	#slowing down with linear interpolation
 	#this serve as friction even a standing object feels friction
 	acceleration.x = lerp(acceleration.x, 0, 0.2)
-	
-	
 	
 	
 	
@@ -209,9 +228,8 @@ func _physics_process(delta):
 	
 	#using the magnum skill
 	if is_able_to_use_magnum_skills():
-		global.magnum_skills = 0
-		#skill animation here and damage here
 		
+		#skill animation here and damage here
 		#activate the skill button
 		emit_signal("activate_magnum_skill", true)
 		
@@ -240,6 +258,7 @@ func _physics_process(delta):
 	#if player is dead or alive
 	dead_or_alive()
 	
+	
 	pass
 
 
@@ -250,7 +269,6 @@ func _physics_process(delta):
 func joystick_motion(dir :Vector2):
 	
 	joystick_direction = dir
-
 
 
 
@@ -293,19 +311,35 @@ func auto_shoot(activate):
 		#(the previous one)
 		
 		#get the distance from the player bullet position to the enemies
-		var bullet_distance_to_enemy= b.position.distance_to(get_parent().get_node("enemy").position)
-		var bullet_distance_to_enemy_zombie = b.position.distance_to(get_parent().get_node("enemy_z").position)
+		var bullet_distance_to_enemy= self.position.distance_to(get_parent().get_node("enemy").position if get_parent().get_node("enemy") else Vector2(0,0))
+		var bullet_distance_to_enemy_zombie = self.position.distance_to(get_parent().get_node("enemy_z").position if get_parent().get_node("enemy_z") else Vector2(0,0))
 		
 		
 		#if the distance of an enemy is shorter target the nearby one
-		#rotate the player bullet in the direction of that nearby enemy
-		if bullet_distance_to_enemy > bullet_distance_to_enemy_zombie:
-			b.start(get_parent().get_node("enemy").rotation,get_node("bullet_spawn_pos").global_position)
+		#rotate the player bullet in the direction of that nearby 
+		
+		#var enemy_angle = get_parent().get_node("enemy").position.angle() if get_parent().get_node("enemy") else 0
+		#enemy_angle = rad2deg(enemy_angle)
+		
+		#var enemy_z_angle = get_parent().get_node("enemy_z").position.angle() if get_parent().get_node("enemy_z") else 0
+		#enemy_z_angle = rad2deg(enemy_z_angle)
+		
+		#bullet should travel in direction of shooting and where the player is facing
+		if $sprite.flip_h==false:
+			b.start(0,get_node("bullet_spawn_pos").global_position)
+			
+		elif $sprite.flip_h==true:
+			b.start(-PI,get_node("bullet_spawn_pos").global_position)
 			
 		
-		elif bullet_distance_to_enemy_zombie > bullet_distance_to_enemy:
-			b.start(get_parent().get_node("enemy_z").rotation,get_node("bullet_spawn_pos").global_position)
+		#if bullet_distance_to_enemy < bullet_distance_to_enemy_zombie:
+			#b.start(enemy_angle,get_node("bullet_spawn_pos").global_position)
+			#print("police enemy is less than zombie: ", bullet_distance_to_enemy)
 		
+		#elif bullet_distance_to_enemy_zombie < bullet_distance_to_enemy:
+			#b.start(enemy_z_angle,get_node("bullet_spawn_pos").global_position)
+			#print("zombie distance is less: ", bullet_distance_to_enemy_zombie )
+			
 		#reduce shooting mana
 		player_mana -= 10
 		
@@ -393,7 +427,7 @@ func die(is_dead):
 	#player died 
 	if is_dead==true:
 		
-		#upon dying, spawn the collected gems
+		#upon dying, drop the collected gems
 		emit_signal("drop_gems",global.collected_gems)
 		
 		global.collected_gems =0
@@ -411,8 +445,8 @@ func die(is_dead):
 		
 		$death_wait_time.wait_time =3
 		$death_wait_time.start()
-	
-	$collision.disabled=true
+		
+		$collision.disabled=true
 	
 	
 	pass
@@ -421,6 +455,7 @@ func mana_delay_and_regenerate(change):
 	if player_mana >=5:
 	#	regenerate mana very time the player mana goes down but not below 5
 		player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
+		
 		
 	#when the player_mana is low, wait for 5 seconds and recharge the mana
 	elif player_mana <=5:
@@ -432,14 +467,13 @@ func mana_delay_and_regenerate(change):
 			wait_timer=0
 			
 		
-		#print(wait_timer)
 		
-		
-	if player_mana ==0:
+	elif player_mana ==0:
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		#print("mana is zero")
 		
 		pass
+	
 		
 	#check if the player is alive
 func is_alive()->bool:
@@ -462,11 +496,7 @@ func _on_JoystickMove(vector):
 
 
 func _on_player_area_area_entered(area):
-#		#if the enemy is in the player area, the player takes damage
-#	if area.is_in_group("enemy"):
-#		print("ATTTCGGCGCHCHC")
-#		#it takes damage and kills the player
-#		take_damage(global.enemy_damage_to_player)
+	
 	pass # Replace with function body.
 	
 func revive_from_death():
@@ -488,7 +518,7 @@ func revive_player(revive_pos:Vector2=Vector2(0,100)):
 
 #waiting after death time as timed out, then the player can now revive
 func _on_death_wait_time_timeout():
-	print("i am in here, can another")
+	#print("i am in here, can another")
 	set_physics_process(true)
 	emit_signal("revive")
 	pass # Replace with function body.

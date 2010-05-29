@@ -6,9 +6,14 @@ extends Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	#if user did not select joystick analog
+	joystick_analog_not_selected()
+	
 	
 	#this signal will activate the magnum button when the abillity as charged
-	#get_parent().get_node("player").connect("activate_magnum_skill",self, "activate_skill_button")
+	get_parent().get_node("player").connect("activate_magnum_skill",self, "activate_skill_button")
+	
+	
 	pass
 
 #change player health upon attack from enemy
@@ -19,20 +24,30 @@ func health_change(health: int):
 	
 	
 	
-func activate_skill_button(boolean):
-	if boolean == true:
-		print("skill button is activated")
-		global.magnum_skills = 0
+func activate_skill_button(button_pressed):
+	#if ability is charged, disable the skill button
+	if button_pressed == true:
 		$CanvasLayer/Control/super_attack.disabled=false
-		$CanvasLayer/Control/super_attack.pressed=true
 		
+		#if skill is pressed, then player will use the skills and set the ability to zero again
+		if $CanvasLayer/Control/super_attack.pressed==true:
+			#print("skill button is activated")
+			global.magnum_skills=0
+			
 		
-	elif boolean ==false:
+	else:
 		#print("deactivate skill")
 		$CanvasLayer/Control/super_attack.disabled = true
 		$CanvasLayer/Control/super_attack.pressed=false
 	pass
 
-func _on_super_attack_pressed():
-	print("SKILL is pressed")
-	pass # Replace with function body.
+
+func joystick_analog_not_selected():
+	
+	if global.use_joystick==false:
+		$CanvasLayer/Control.hide()
+		get_viewport().gui_disable_input=true
+	
+	pass
+
+

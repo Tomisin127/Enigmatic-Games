@@ -79,7 +79,7 @@ func _physics_process(delta):
 	
 	#enemy can see the player
 	if enemy_see_player >=0:
-		can_enemy_see_player= true
+		can_enemy_see_player= false
 		#print("enemy sees player")
 		
 	else: #enemy cannot see the player
@@ -232,7 +232,7 @@ func disintegrate():
 	
 	$attack_area.monitorable=false
 	$attack_area.monitoring=false
-	
+	queue_free()
 	#hide enemy
 	self.modulate=Color(1,1,1,0)
 	
@@ -346,9 +346,9 @@ func wicked_enemy(delta):
 	if can_enemy_see_player==true:
 		walk_to_player_and_kill()
 		
-	elif not can_enemy_see_player:
-		self.rotate(PI * delta)
-		linear_velocity.y =-100
+	#elif not can_enemy_see_player:
+		#self.rotate(PI * delta)
+		#linear_velocity.y =-100
 	pass
 
 func walk_to_player_and_kill():

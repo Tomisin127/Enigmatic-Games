@@ -212,6 +212,7 @@ func disintegrate():
 	randomize()
 	spawn_bubble_gem(rand_range(1,5))
 	
+	queue_free()
 	set_physics_process(false)
 	print("enemy is dead")
 	enemy_health=0

@@ -50,7 +50,7 @@ visible = false
 shape = SubResource( 1 )
 
 [node name="life_time" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 7.0
 autostart = true
 
 [node name="gem_area" type="Area2D" parent="."]

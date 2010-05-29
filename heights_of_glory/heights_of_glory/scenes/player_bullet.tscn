@@ -22,5 +22,8 @@ wait_time = 2.0
 one_shot = true
 autostart = true
 
+[node name="bullet_exit" type="VisibilityNotifier2D" parent="."]
+
 [connection signal="area_entered" from="." to="." method="_on_player_bullet_area_entered"]
 [connection signal="timeout" from="lifetimer" to="." method="_on_lifetimer_timeout"]
+[connection signal="screen_exited" from="bullet_exit" to="." method="_on_bullet_exit_screen_exited"]

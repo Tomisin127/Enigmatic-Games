@@ -39,7 +39,7 @@ _global_script_class_icons={
 [application]
 
 config/name="heights_of_glory"
-run/main_scene="res://scenes/level1.tscn"
+run/main_scene="res://scenes/menu_screen.tscn"
 config/icon="res://icon.png"
 
 [autoload]

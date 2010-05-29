@@ -16,11 +16,11 @@ var active = true
 
 var eve_iAn_range = false
 
-
+onready var player = get_parent().get_parent().get_parent().get_parent().get_node("player")
 
 # Called when the node enters the scene tree for the first time.
 func _ready(): 
-	
+	print()
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
@@ -91,10 +91,16 @@ func getIsDrag(event):
 	#shoot if the small circle  is dragged 75m away from the the center
 	#then it shoots the target in any direction
 	if event is InputEventScreenDrag:
+		print("relative event: ", event.relative.length())
 		if control_limits(event,"small_circle"):
-			
-			if global.shoot_position.length()>75:
+			#is shoot analog is dragged and player mana is above 0, shoot
+			if global.shoot_position.length()>75 and global.player_mana_copy > 0:
 				emit_signal("player_shoot", true)
+				print("player_mana: ", global.player_mana_copy)
+			
+			#elif the above statement is not true, disable shooting
+			elif global.shoot_position.length()>75 and global.player_mana_copy <0:
+				emit_signal("player_shoot",false)
 				
 		
 		elif !control_limits(event,"small_circle"):
@@ -108,11 +114,15 @@ func getIsDrag(event):
 	#if its released , it stops shooting
 	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
 		
-		if event.pressed==true:
-			emit_signal("auto_attack",true)
-		
-		elif  !event.pressed and global.control_vec==Vector2(0,0):
+		if event.pressed==true and global.player_mana_copy >0:
 			emit_signal("auto_attack",false)
+		
+		elif  !event.pressed and global.control_vec==Vector2(0,0) and global.player_mana_copy >0:
+			emit_signal("auto_attack",true)
+			
+		elif event.pressed== true and global.player_mana_copy < 0:
+			emit_signal("auto_attack",false)
+			
 			
 
 
@@ -135,6 +145,7 @@ func check_small_circle_pos() -> Vector2:
 	
 	if smallPos_bigPos.x > 30:
 		control.x = 1
+		
 	
 	elif smallPos_bigPos.x < -30:
 		control.x = -1
