@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/level1.gd" type="Script" id=1]
 [ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
@@ -37,11 +37,18 @@ tracks/0/keys = {
 "values": [ Vector2( 720, 210 ), Vector2( 390, 210 ), Vector2( 720, 210 ) ]
 }
 
+[sub_resource type="Curve2D" id=5]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 1226.15, 478.572, 0, 0, 0, 0, 1206.81, 344.957, 0, 0, 0, 0, 1096.05, 517.25, 0, 0, 0, 0, 950.131, 569.993, 0, 0, 0, 0, 820.032, 343.199, 0, 0, 0, 0, 707.515, 485.604, 0, 0, 0, 0, 466.657, 401.216, 0, 0, 0, 0, 410.398, 511.976, 0, 0, 0, 0, 326.01, 264.085 )
+}
+
 [node name="level1" type="Node"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_horizontal_guides_": [  ]
+}
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-editor/display_folded = true
 scroll_ignore_camera_zoom = true
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -59,7 +66,6 @@ region_rect = Rect2( 0, 0, 3076, 3076 )
 [node name="tilemap" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 32, 32 )
-collision_use_kinematic = true
 format = 1
 tile_data = PoolIntArray( -1900551, 0, 0, -1835015, 0, 0, -1769479, 0, 0, -1703943, 0, 0, -1638407, 0, 0, -1572873, 0, 0, -1572872, 0, 0, -1507337, 0, 0, -1441801, 0, 0, -1376265, 0, 0, -1310729, 0, 0, -1245193, 0, 0, -1179657, 0, 0, -1114121, 0, 0, -1048585, 0, 0, -917512, 0, 0, -786440, 0, 0, -655368, 0, 0, -589832, 0, 0, -524296, 0, 0, -589782, 0, 0, -458760, 0, 0, -524246, 0, 0, -393224, 0, 0, -458710, 0, 0, -327688, 0, 0, -393175, 0, 0, -262152, 0, 0, -327639, 0, 0, -196616, 0, 0, -262103, 0, 0, -131080, 0, 0, -196567, 0, 0, -65544, 0, 0, -131031, 0, 0, -8, 0, 0, -65495, 0, 0, 65528, 0, 0, 41, 0, 0, 131064, 0, 0, 65577, 0, 0, 196600, 0, 0, 262135, 0, 0, 196649, 0, 0, 196650, 0, 0, 327671, 0, 0, 262185, 0, 0, 393208, 0, 0, 327683, 12, 0, 327721, 0, 0, 458744, 0, 0, 393257, 0, 0, 458755, 12, 0, 458775, 3, 0, 458777, 3, 0, 458779, 3, 0, 458780, 3, 0, 458782, 3, 0, 458784, 3, 0, 458793, 0, 0, 589817, 0, 0, 524300, 3, 0, 524329, 0, 0, 524330, 0, 0, 655353, 0, 0, 589845, 3, 0, 589866, 0, 0, 720889, 0, 0, 720891, 2, 0, 720893, 3, 0, 720895, 3, 0, 655361, 3, 0, 655363, 3, 0, 655365, 3, 0, 655367, 4, 0, 655402, 0, 0, 786425, 0, 0, 720938, 0, 0, 851961, 0, 0, 851963, 7, 0, 851965, 8, 0, 851967, 8, 0, 786433, 8, 0, 786435, 8, 0, 786437, 8, 0, 786439, 9, 0, 786474, 0, 0, 917497, 0, 0, 851977, 3, 0, 852010, 0, 0, 983032, 0, 0, 983033, 0, 0, 917546, 0, 0, 1048568, 0, 0, 983082, 0, 0, 1114104, 0, 0, 1048618, 0, 0, 1179640, 0, 0, 1114124, 9, 0, 1114138, 2, 0, 1114154, 0, 0, 1245176, 0, 0, 1179690, 0, 0, 1310712, 0, 0, 1310714, 2, 0, 1310716, 3, 0, 1310718, 3, 0, 1310719, 3, 0, 1245184, 3, 0, 1245185, 3, 0, 1245186, 3, 0, 1245187, 3, 0, 1245188, 3, 0, 1245189, 3, 0, 1245190, 3, 0, 1245191, 3, 0, 1245193, 3, 0, 1245194, 3, 0, 1245195, 3, 0, 1245196, 3, 0, 1245197, 3, 0, 1245198, 3, 0, 1245199, 3, 0, 1245200, 3, 0, 1245201, 3, 0, 1245202, 3, 0, 1245203, 3, 0, 1245204, 3, 0, 1245205, 3, 0, 1245206, 3, 0, 1245208, 3, 0, 1245210, 3, 0, 1245212, 3, 0, 1245214, 3, 0, 1245216, 3, 0, 1245218, 3, 0, 1245220, 3, 0, 1245222, 3, 0, 1245224, 4, 0, 1245226, 0, 0, 1441786, 7, 0, 1441788, 8, 0, 1441790, 8, 0, 1376256, 8, 0, 1376258, 8, 0, 1376260, 8, 0, 1376261, 8, 0, 1376262, 8, 0, 1376263, 8, 0, 1376264, 8, 0, 1376265, 8, 0, 1376266, 8, 0, 1376267, 8, 0, 1376268, 8, 0, 1376269, 8, 0, 1376270, 8, 0, 1376271, 8, 0, 1376272, 8, 0, 1376273, 8, 0, 1376274, 8, 0, 1376276, 8, 0, 1376277, 8, 0, 1376278, 8, 0, 1376279, 8, 0, 1376280, 8, 0, 1376281, 8, 0, 1376282, 8, 0, 1376283, 8, 0, 1376285, 8, 0, 1376287, 8, 0, 1376288, 8, 0, 1376289, 8, 0, 1376290, 8, 0, 1376291, 8, 0, 1376292, 8, 0, 1376293, 8, 0, 1376294, 8, 0, 1376296, 9, 0, 1376298, 0, 0 )
 __meta__ = {
@@ -127,6 +133,7 @@ anims/move_elevatonx = SubResource( 4 )
 [node name="gems_dropped_container" type="Node" parent="."]
 
 [node name="enemy_z" parent="." instance=ExtResource( 10 )]
+visible = false
 position = Vector2( 540, 440 )
 
 [node name="button_hud" parent="." instance=ExtResource( 11 )]
@@ -135,7 +142,23 @@ position = Vector2( 540, 440 )
 
 [node name="police_enemy_pos" type="Node" parent="."]
 
+[node name="gizmo_line" type="Path2D" parent="."]
+curve = SubResource( 5 )
+
+[node name="PathFollow2D" type="PathFollow2D" parent="gizmo_line"]
+position = Vector2( 1226.15, 478.572 )
+rotation = -1.7145
+
+[node name="flying gizmo_container" type="Node" parent="."]
+
+[node name="fast_zombies_container" type="Node" parent="."]
+
+[node name="fast_zombies_timer" type="Timer" parent="."]
+wait_time = 7.0
+autostart = true
+
 [connection signal="body_entered" from="door_area" to="." method="_on_door_area_body_entered"]
 [connection signal="body_entered" from="ladder_area" to="." method="_on_ladder_area_body_entered"]
 [connection signal="body_exited" from="ladder_area" to="." method="_on_ladder_area_body_exited"]
 [connection signal="timeout" from="gem_spawn_time" to="." method="_on_gem_spawn_time_timeout"]
+[connection signal="timeout" from="fast_zombies_timer" to="." method="spawn_fast_zombies"]

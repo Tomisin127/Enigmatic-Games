@@ -16,16 +16,34 @@ onready var hud = preload("res://scenes/hud.tscn")
 
 onready var police_enemy_scene = preload("res://scenes/enemy.tscn")
 
-var list_of_enemy=[]
+onready var flying_gizmo = preload("res://scenes/flying_gizmo.tscn")
 
-var list_of_enemy_position =[]
+onready var fast_zombies = preload("res://scenes/fast_zombies.tscn")
+
+var fast_zombs
+
+var list_of_police_enemy=[]
+
+var list_of_police_enemy_position =[]
+
+var list_of_flying_gizmo = []
+
+onready var gizmo_line = $gizmo_line
+
+onready var gizmo
 
 func _ready():
-	#spawn the enemy at a position and add it to a dictionary
-	spawn_enemy_at_position()
-	
 	#all level1 signals are in this function
 	all_signals()
+	
+	#spawn the enemy at a position and add it to a dictionary
+	spawn_police_enemy_at_position()
+	
+	spawn_gizmo_at_position()
+	
+	spawn_fast_zombies()
+	
+
 	
 	if global.use_joystick ==true:
 		print("using joystick is true")
@@ -189,10 +207,10 @@ func all_signals():
 	
 	pass
 	
-func spawn_enemy_at_position():
-	list_of_enemy = []
+func spawn_police_enemy_at_position():
+	list_of_police_enemy = []
 	
-	for i in range(5):
+	for i in range(1):
 		
 		randomize()
 		
@@ -204,16 +222,16 @@ func spawn_enemy_at_position():
 		police_enemy.target_player=get_node("player")
 		
 		#add the enemy to a list
-		list_of_enemy.append(police_enemy)
+		list_of_police_enemy.append(police_enemy)
 		
-		print("inside the list: ", list_of_enemy)
+		print("inside the list: ", list_of_police_enemy)
 		
 		#create a spawn position for the enemy
 		var spawn_position = Position2D.new()
 		add_child(spawn_position)
 		
 		#add the position to a list
-		list_of_enemy_position.append(spawn_position)
+		list_of_police_enemy_position.append(spawn_position)
 		
 		#create a variable to spawn the positions at a random_position
 		var position_to_spawn_the_created_position = Vector2()
@@ -231,3 +249,19 @@ func spawn_enemy_at_position():
 		#var number_of_position= randi() % list_of_enemy_position.size()
 		
 	pass
+	
+func spawn_gizmo_at_position():
+	for i in range(1):
+		gizmo = flying_gizmo.instance()
+		$"flying gizmo_container".add_child(gizmo)
+		gizmo.path = $gizmo_line/PathFollow2D
+		
+	pass
+	#on timer timeout spawn fast zombies
+func spawn_fast_zombies():
+	print("timer out")
+	for i in range(2):
+		fast_zombs = fast_zombies.instance()
+		$fast_zombies_container.add_child(fast_zombs)
+		fast_zombs.position = gizmo.position
+		

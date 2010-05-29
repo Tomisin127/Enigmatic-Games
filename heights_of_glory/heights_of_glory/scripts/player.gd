@@ -109,7 +109,7 @@ func _physics_process(delta):
 	
 	#this will be used to know the tile that the player steps on
 	#its not working well yet
-	get_tile_on_position(position.x,position.y)
+	get_tile_on_position(position.x,position.y+35)
 	
 	#drag player down by gravity
 	acceleration.y += GRAVITY
@@ -303,12 +303,9 @@ func get_tile_on_position(x,y):
 	if not tilemap == null:
 		var map_pos = tilemap.world_to_map(Vector2(x,y))
 		var id = tilemap.get_cellv(map_pos)
-		#print(id)
 		if id > -1:
 			var tilename = tilemap.get_tileset().tile_get_name(id)
-			print("tilename :", tilename)
 			return tilename
-			
 		else:
 			return ""
 
@@ -473,8 +470,8 @@ func die(is_dead):
 	pass
 
 func mana_delay_and_regenerate(change):
-	print("the player mana : " , player_mana)
-	print("the divisions: ",player_mana_divisions)
+	#print("the player mana : " , player_mana)
+	#print("the divisions: ",player_mana_divisions)
 	if player_mana >=75:
 	#	regenerate mana very time the player mana goes down but not below 5
 		player_mana =min(player_mana + mana_regen *change ,100)
@@ -568,3 +565,5 @@ func player_signals():
 	emit_signal("sg_health_change",player_health)
 	
 	pass
+	
+	

@@ -49,8 +49,8 @@ func _process(delta):
 	button_controller()
 	#calculate the distance to the first and second enemy in the list
 	
-	#var player_distance_to_police0 = player.position.distance_to(level1.list_of_enemy[0].position if level1.list_of_enemy[0] else null)
-	#print("distance to the enemy: ", player_distance_to_police0 , level1.list_of_enemy[0])
+	#var player_distance_to_police0 = player.position.distance_to(level1.list_of_police_enemy[0].position if level1.list_of_enemy[0] else null)
+	#print("distance to the enemy: ", player_distance_to_police0 , level1.list_of_police_enemy[0])
 	
 	pass
 

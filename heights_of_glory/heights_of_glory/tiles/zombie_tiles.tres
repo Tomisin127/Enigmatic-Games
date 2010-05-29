@@ -11,7 +11,7 @@
 [ext_resource path="res://sprites/WBL/Asset 13.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32.9242, 33.2554 )
+extents = Vector2( 37.0725, 33.2554 )
 
 [resource]
 0/name = "wall"
