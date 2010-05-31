@@ -17,7 +17,7 @@ func _process(delta):
 
 
 func _on_startgame_pressed():
-	get_tree().change_scene("res://scenes/level1.tscn")
+	interactive_loader.goto_scene("res://scenes/level1.tscn")
 	pass # Replace with function body.
 
 

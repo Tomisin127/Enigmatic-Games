@@ -10,6 +10,7 @@ signal drop_gems
 
 signal collided
 
+var diagonal_timer=0
 
 var joystickVector
 var screensize
@@ -148,32 +149,63 @@ func _physics_process(delta):
 	
 	if joystick_direction:
 		
+		
 		#the distance from the center of the move analog which is the small_circle
 		#from the direction that the joystick is pointing
 		var joy_distance = (global.move_analog_center - joystick_direction)
 		
+		var joy_diagonal =(joystick_direction.x-joystick_direction.y)/2
 		
-		#var joy_diagonal = rad2deg(global.move_analog_center.angle_to(joystick_direction))
+		#print("joy diagonal length: ", joy_diagonal)
+		var joy_angle = rad2deg(global.move_analog_center.angle_to(joystick_direction))
 		
 		#rotate the player acceleration to the angle where the joystick is pointing
 		acceleration.rotated(joy_distance.angle())
+		#print("joystick angle: ",joy_angle)
 		
 		#accelerate in that direction
-		acceleration = Vector2(joy_distance.x, joy_distance.y)
+		if !is_on_floor():
+			GRAVITY=0
+			#print("not on floor")
+			pass
+			
 		
-		#this code below doesnt work properly, it is still in development
-		if joystick_direction.x == 1:
+		#print("joy_diagonal: ", joy_diagonal)
+		
+		if joy_diagonal==0.5:
 			
-			acceleration.x += ACCEL
-			get_node("sprite").flip_h =0
+			diagonal_timer +=delta
+			#print(diagonal_timer)
+			if diagonal_timer < 1:
+				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
+			elif diagonal_timer >1 and is_on_floor():
+				diagonal_timer=0
+				
+		if joy_diagonal==-0.5:
+			diagonal_timer +=delta
+			#print(diagonal_timer)
+			if diagonal_timer < 1:
+				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
+			elif diagonal_timer >1 and is_on_floor():
+				diagonal_timer=0
 			
-		elif joystick_direction.x  == -1:
-			acceleration.x -= ACCEL
-			get_node("sprite").flip_h =1
 			
 		elif joystick_direction.y ==-1 and is_on_floor():
+			
+			#print(joy_diagonal)
 			acceleration.y =JUMP_HEIGHT
-	
+			
+		elif joystick_direction.x ==1 and is_on_floor():
+			acceleration.x += ACCEL 
+			$sprite.flip_h=0
+			
+		elif joystick_direction.x ==-1 and is_on_floor() and joy_diagonal==0.5:
+
+			acceleration.x -=ACCEL
+			$sprite.flip_h=1
+
+				
+		
 	
 	elif Input.is_action_pressed("ui_accept"):
 		
@@ -202,6 +234,7 @@ func _physics_process(delta):
 			#after using boost up once, disable it 
 			on_boost_up=true
 		
+	#print("joystick_direction: ",joystick_direction)
 	
 	
 	

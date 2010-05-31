@@ -101,6 +101,8 @@ disabled = true
 toggle_mode = true
 texture_normal = ExtResource( 8 )
 
+[node name="on_floor_timer" type="Timer" parent="."]
+
 [connection signal="button_down" from="CanvasLayer/Control/button_container/up" to="." method="_on_up_button_down"]
 [connection signal="button_up" from="CanvasLayer/Control/button_container/up" to="." method="_on_up_button_up"]
 [connection signal="button_down" from="CanvasLayer/Control/button_container/left" to="." method="_on_left_button_down"]

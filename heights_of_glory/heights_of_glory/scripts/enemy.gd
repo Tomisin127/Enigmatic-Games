@@ -69,7 +69,7 @@ func _ready():
 func _physics_process(delta):
 	
 	
-	var  PE = ( get_parent().get_node("player").acceleration- linear_velocity).normalized()
+	var  PE = ( get_parent().get_parent().get_node("player").acceleration- linear_velocity).normalized()
 	var enemy_see_player = PE.dot(Vector2(1,1))
 	
 	#enemy can see the player

@@ -16,41 +16,30 @@ onready var hud = preload("res://scenes/hud.tscn")
 
 func _ready():
 	
+	#all level1 signals are in this function
+	all_signals()
+	
 	if global.use_joystick ==true:
 		print("using joystick is true")
 		
 	else:
 		print("use_buttons")
 		
-		
-	#checking player collision points
-	$player.connect("collided",self, "on_character_collided")
 	
+	#spawn a gem upon start game
 	_on_gem_spawn_time_timeout()
 	
 	#setting the target to player
-	get_node("enemy").target_player = get_node("player")
+	get_node("enemy_container/enemy").target_player = get_node("player")
 	get_node("enemy_z").target_player = get_node("player")
-	
-	
-	#connect the health changes signal to the player
-	$player.connect("sg_health_change",$hud,"health_change")
-	
-	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
-	
-	set_process(true)
-	
-	#when the player dies, drop the collected gems
-	get_node("player").connect("drop_gems",self, "drop_collected_gems")
+	get_node("enemy_container/enemy2").target_player = get_node("player")
 	
 
+	set_process(true)
+	
 	pass
 	
 func _process(delta):
-	#if global.use_joystick ==true:
-		#print("using joystick is true")
-
-	
 	
 	pass
 	
@@ -74,16 +63,17 @@ func spawn_gems(amount):
 		#detect if the gem spawn on the tile
 		var tile_name = get_tile_on_position(position_to_spawn.x, position_to_spawn.y)
 		
-		#print(tile_name)
+		print("tile name were gem collide: ", tile_name)
+		
 		#if the gem does not spawn on the tile , then it should spawn somewhere else
 		if !tile_name :
 			gem.position = position_to_spawn
 			
 		#if the gem spawn on the tile, then it should delete that gem that spawn on that tile
-		elif tile_name == "floor1" or "floor2" or "floor3" or "floor4" or "floor5" or "floor6" or "wall":
+		elif tile_name == "floor0" or "floor1" or "floor2" or "floor3" or "floor4" or "floor5" or "floor6" or "floor7" or "wall":
 			gem.queue_free()
 			
-			#print("spawned in wall")
+			print("spawned in wall")
 			return
 			
 			
@@ -176,3 +166,18 @@ func get_tile_on_position(x,y):
 			
 		else:
 			return ""
+			
+func all_signals():
+	#connect the health changes signal to the player
+	$player.connect("sg_health_change",$hud,"health_change")
+	
+	#check the direction at which the move joystick analog is dragged too
+	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
+	
+	#when the player dies, drop the collected gems
+	get_node("player").connect("drop_gems",self, "drop_collected_gems")
+	
+	#checking player collision points
+	$player.connect("collided",self, "on_character_collided")
+	
+	pass

@@ -141,6 +141,7 @@ func check_small_circle_pos() -> Vector2:
 		
 	global.move_analog_center = $SmallCircle.position
 	global.move_big_circumference = $BigCircle.position
+	
 	return control
 
 

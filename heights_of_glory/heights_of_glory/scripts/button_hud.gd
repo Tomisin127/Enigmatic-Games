@@ -11,7 +11,15 @@ var button_up:bool
 
 var is_shooting:bool
 
+var on_floor_timer =0
+
+var dictionary_of_enemy={}
+
+onready var level1 = get_parent()
+
 func _ready():
+	
+	dictionary_of_enemy = {"police0" : level1.get_node("enemy_container/enemy"), "police1" : level1.get_node("enemy_container/enemy2")}
 	
 	#var cont_rect = get_node("CanvasLayer/Control/button_container").rect_size
 	#print("cont_rect: ", cont_rect)
@@ -42,6 +50,9 @@ func _process(delta):
 	check_shooting_by_button()
 	
 	button_controller()
+	#calculate the distance to the first and second enemy in the list
+	var player_distance_to_police0 =player.position.distance_to(dictionary_of_enemy.get("police0").position)
+	var player_distance_to_police1 = player.position.distance_to(dictionary_of_enemy.get("police1").position)
 	
 	pass
 
@@ -80,8 +91,6 @@ func _on_center_button_up():
 
 
 
-
-
 func _on_shoot_button_down():
 	is_shooting = true
 	pass # Replace with function body.
@@ -92,6 +101,7 @@ func _on_shoot_button_up():
 	pass # Replace with function body.
 
 func check_shooting_by_button():
+	
 	if is_shooting==true and player.player_mana > 0:
 		print("i am shooting")
 		emit_signal("shoot_by_button",true)
@@ -121,14 +131,28 @@ func button_controller():
 		player.get_node("sprite").flip_h=0
 		
 	if button_center==true:
+		#start the timer
+		on_floor_timer +=get_process_delta_time()
 		
-		#if jump diagonally when the center button is pressed, not perfect yet
-		if player.get_node("sprite").flip_h==false and player.is_on_floor():
-			player.acceleration= (Vector2(400,-400).rotated(player.acceleration.angle())) 
-		
-		elif player.get_node("sprite").flip_h==true and player.is_on_floor():
-			player.acceleration= (Vector2(-400,-400).rotated(player.acceleration.angle())) 
+		#if the player is facing right and the timer is less than 1
+		#rotate the acceleration in 45 degree to the right and jump
+		if player.get_node("sprite").flip_h==false and on_floor_timer<1:
+			player.acceleration.rotated(Vector2(1,-1).angle())
+			player.acceleration.x =200
+			player.acceleration.y =-200
 			
+		#if the player is facing right and the timer is less than 1
+		#rotate the acceleration in 45 degree to the right and jump
+		
+		elif player.get_node("sprite").flip_h==true and on_floor_timer<1:
+			player.acceleration.rotated(Vector2(1,-1).angle())
+			player.acceleration.x =200
+			player.acceleration.y =-200
+			
+		#if is still jumping and it as landed after time reset, jump immediately again
+		elif on_floor_timer > 1 and player.is_on_floor():
+			on_floor_timer=0
+		
 	pass
 	
 func activate_skill_button(button_pressed):
