@@ -1,3 +1,4 @@
+<<<<<<< refs/remotes/origin/master
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
@@ -5,6 +6,14 @@
 [ext_resource path="res://sprites/mana_bar.png" type="Texture" id=3]
 [ext_resource path="res://sprites/HUD_sprites/attack.png" type="Texture" id=4]
 [ext_resource path="res://sprites/HUD_sprites/super_attack.png" type="Texture" id=5]
+=======
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://sprites/health_bar.png" type="Texture" id=1]
+[ext_resource path="res://sprites/mana_bar.png" type="Texture" id=2]
+[ext_resource path="res://sprites/HUD_sprites/attack.png" type="Texture" id=3]
+[ext_resource path="res://sprites/HUD_sprites/super_attack.png" type="Texture" id=4]
+>>>>>>> scripting changes in enemy scene and others
 
 [node name="hud" type="Node"]
 script = ExtResource( 1 )
@@ -16,6 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="player_health" type="TextureProgress" parent="CanvasLayer/Control"]
+<<<<<<< refs/remotes/origin/master
 margin_left = 29.6375
 margin_top = 33.679
 margin_right = 477.637
@@ -24,12 +34,19 @@ rect_scale = Vector2( 0.5, 0.25 )
 texture_progress = ExtResource( 2 )
 
 [node name="health_tween" type="Tween" parent="CanvasLayer/Control/player_health"]
+=======
+margin_right = 448.0
+margin_bottom = 116.0
+rect_scale = Vector2( 0.5, 0.25 )
+texture_progress = ExtResource( 1 )
+>>>>>>> scripting changes in enemy scene and others
 
 [node name="player_mana" type="TextureProgress" parent="CanvasLayer/Control"]
 margin_left = 800.0
 margin_right = 1248.0
 margin_bottom = 116.0
 rect_scale = Vector2( 0.5, 0.25 )
+<<<<<<< refs/remotes/origin/master
 texture_progress = ExtResource( 3 )
 
 [node name="attack" type="TextureButton" parent="CanvasLayer/Control"]
@@ -47,4 +64,23 @@ margin_right = 1172.56
 margin_bottom = 692.958
 rect_scale = Vector2( 0.5, 0.5 )
 texture_normal = ExtResource( 5 )
+=======
+texture_progress = ExtResource( 2 )
+>>>>>>> scripting changes in enemy scene and others
+
+[node name="attack" type="TextureButton" parent="CanvasLayer/Control"]
+margin_left = 760.0
+margin_top = 480.0
+margin_right = 1084.0
+margin_bottom = 804.0
+rect_scale = Vector2( 0.25, 0.25 )
+texture_normal = ExtResource( 3 )
+
+[node name="super_attack" type="TextureButton" parent="CanvasLayer/Control"]
+margin_left = 848.559
+margin_top = 368.958
+margin_right = 1172.56
+margin_bottom = 692.958
+rect_scale = Vector2( 0.5, 0.5 )
+texture_normal = ExtResource( 4 )
 

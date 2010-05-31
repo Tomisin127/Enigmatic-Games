@@ -29,6 +29,8 @@ signal sg_player_dead
 
 
 
+const BOOST_UP = -2000
+
 var acceleration = Vector2()
 
 onready var ground_ray = get_node("ground_ray")
@@ -61,6 +63,8 @@ func _ready() -> void:
 
 	
 
+	
+
 	set_physics_process(true)
 	
 	pass
@@ -90,7 +94,11 @@ func _physics_process(delta):
 			
 		
 		elif is_shooting and global.mana <= 5:
+<<<<<<< refs/remotes/origin/master
 #			print("so freaking true")
+=======
+			print("so freaking true")
+>>>>>>> scripting changes in enemy scene and others
 			is_shooting =false
 			
 		elif global.mana>=5 :
@@ -186,7 +194,11 @@ func shoot(shoot_activate):
 		global.mana -= 10
 		
 	elif shoot_activate==false:
+<<<<<<< refs/remotes/origin/master
 #		print("did i return here")
+=======
+		print("did i return here")
+>>>>>>> scripting changes in enemy scene and others
 		return
 
 func is_able_to_use_magmum_skills() -> bool:
@@ -239,14 +251,24 @@ func mana_delay_and_regenerate(change):
 			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 			wait_timer=0
 			
+<<<<<<< refs/remotes/origin/master
 #		print(wait_timer)
+=======
+		print(wait_timer)
+>>>>>>> scripting changes in enemy scene and others
 		
 		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
 	if global.mana ==0:
+<<<<<<< refs/remotes/origin/master
 		pass
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 #		print("mana is zero")
+=======
+		
+		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
+		print("mana is zero")
+>>>>>>> scripting changes in enemy scene and others
 		
 func is_alive()->bool:
 	
