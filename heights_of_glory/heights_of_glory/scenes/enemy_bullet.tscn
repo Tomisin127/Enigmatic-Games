@@ -5,7 +5,6 @@
 
 [sub_resource type="RectangleShape2D" id=1]
 
-
 [node name="enemy_bullet" type="Area2D"]
 position = Vector2( 190, 120 )
 script = ExtResource( 1 )

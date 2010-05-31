@@ -1,5 +1,7 @@
 extends Area2D
 
+class_name player_bullet_class
+
 
 var velocity = Vector2()
 var speed =400
@@ -20,7 +22,7 @@ func _ready():
 func start(dir,pos):
 	rotation = dir
 	position = pos
-	velocity = Vector2(speed,0).rotated(dir -PI)
+	velocity = Vector2(speed,0).rotated(dir + 2*PI)
 	
 func _process(delta):
 	randomize()

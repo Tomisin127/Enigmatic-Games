@@ -1,5 +1,10 @@
 extends KinematicBody2D
 
+class_name player
+
+var t = player_bullet_class.new()
+var wait_timer= 0
+
 signal damage_enemy
 
 const ACCEL =500
@@ -8,6 +13,8 @@ const FRICTION = -50000
 var GRAVITY :float = 9.81
 const JUMP_HEIGHT =-400
 const CLIMB_SPEED = 3
+
+const BOOST_UP = -2000
 
 var acceleration = Vector2()
 
@@ -28,9 +35,12 @@ onready var player_bullet_script = load("res://scripts/player_bullet.gd").new()
 
 
 var on_ladder:bool = false
-
+var on_boost_up:bool = true
+var is_shooting:bool = true
 
 func _ready() -> void:
+	
+
 	
 
 	set_physics_process(true)
@@ -39,9 +49,11 @@ func _ready() -> void:
 
 func _physics_process(delta):
 	
-	print(on_ladder)
-	 
+	#rotation = (rotation +PI *2 *delta)
+	get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
 
+	get_tile_on_position(position.x,position.y)
+	
 	#drag player down by gravity
 	acceleration.y += GRAVITY
 	
@@ -53,14 +65,28 @@ func _physics_process(delta):
 		acceleration.x += ACCEL *delta
 		get_node("sprite").flip_h =0
 		
-	elif Input.is_action_pressed("ui_accept") and global.mana>0:
-		if $shoot_timer.time_left<0.1:
-			shoot(true)
+	elif Input.is_action_pressed("ui_accept"):
+		#if $shoot_timer.time_left==0:
+		if global.mana > 0:
+			is_shooting=true
+			
 		
-	elif Input.is_action_pressed("ui_accept") and global.mana<=0:
-		shoot(false)
+		elif is_shooting and global.mana <= 5:
+			print("so freaking true")
+			is_shooting =false
+			
+		elif global.mana>=5 :
+			is_shooting=true
+		
+		shoot(is_shooting)
 		
 		
+	elif Input.is_action_pressed("ui_home"):
+		boost_up_super(on_boost_up)
+		#if its boosting up then set it to false
+		#this means you can only boost up once tru out the game
+		if on_boost_up:
+			on_boost_up=false
 		
 	#slowing down with linear interpolation
 	else:
@@ -87,7 +113,7 @@ func _physics_process(delta):
 		player_bullet_script.start()
 		
 	
-	mana_delay_and_regenerate()
+	mana_delay_and_regenerate(delta)
 	
 	#ladder_climbing
 	if on_ladder ==true:
@@ -128,12 +154,21 @@ func shoot(shoot_activate):
 	if shoot_activate==true:
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
-		b.start(rotation,get_node("bullet_spawn_pos").global_position)
+		
+		if $sprite.flip_h==false:
+			b.start(rotation,get_node("bullet_spawn_pos").global_position)
+		elif $sprite.flip_h==true:
+			b.start(rotation,get_node("bullet_spawn_pos").global_position)
+			t.velocity=Vector2(t.speed,0).rotated(t.rotation -PI)
+			
+			
+			
 		
 		#reduce shooting mana
 		global.mana -= 10
 		
-	else:
+	elif shoot_activate==false:
+		print("did i return here")
 		return
 
 func is_able_to_use_magmum_skills() -> bool:
@@ -159,17 +194,28 @@ func _on_health_depleted():
 		set_physics_process(false)
 		
 
-func mana_delay_and_regenerate():
+func mana_delay_and_regenerate(change):
 	if global.mana >=1:
 	#	regenerate mana 
 		global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		#print("VALUE OF MANA",global.mana)
 		
-	elif global.mana <=0:
+	elif global.mana <=5:
 		global.mana =0
+		
+		wait_timer +=change
+		
+		if wait_timer>5:
+			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
+			wait_timer=0
+			
+		print(wait_timer)
+		
 		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
 	if global.mana ==0:
+		
+		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 		print("mana is zero")
 		
 func is_alive()->bool:
@@ -186,4 +232,12 @@ func _get_mana_regen():
 func _get_player_health_regen():
 	return global.player_health_regen
 
+func boost_up_super(value):
+	if value ==true:
+		acceleration.y = BOOST_UP
+		
+	else:
+		return 
+		
+	pass
 
