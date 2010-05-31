@@ -1,18 +1,20 @@
 extends KinematicBody2D
 
+class_name tothem
+
 signal activate_magnum_skill
 
 signal revive
 
 signal drop_gems
 
-class_name player
+signal collided
+
 
 var joystickVector
 var screensize
+
 export var speed = 400
-
-
 
 var wait_timer= 0
 
@@ -122,7 +124,6 @@ func _physics_process(delta):
 	
 	#drag player down by gravity
 	acceleration.y += GRAVITY
-	
 	if Input.is_action_pressed("ui_left"):
 		acceleration.x -= ACCEL 
 		get_node("sprite").flip_h=1
@@ -200,6 +201,11 @@ func _physics_process(delta):
 	#move and slide the velocity and detect the floor
 	acceleration = move_and_slide(acceleration,Vector2(0,-1))
 	
+	#getting the number of times the player collided with a body
+	for i in get_slide_count():
+		var collision = get_slide_collision(i)
+		if collision:
+			emit_signal("collided", collision)
 	
 	#using the magnum skill
 	if is_able_to_use_magnum_skills():
@@ -254,14 +260,16 @@ func joystick_motion(dir :Vector2):
 #this function helps to know the exact tile the player is stepping on
 #this function isnt working well yet but it will soon
 func get_tile_on_position(x,y):
-	var tilemap = get_parent().get_node("TileMap")
+	var tilemap = get_parent().get_node("tilemap")
 	if not tilemap == null:
 		var map_pos = tilemap.world_to_map(Vector2(x,y))
 		var id = tilemap.get_cellv(map_pos)
+		#print(id)
 		if id > -1:
 			var tilename = tilemap.get_tileset().tile_get_name(id)
-#			print("tilename : ", tilename)
+			print("tilename :", tilename)
 			return tilename
+			
 		else:
 			return ""
 
@@ -447,7 +455,7 @@ func revive_from_death():
 	$player_area/collision.disabled =false
 	set_physics_process(true)
 	player_health=5000
-	_ready()
+	request_ready()
 	
 	pass
 	

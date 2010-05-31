@@ -5,16 +5,16 @@
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 17.5125
-height = 32.6599
+height = 22.9639
 
 [sub_resource type="CapsuleShape2D" id=2]
 radius = 16.2607
-height = 39.5891
+height = 26.0213
 
 [node name="player" type="KinematicBody2D" groups=[
 "player",
 ]]
-position = Vector2( 270, 110 )
+position = Vector2( 270, 108 )
 collision_mask = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -22,14 +22,13 @@ __meta__ = {
 }
 
 [node name="sprite" type="Sprite" parent="."]
-modulate = Color( 1, 0, 0, 1 )
+modulate = Color( 0, 0, 0, 1 )
 scale = Vector2( 0.4, 0.4 )
 texture = ExtResource( 2 )
 
 [node name="collision" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 21 )
+position = Vector2( 0, 18 )
 shape = SubResource( 1 )
-one_way_collision = true
 
 [node name="camera" type="Camera2D" parent="."]
 current = true
@@ -38,8 +37,6 @@ smoothing_enabled = true
 [node name="ground_ray" type="RayCast2D" parent="."]
 position = Vector2( 0, 8 )
 enabled = true
-exclude_parent = false
-cast_to = Vector2( 0, 20 )
 
 [node name="bullet_spawn_pos" type="Position2D" parent="."]
 position = Vector2( 30, 20 )
@@ -49,7 +46,7 @@ position = Vector2( 30, 20 )
 [node name="player_area" type="Area2D" parent="."]
 
 [node name="collision" type="CollisionShape2D" parent="player_area"]
-position = Vector2( 0, 20 )
+position = Vector2( 0, 18 )
 shape = SubResource( 2 )
 
 [node name="shoot_timer" type="Timer" parent="."]
@@ -64,6 +61,5 @@ autostart = true
 one_shot = true
 
 [connection signal="area_entered" from="player_area" to="." method="_on_player_area_area_entered"]
-[connection signal="body_entered" from="player_area" to="." method="_on_player_area_body_entered"]
 [connection signal="timeout" from="WaitAfterIdle" to="." method="_on_WaitAfterIdle_timeout"]
 [connection signal="timeout" from="death_wait_time" to="." method="_on_death_wait_time_timeout"]

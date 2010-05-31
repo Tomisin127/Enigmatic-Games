@@ -35,7 +35,7 @@ applied_torque = 3.142
 script = ExtResource( 1 )
 
 [node name="glow" type="Sprite" parent="."]
-modulate = Color( 1, 1, 1, 0.334227 )
+modulate = Color( 1, 1, 1, 0.360357 )
 position = Vector2( 1, 0 )
 scale = Vector2( 0.4, 0.4 )
 texture = ExtResource( 2 )
@@ -50,7 +50,7 @@ visible = false
 shape = SubResource( 1 )
 
 [node name="life_time" type="Timer" parent="."]
-wait_time = 50.0
+wait_time = 5.0
 autostart = true
 
 [node name="gem_area" type="Area2D" parent="."]

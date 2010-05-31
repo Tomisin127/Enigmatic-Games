@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/move_analog.gd" type="Script" id=1]
+[ext_resource path="res://sprites/big_circle.png" type="Texture" id=2]
+[ext_resource path="res://sprites/small_circle.png" type="Texture" id=3]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 69.4958
+
+[node name="move_analog" type="Area2D"]
+position = Vector2( 360, 260 )
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="BigCircle" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="SmallCircle" type="Sprite" parent="."]
+position = Vector2( -1, 2 )
+texture = ExtResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="collision" type="CollisionShape2D" parent="."]
+position = Vector2( -0.536987, 0.227997 )
+shape = SubResource( 1 )
+
+[node name="opacityTween" type="Tween" parent="."]
+
+[connection signal="mouse_entered" from="." to="." method="_on_move_analog_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_move_analog_mouse_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

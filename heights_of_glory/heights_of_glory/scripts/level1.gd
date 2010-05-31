@@ -13,11 +13,13 @@ onready var gem_container = $gem_container
 
 
 func _ready():
+	$player.connect("collided",self, "on_character_collided")
 	
 	_on_gem_spawn_time_timeout()
 	
 	#setting the target to player
 	get_node("enemy").target_player = get_node("player")
+	get_node("enemy_z").target_player = get_node("player")
 	
 	#connect the health changes signal to the player
 	$player.connect("sg_health_change",$hud,"health_change")
@@ -52,10 +54,25 @@ func spawn_gems(amount):
 		position_to_spawn.y = rand_range(16, get_viewport().get_visible_rect().size.y-16)
 		
 		#set gems postion to the spawn position 
-		gem.position = position_to_spawn
 		
+		#detect if the gem spawn on the tile
+		var tile_name = get_tile_on_position(position_to_spawn.x, position_to_spawn.y)
+		
+		#print(tile_name)
+		#if the gem does not spawn on the tile , then it should spawn somewhere else
+		if !tile_name :
+			gem.position = position_to_spawn
+			
+		#if the gem spawn on the tile, then it should delete that gem that spawn on that tile
+		elif tile_name == "floor1" or "floor2" or "floor3" or "floor4" or "floor5" or "floor6" or "wall":
+			gem.queue_free()
+			
+			#print("spawned in wall")
+			return
+			
+			
 		#the gem will spawn every 7 seconds
-		$gem_spawn_time.wait_time=7
+		$gem_spawn_time.wait_time=1
 		$gem_spawn_time.start()
 		print($gem_spawn_time.time_left)
 		
@@ -74,6 +91,8 @@ func drop_collected_gems(amount):
 		
 		#drop collected gems at the position where player died
 		gem.position = $player.position
+		
+		
 	pass
 	
 	
@@ -111,3 +130,33 @@ func _on_door_area_body_entered(body):
 func _on_gem_spawn_time_timeout():
 	spawn_gems(1)
 	pass # Replace with function body.
+
+#player collide with tilemap
+func on_character_collided(collision):
+	if collision.collider is TileMap:
+		var tile_pos = collision.collider.world_to_map($player.position)
+		tile_pos -= collision.normal
+		var tile= collision.collider.get_cellv(tile_pos)
+		var tile_name = $tilemap.get_tileset().tile_get_name(tile)
+		if tile > 0:
+			print(tile_name)
+			
+			$tilemap.set_cellv(tile_pos, tile)
+		
+	pass
+	
+	
+	#second code for player colliding on tile map
+func get_tile_on_position(x,y):
+	var tilemap = get_node("tilemap")
+	if not tilemap == null:
+		var map_pos = tilemap.world_to_map(Vector2(x,y))
+		var id = tilemap.get_cellv(map_pos)
+		#print(id)
+		if id > -1:
+			var tilename = tilemap.get_tileset().tile_get_name(id)
+			print("tilename :", tilename)
+			return tilename
+			
+		else:
+			return ""

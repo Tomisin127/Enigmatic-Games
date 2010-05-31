@@ -8,7 +8,9 @@ extents = Vector2( 32.3088, 31.2138 )
 [node name="box" type="RigidBody2D" groups=[
 "box",
 ]]
+collision_mask = 3
 mass = 10.0
+continuous_cd = 1
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )

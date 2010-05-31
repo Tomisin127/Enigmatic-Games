@@ -43,6 +43,10 @@ func _on_gem_area_body_entered(body):
 		global.collected_gems +=1
 		$effect.start()
 		
+	if body.is_in_group("enemy"):
+		global.collected_gems += 1
+		$effect.start()
+		
 		
 	pass # Replace with function body.
 	

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
+[ext_resource path="res://scripts/enemy_z.gd" type="Script" id=1]
 [ext_resource path="res://sprites/zombie002.png" type="Texture" id=2]
 [ext_resource path="res://scenes/parts/enemyBody_Part.tscn" type="PackedScene" id=3]
 
@@ -13,7 +13,7 @@ extents = Vector2( 46.1927, 78.0887 )
 [sub_resource type="CircleShape2D" id=3]
 radius = 252.054
 
-[node name="enemy" type="KinematicBody2D"]
+[node name="enemy_z" type="KinematicBody2D"]
 position = Vector2( 294.216, 221.113 )
 collision_mask = 2
 script = ExtResource( 1 )

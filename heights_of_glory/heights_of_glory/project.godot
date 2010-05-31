@@ -10,18 +10,30 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "KinematicBody2D",
-"class": "player",
+"class": "enemy_z",
 "language": "GDScript",
-"path": "res://scripts/player.gd"
+"path": "res://scripts/enemy_z.gd"
 }, {
 "base": "Area2D",
 "class": "player_bullet_class",
 "language": "GDScript",
 "path": "res://scripts/player_bullet.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "police_zombie",
+"language": "GDScript",
+"path": "res://scripts/enemy.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "tothem",
+"language": "GDScript",
+"path": "res://scripts/player.gd"
 } ]
 _global_script_class_icons={
-"player": "",
-"player_bullet_class": ""
+"enemy_z": "",
+"player_bullet_class": "",
+"police_zombie": "",
+"tothem": ""
 }
 
 [application]

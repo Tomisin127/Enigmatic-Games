@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-class_name police_zombie
+class_name enemy_z
 
 #gravity vector and floor normal vectors
 var GRAVITY_VEC:Vector2 = Vector2(0,900)
@@ -72,8 +72,6 @@ func _ready():
 
 
 func _physics_process(delta):
-	
-	
 	var  PE = ( get_parent().get_node("player").acceleration- linear_velocity).normalized()
 	var enemy_see_player = PE.dot(Vector2(1,1))
 	
@@ -85,8 +83,6 @@ func _physics_process(delta):
 	else: #enemy cannot see the player
 		can_enemy_see_player =false
 		#print("not seeing")
-	
-	
 	
 	
 	#player damage code
@@ -165,7 +161,7 @@ func _physics_process(delta):
 				
 				
 				#increase the gravity of the enemy so that he doesnt fly while moving
-				#GRAVITY_VEC.y =10000
+				GRAVITY_VEC.y =10000
 				
 				#translate the enemy to the player position
 				var dirx = target_player.global_position.x -global_position.x
@@ -175,10 +171,6 @@ func _physics_process(delta):
 		
 		#enemy is dead
 	enemy_death()
-	
-	#enemy can sight player regardless if in area or not
-	#and then the enemy decides to be wicked
-	wicked_enemy(delta)
 
 	pass
 	
@@ -257,6 +249,8 @@ func enemy_death():
 		#print("body collide is now false")
 
 	#pass
+
+
 
 
 func _on_zombie_body_entered(body):
@@ -341,20 +335,3 @@ func get_tile_on_position(x,y):
 			
 		else:
 			return ""
-			
-func wicked_enemy(delta):
-	if can_enemy_see_player==true:
-		walk_to_player_and_kill()
-		
-	elif not can_enemy_see_player:
-		self.rotate(PI * delta)
-		linear_velocity.y =-100
-	pass
-
-func walk_to_player_and_kill():
-#translate the enemy to the player position
-	var dirx = target_player.global_position.x -global_position.x
-	var diry = target_player.global_position.y- global_position.y
-	translate(Vector2(dirx,diry) * get_physics_process_delta_time())
-	
-	pass

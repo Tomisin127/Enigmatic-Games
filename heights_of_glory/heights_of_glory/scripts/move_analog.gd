@@ -1,4 +1,6 @@
-extends Node2D
+extends Area2D
+
+
 
 
 signal dir_changed
@@ -8,7 +10,7 @@ signal dir_changed
 
 var halfBigCircle_x 
 var pressed = false
-var active = true
+var active = false
 
 var eve_iAn_range = false
 
@@ -18,7 +20,6 @@ var eve_iAn_range = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	set_meta("active", false)
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
@@ -118,19 +119,23 @@ func check_small_circle_pos() -> Vector2:
 
 
 func control_limits(e, type : String):
-	var pos = e.position
-	
-	print(pos)
-	if type == "big_circle":
-		if (pos.x > 22 && pos.x <333 && pos.y > 335 && pos.y < 535):
-			return true
-		else:
-			return false
-	if type == "small_circle":
-		if (pos.x > (22-halfBigCircle_x-100) && pos.x <(333 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
-			return true
-		else:
-			return false
+	if active==true:
+		var pos = e.position
+		
+		print(pos)
+		if type == "big_circle":
+			if (pos.x > 22 && pos.x <333 && pos.y > 335 && pos.y < 535):
+				return true
+			else:
+				return false
+		if type == "small_circle":
+			if (pos.x > (22-halfBigCircle_x-100) && pos.x <(333 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
+				return true
+			else:
+				return false
+				
+	elif active==false:
+		return
 	
 	
 
@@ -151,3 +156,15 @@ func manage_events(event):
 	
 	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
 		pass
+		
+func _on_move_analog_mouse_entered():
+	active=true
+	print("mouse entered")
+	
+	pass # Replace with function body.
+
+
+
+func _on_move_analog_mouse_exited():
+	active =false
+	pass # Replace with function body.

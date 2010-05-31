@@ -8,7 +8,7 @@ extends Node
 func _ready():
 	
 	#this signal will activate the magnum button when the abillity as charged
-	get_parent().get_node("player").connect("activate_magnum_skill",self, "activate_skill_button")
+	#get_parent().get_node("player").connect("activate_magnum_skill",self, "activate_skill_button")
 	pass
 
 #change player health upon attack from enemy
