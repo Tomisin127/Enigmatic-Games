@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scripts/level1.gd" type="Script" id=1]
 [ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
@@ -8,9 +8,8 @@
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/enemy.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/box.tscn" type="PackedScene" id=8]
-[ext_resource path="res://scenes/analog.tscn" type="PackedScene" id=9]
-[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=10]
-[ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=11]
+[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=9]
+[ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 81.6724, 108.997 )
@@ -103,26 +102,7 @@ position = Vector2( 1124.22, 351.113 )
 [node name="box" parent="." instance=ExtResource( 8 )]
 position = Vector2( 921, 498.224 )
 
-[node name="ui" type="Control" parent="."]
-visible = false
-margin_left = 550.0
-margin_top = 290.0
-margin_right = 707.0
-margin_bottom = 447.0
-__meta__ = {
-"_edit_group_": true
-}
-
-[node name="AreaAnalogRight" type="Control" parent="ui"]
-margin_right = 159.0
-margin_bottom = 159.0
-
-[node name="Analog" parent="ui/AreaAnalogRight" instance=ExtResource( 9 )]
-isDynamicallyShowing = true
-listenerNodePath = "/root/level1/player"
-nam = "rightPad"
-
-[node name="hud" parent="." instance=ExtResource( 10 )]
+[node name="hud" parent="." instance=ExtResource( 9 )]
 
 [node name="elevatonx" type="StaticBody2D" parent="."]
 <<<<<<< refs/remotes/origin/master
@@ -134,7 +114,7 @@ position = Vector2( 720, 210 )
 
 [node name="Sprite" type="Sprite" parent="elevatonx"]
 scale = Vector2( 0.7, 0.4 )
-texture = ExtResource( 11 )
+texture = ExtResource( 10 )
 
 [node name="collision" type="CollisionShape2D" parent="elevatonx"]
 shape = SubResource( 3 )

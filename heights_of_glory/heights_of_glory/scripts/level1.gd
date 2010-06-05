@@ -4,6 +4,7 @@ onready var playerSC = load("res://scenes/player.tscn")
 
 
 func _ready():
+	
 	#setting the target to player
 	get_node("enemy").target_player = get_node("player")
 	$player.connect("sg_health_change",$hud,"health_change")

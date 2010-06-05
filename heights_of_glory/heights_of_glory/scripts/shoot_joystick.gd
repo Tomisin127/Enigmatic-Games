@@ -1,6 +1,7 @@
 extends Node2D
 
-signal move
+class_name shoot_joystick
+signal shoot_signal
 
 onready var bigCircle = $BigCircle
 onready var smallCircle = $SmallCircle
@@ -13,6 +14,8 @@ var vectorToEmit
 var bigCircPos
 var distance
 
+onready var small_circle_pos_x = $SmallCircle.global_position.x
+onready var small_circle_pos_y = $SmallCircle.global_position.y
 func _ready():
 	halfBigCircleSize = bigCircle.texture.get_size().x / 2
 	updateCachedCirclesPositions()
@@ -28,9 +31,9 @@ func _input(event):
 		setSelfPosition(event.position)
 		updateCachedCirclesPositions()
 		if not event.pressed:
-			emit_signal_move(Vector2(0, 0))
+			emit_signal_shoot(Vector2(0, 0))
 			return
-
+			
 	if getIsDrag(event) and pressed == 1:
 		var dirBigCir_dirEnvt = event.position - bigCircle.get_global_position()
 		distance = getDistance(dirBigCir_dirEnvt.x, 0, dirBigCir_dirEnvt.y, 0)
@@ -49,7 +52,7 @@ func _input(event):
 func _process(delta):
 		#normalized() reduces the magnitude of the vector to 1 while maintaining the direction
 		if thereIsEventInput and vectorToEmit:
-			emit_signal_move(vectorToEmit / halfBigCircleSize)
+			emit_signal_shoot(vectorToEmit / halfBigCircleSize)
 			
 
 func toggleVisible(value):
@@ -66,14 +69,16 @@ func updateCachedCirclesPositions():
 func easing(t):
 	return t*t*t
 
-func emit_signal_move(value):
-	emit_signal('move', easing(value))
+func emit_signal_shoot(value):
+		emit_signal('shoot_signal')
+		print(value)
 
 func getIsDrag(event):
 	if event is InputEventMouseMotion or event is InputEventScreenDrag:
 		return true
 
 func _on_Pressed(event):
+
 	var eventPos = event.get_position()
 
 	if not eventPos or not eventPos.x or not eventPos.y:

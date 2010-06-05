@@ -1,5 +1,9 @@
 extends KinematicBody2D
 
+var joystickVector
+var screensize
+export var speed = 400
+
 class_name player
 
 var t = player_bullet_class.new()
@@ -54,7 +58,9 @@ var on_boost_up:bool = true
 var is_shooting:bool = true
 
 func _ready() -> void:
+	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
 	
+<<<<<<< refs/remotes/origin/master
 	#lazy
 	connect("sg_player_dead",get_parent(),"revive_player")
 	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
@@ -63,6 +69,11 @@ func _ready() -> void:
 
 	
 
+=======
+	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
+	
+	screensize = get_viewport_rect().size
+>>>>>>> joystick and some other level changes
 	
 
 	set_physics_process(true)
@@ -70,6 +81,8 @@ func _ready() -> void:
 	pass
 
 func _physics_process(delta):
+	
+	move(delta)
 	
 	#rotation = (rotation +PI *2 *delta)
 	get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
@@ -172,6 +185,17 @@ func get_tile_on_position(x,y):
 			return tilename
 		else:
 			return ""
+
+	
+func shoot_a():
+	var b= player_bullet.instance()
+	player_bullet_container.add_child(b)
+	b.start(rotation,get_node("bullet_spawn_pos").global_position)
+	#reduce shooting mana
+	global.mana -= 10
+	
+	
+	pass
 
 	
 	# shooting bullet 
@@ -295,6 +319,7 @@ func boost_up_super(value):
 		
 	pass
 
+<<<<<<< refs/remotes/origin/master
 #lazy
 func die():
 	#a dead man cant be walking around, downside is that no gravity is also applied to the body
@@ -303,3 +328,22 @@ func die():
 	#use yield to hold the method
 	emit_signal("sg_player_dead",position)
 	queue_free()
+=======
+func move(delta):
+	var velocity = Vector2()
+	var nextPosition = position
+
+	if joystickVector and joystickVector.length() != 0:
+		velocity += joystickVector
+	if velocity.length() > 0:
+		velocity = velocity * speed
+	
+	nextPosition += velocity * delta
+	nextPosition.x = clamp(nextPosition.x, 0, screensize.x)
+	nextPosition.y = clamp(nextPosition.y, 0, screensize.y)
+
+	position = nextPosition
+
+func _on_JoystickMove(vector):
+	joystickVector = vector
+>>>>>>> joystick and some other level changes

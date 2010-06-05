@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "player_bullet_class",
 "language": "GDScript",
 "path": "res://scripts/player_bullet.gd"
+}, {
+"base": "Node2D",
+"class": "shoot_joystick",
+"language": "GDScript",
+"path": "res://scripts/shoot_joystick.gd"
 } ]
 _global_script_class_icons={
 "player": "",
-"player_bullet_class": ""
+"player_bullet_class": "",
+"shoot_joystick": ""
 }
 
 [application]

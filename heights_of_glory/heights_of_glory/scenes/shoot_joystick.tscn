@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://scripts/Analog.gd" type="Script" id=1]
+[ext_resource path="res://scripts/shoot_joystick.gd" type="Script" id=1]
 [ext_resource path="res://sprites/big_circle.png" type="Texture" id=2]
 [ext_resource path="res://sprites/small_circle.png" type="Texture" id=3]
 
-[node name="JoyStick" type="Node2D"]
+[node name="shoot_joystick" type="Node2D"]
 position = Vector2( 280, 370 )
 script = ExtResource( 1 )
 __meta__ = {
