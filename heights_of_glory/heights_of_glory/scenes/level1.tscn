@@ -1,0 +1,146 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://scripts/level1.gd" type="Script" id=1]
+[ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
+[ext_resource path="res://tiles/zombie_tiles.tres" type="TileSet" id=3]
+[ext_resource path="res://scripts/door_area.gd" type="Script" id=4]
+[ext_resource path="res://sprites/WBL/doors.png" type="Texture" id=5]
+[ext_resource path="res://scripts/ladder_area.gd" type="Script" id=6]
+[ext_resource path="res://sprites/WBL/ladder.png" type="Texture" id=7]
+[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/enemy.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/box.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/analog.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=12]
+[ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=13]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 81.6724, 108.997 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 49.3754, 89.5722 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 171.976, 14.3459 )
+
+[sub_resource type="Animation" id=4]
+resource_name = "move_elevatonx"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 720, 210 ), Vector2( 390, 210 ), Vector2( 720, 210 ) ]
+}
+
+[node name="level1" type="Node"]
+script = ExtResource( 1 )
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scroll_ignore_camera_zoom = true
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_offset = Vector2( 0.1, 0.1 )
+motion_mirroring = Vector2( 1, 1 )
+
+[node name="background" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2( -210, -857.949 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 2 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 3076, 3076 )
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 32, 32 )
+format = 1
+tile_data = PoolIntArray( -1572868, 0, 0, -1507332, 0, 0, -1441796, 0, 0, -1376260, 0, 0, -1310724, 0, 0, -1376213, 0, 0, -1245188, 0, 0, -1310678, 0, 0, -1179652, 0, 0, -1245142, 0, 0, -1114116, 0, 0, -1179606, 0, 0, -1048580, 0, 0, -1048579, 0, 0, -1048578, 0, 0, -1114070, 0, 0, -983042, 0, 0, -1048553, 2, 0, -1048551, 3, 0, -1048550, 3, 0, -1048549, 3, 0, -1048548, 3, 0, -1048546, 3, 0, -1048544, 3, 0, -1048542, 3, 0, -1048540, 3, 0, -1048538, 3, 0, -1048536, 4, 0, -1048534, 0, 0, -917506, 0, 0, -982998, 0, 0, -851970, 0, 0, -917481, 7, 0, -917479, 8, 0, -917477, 8, 0, -917476, 8, 0, -917474, 8, 0, -917472, 8, 0, -917470, 8, 0, -917468, 8, 0, -917466, 8, 0, -917464, 9, 0, -917462, 0, 0, -851926, 0, 0, -720898, 0, 0, -786390, 0, 0, -655365, 0, 0, -655364, 0, 0, -655363, 0, 0, -655362, 0, 0, -720855, 0, 0, -720854, 0, 0, -589829, 0, 0, -524293, 0, 0, -589783, 0, 0, -458757, 0, 0, -524247, 0, 0, -393221, 0, 0, -458710, 0, 0, -327685, 0, 0, -393174, 0, 0, -262149, 0, 0, -327638, 0, 0, -196613, 0, 0, -262102, 0, 0, -131077, 0, 0, -196566, 0, 0, -65541, 0, 0, -131030, 0, 0, -4, 0, 0, -2, 2, 0, -65536, 3, 0, -65535, 3, 0, -65534, 3, 0, -65533, 3, 0, -65532, 3, 0, -65531, 3, 0, -65530, 3, 0, -65529, 3, 0, -65528, 3, 0, -65526, 4, 0, -65494, 0, 0, 65532, 0, 0, 42, 0, 0, 131068, 0, 0, 131070, 7, 0, 65536, 8, 0, 65537, 8, 0, 65538, 8, 0, 65539, 8, 0, 65540, 8, 0, 65541, 8, 0, 65542, 8, 0, 65543, 8, 0, 65544, 8, 0, 65546, 9, 0, 65578, 0, 0, 196604, 0, 0, 131114, 0, 0, 262140, 0, 0, 196650, 0, 0, 196652, 0, 0, 196653, 0, 0, 327676, 0, 0, 262186, 0, 0, 393212, 0, 0, 327683, 12, 0, 327722, 0, 0, 458748, 0, 0, 393258, 0, 0, 524284, 0, 0, 458755, 12, 0, 458794, 0, 0, 589820, 0, 0, 524314, 3, 0, 524316, 3, 0, 524318, 3, 0, 524320, 3, 0, 524322, 3, 0, 524324, 3, 0, 524326, 3, 0, 524328, 3, 0, 524330, 0, 0, 655356, 0, 0, 655358, 3, 0, 655359, 3, 0, 589824, 3, 0, 589825, 3, 0, 589826, 3, 0, 589827, 3, 0, 589828, 3, 0, 589829, 3, 0, 589830, 3, 0, 589831, 3, 0, 589832, 3, 0, 589866, 0, 0, 720892, 0, 0, 655400, 0, 0, 655401, 0, 0, 655402, 0, 0, 786428, 0, 0, 786429, 0, 0, 720906, 3, 0, 720938, 0, 0, 851965, 0, 0, 786474, 0, 0, 917501, 0, 0, 851980, 3, 0, 852010, 0, 0, 983037, 0, 0, 917546, 0, 0, 1048573, 0, 0, 983054, 3, 0, 983082, 0, 0, 1114108, 0, 0, 1114109, 0, 0, 1048601, 3, 0, 1048618, 0, 0, 1179644, 0, 0, 1245180, 0, 0, 1245182, 0, 0, 1245183, 2, 0, 1179649, 3, 0, 1179650, 3, 0, 1179651, 3, 0, 1179652, 3, 0, 1179653, 3, 0, 1179654, 3, 0, 1179655, 3, 0, 1179656, 3, 0, 1179657, 3, 0, 1179658, 3, 0, 1179659, 3, 0, 1179660, 3, 0, 1179661, 3, 0, 1179662, 3, 0, 1179663, 3, 0, 1179664, 3, 0, 1179665, 3, 0, 1179666, 3, 0, 1179667, 3, 0, 1179668, 3, 0, 1179669, 3, 0, 1179670, 3, 0, 1179671, 3, 0, 1179672, 3, 0, 1179673, 3, 0, 1179674, 3, 0, 1179675, 3, 0, 1179676, 3, 0, 1179677, 3, 0, 1179678, 3, 0, 1179679, 3, 0, 1179680, 3, 0, 1179681, 3, 0, 1179682, 3, 0, 1179683, 3, 0, 1179684, 3, 0, 1179685, 3, 0, 1179686, 3, 0, 1179687, 3, 0, 1179688, 3, 0, 1179690, 4, 0, 1310716, 0, 0, 1376254, 0, 0, 1376255, 7, 0, 1310721, 8, 0, 1310722, 8, 0, 1310723, 8, 0, 1310724, 8, 0, 1310725, 8, 0, 1310726, 8, 0, 1310727, 8, 0, 1310728, 8, 0, 1310729, 8, 0, 1310730, 8, 0, 1310731, 8, 0, 1310732, 8, 0, 1310733, 8, 0, 1310734, 8, 0, 1310735, 8, 0, 1310736, 8, 0, 1310737, 8, 0, 1310738, 8, 0, 1310739, 8, 0, 1310740, 8, 0, 1310741, 8, 0, 1310742, 8, 0, 1310743, 8, 0, 1310744, 8, 0, 1310745, 8, 0, 1310746, 8, 0, 1310747, 8, 0, 1310748, 8, 0, 1310749, 8, 0, 1310750, 8, 0, 1310752, 8, 0, 1310754, 8, 0, 1310756, 8, 0, 1310758, 8, 0, 1310760, 8, 0, 1310762, 9, 0 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="door_area" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( 1130, 150 )
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="door" type="Sprite" parent="door_area"]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 5 )
+
+[node name="collision" type="CollisionShape2D" parent="door_area"]
+shape = SubResource( 1 )
+
+[node name="ladder_area" type="Area2D" parent="."]
+editor/display_folded = true
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="ladder" type="Sprite" parent="ladder_area"]
+position = Vector2( 90, 200 )
+texture = ExtResource( 7 )
+
+[node name="collision" type="CollisionShape2D" parent="ladder_area"]
+position = Vector2( 90, 200 )
+shape = SubResource( 2 )
+
+[node name="player" parent="." instance=ExtResource( 8 )]
+position = Vector2( 670, 390 )
+
+[node name="enemy" parent="." instance=ExtResource( 9 )]
+position = Vector2( 1124.22, 351.113 )
+
+[node name="box" parent="." instance=ExtResource( 10 )]
+position = Vector2( 921, 498.224 )
+
+[node name="ui" type="Control" parent="."]
+visible = false
+margin_left = 550.0
+margin_top = 290.0
+margin_right = 707.0
+margin_bottom = 447.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="AreaAnalogRight" type="Control" parent="ui"]
+margin_right = 159.0
+margin_bottom = 159.0
+
+[node name="Analog" parent="ui/AreaAnalogRight" instance=ExtResource( 11 )]
+isDynamicallyShowing = true
+listenerNodePath = "/root/level1/player"
+nam = "rightPad"
+
+[node name="hud" parent="." instance=ExtResource( 12 )]
+
+[node name="elevatonx" type="StaticBody2D" parent="."]
+position = Vector2( 720, 210 )
+
+[node name="Sprite" type="Sprite" parent="elevatonx"]
+scale = Vector2( 0.7, 0.4 )
+texture = ExtResource( 13 )
+
+[node name="collision" type="CollisionShape2D" parent="elevatonx"]
+shape = SubResource( 3 )
+
+[node name="move_elevatonx" type="AnimationPlayer" parent="elevatonx"]
+autoplay = "move_elevatonx"
+playback_speed = 0.2
+anims/move_elevatonx = SubResource( 4 )
+
+[connection signal="body_entered" from="door_area" to="door_area" method="_on_door_area_body_entered"]
+[connection signal="body_entered" from="ladder_area" to="ladder_area" method="_on_ladder_area_body_entered"]
+[connection signal="body_exited" from="ladder_area" to="ladder_area" method="_on_ladder_area_body_exited"]

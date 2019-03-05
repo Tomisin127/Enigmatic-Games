@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/player.gd" type="Script" id=1]
+[ext_resource path="res://sprites/alienGreen_jump.png" type="Texture" id=2]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 17.5125
+height = 32.6599
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 16.2607
+height = 39.5891
+
+[node name="player" type="KinematicBody2D" groups=[
+"player",
+]]
+position = Vector2( 270, 110 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="sprite" type="Sprite" parent="."]
+modulate = Color( 1, 0, 0, 1 )
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 2 )
+
+[node name="collision" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 21 )
+shape = SubResource( 1 )
+
+[node name="camera" type="Camera2D" parent="."]
+current = true
+smoothing_enabled = true
+
+[node name="ground_ray" type="RayCast2D" parent="."]
+position = Vector2( 0, 8 )
+enabled = true
+exclude_parent = false
+cast_to = Vector2( 0, 20 )
+
+[node name="bullet_spawn_pos" type="Position2D" parent="."]
+position = Vector2( 30, 20 )
+
+[node name="player_bullet_container" type="Node" parent="."]
+
+[node name="player_area" type="Area2D" parent="."]
+editor/display_folded = true
+
+[node name="collision" type="CollisionShape2D" parent="player_area"]
+position = Vector2( 0, 20 )
+shape = SubResource( 2 )
+
+[node name="shoot_timer" type="Timer" parent="."]
+autostart = true
+
+[node name="WaitAfterIdle" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="timeout" from="WaitAfterIdle" to="." method="_on_WaitAfterIdle_timeout"]

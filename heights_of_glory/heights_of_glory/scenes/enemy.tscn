@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
+[ext_resource path="res://sprites/zombie002.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 37.857, 77.0887 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 37.857, 78.0887 )
+
+[node name="enemy" type="KinematicBody2D"]
+position = Vector2( 294.216, 221.113 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="zombie" type="Area2D" parent="."]
+
+[node name="sprite" type="Sprite" parent="zombie"]
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 2 )
+
+[node name="collision" type="CollisionShape2D" parent="zombie"]
+position = Vector2( -8, -1 )
+shape = SubResource( 1 )
+
+[node name="physics_collision" type="CollisionShape2D" parent="."]
+position = Vector2( -6, 0 )
+shape = SubResource( 2 )
+
+[node name="bullet_ray" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( 200, 0 )
+collision_mask = 9225
+
+[node name="timer" type="Timer" parent="bullet_ray"]
+wait_time = 2.0
+
+[node name="enemy_bullet_container" type="Node" parent="."]
+
+[node name="bullet_spawn_pos" type="Position2D" parent="."]
+position = Vector2( 40, 0 )
+
+[node name="detect_floor_left" type="RayCast2D" parent="."]
+position = Vector2( -56.859, 10 )
+enabled = true
+cast_to = Vector2( 0, 70 )
+
+[node name="detect_wall_left" type="RayCast2D" parent="."]
+position = Vector2( -10, 70 )
+enabled = true
+cast_to = Vector2( -50, 0 )
+
+[node name="detect_wall_right" type="RayCast2D" parent="."]
+position = Vector2( 0, 70 )
+enabled = true
+cast_to = Vector2( 50, 0 )
+
+[node name="detect_floor_right" type="RayCast2D" parent="."]
+position = Vector2( 40, 10 )
+enabled = true
+cast_to = Vector2( 0, 70 )
+
+[node name="fall_from_sky_timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="zombie" to="." method="_on_zombie_body_entered"]
+[connection signal="timeout" from="bullet_ray/timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="fall_from_sky_timer" to="." method="_on_fall_timer_timeout"]

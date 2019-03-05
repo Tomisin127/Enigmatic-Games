@@ -1,0 +1,104 @@
+# First Edition by Iyi (on the Enigmatic Studios team) -- 2/1/2019
+# Second Edition by (put name here)(on the Enigmatic Studios team) -- (put date Here)
+
+HEIGHTS OF GLORY -- Character Sheet
+
+				STATS
+STRENGTH -- This is how strong the character is. This affects how
+slow the character will be while carrying a heavy object. A weak
+character will be noticeably slower while carrying a heavy object
+as opposed to a strong character. This also affects how many weapons
+and/or ammo clips a character can hold simultaneously.
+
+SPEED -- This is how fast a character moves. This is directly
+affected by strength and weight.
+
+WEIGHT # doesn't need to be displayed in the CHARACTER SELECTION
+MENU # -- This the weight of a player. A heavy player should be
+slower than a skinny player.
+
+ENDURANCE -- This is how easily a character is killed. It's
+different from the amount of health a character has. All
+characters have a standard health gauge but their ENDURANCEs
+differ. 
+
+
+------------------------------------------------------------------
+
+
+				UPGRADES
+The STRENGTH, SPEED and ENDURANCE stats can be upgraded by using
+the points gotten while playing the game. Say the max of each stat
+is 100.
+
+
+------------------------------------------------------------------
+
+
+				STORYLINE
+A certain city in the world (could be anywhere) has been hit by a
+zombie epidemic. A special agency has been set up in the past
+for the control of such situations, so agents from the agency are
+sent into the city to help rescue the few people who have
+survived, retrieve important documents [or other objects] and
+exterminate the zombies and therefore end the epidemic...
+
+
+------------------------------------------------------------------
+
+
+				CHARACTERS
+# I think the characters should have a short bio displayed on the
+character selection screen #
+
+QQQ (male) #sample name, should be changed# -- DEFAULT CHARACTER
+DEFAULT STATS #can be modified if need be#
+STRENGTH > 55/100 (max. 75) 
+SPEED > 70/100 (max. 90)
+WEIGHT > 50/100
+ENDURANCE > 50/100 (max. 70)
+# Character should look skinny.
+
+
+YYY (female) #sample name, should be changed#
+DEFAULT STATS #can be modified if need be#
+STRENGTH > 50/100 (max. 70)
+SPEED > 75/100 (max. 95)
+WEIGHT > 50/100
+ENDURANCE > 65/100 (max. 85)
+# Character should look skinny.
+
+
+XXX (male) #sample name, should be changed#
+DEFAULT STATS #can be modified if need be#
+STRENGTH > 70/100 (max. 90)
+SPEED > 55/100 (max. 75)
+WEIGHT > 75/100
+ENDURANCE > 75/100 (max. 95)
+# Character should look muscular. Last legal character to be
+unlocked.
+
+
+Agent X (unknown) # would like very much if this name is used #
+DEFAULT STATS
+STRENGTH > 100/100
+SPEED > 100/100
+WEIGHT > 50/100
+ENDURANCE > 100/100
+# Character should look skinny, clothed in all black (like a
+ninja). Character is unlocked after the game has been completed
+and unlocks extreme levels (???).
+
+
+------------------------------------------------------------------
+
+ACCESSORIES (???)
+# This is stuff the user can buy for his characters to wear but
+this would require EXTRA art for each accessory in relation to the
+character... Not sure if we should do that. Just a suggestion #
+
+POP CULTURE REFERENCES (???)
+#Well, our game as characters and enemies .. Let's assume the player isn't touching the joystick to move the character for a while , the character starts to dance or dooes something related to what everyone in this present age/generation can relate with
+
+
+We could also make the zombies walk in a funny way. We could also have fake humans in the game. The way they is that as a you get closer to them they transform to zombies... Let's say a zombie kills the player... All the zombies will go to their base and gather to jubilate (this could be a animation or a video in the game) after the players' death... # 
