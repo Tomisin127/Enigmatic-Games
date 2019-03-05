@@ -98,7 +98,14 @@ this would require EXTRA art for each accessory in relation to the
 character... Not sure if we should do that. Just a suggestion #
 
 POP CULTURE REFERENCES (???)
-#Well, our game as characters and enemies .. Let's assume the player isn't touching the joystick to move the character for a while , the character starts to dance or dooes something related to what everyone in this present age/generation can relate with
+#Well, our game as characters and enemies .. Let's assume the player
+isn't touching the joystick to move the character for a while, the
+character starts to dance or dooes something related to what everyone
+in this present age/generation can relate with. 
 
 
-We could also make the zombies walk in a funny way. We could also have fake humans in the game. The way they is that as a you get closer to them they transform to zombies... Let's say a zombie kills the player... All the zombies will go to their base and gather to jubilate (this could be a animation or a video in the game) after the players' death... # 
+We could also make the zombies walk in a funny way. We could also have
+fake humans in the game. The way they is that as a you get closer to them
+they transform to zombies... Let's say a zombie kills the player... All the
+zombies will go to their base and gather to jubilate (this could be a
+animation or a video in the game) after the players' death... # 
