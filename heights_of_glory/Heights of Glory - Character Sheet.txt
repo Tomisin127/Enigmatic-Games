@@ -109,3 +109,5 @@ fake humans in the game. The way they is that as a you get closer to them
 they transform to zombies... Let's say a zombie kills the player... All the
 zombies will go to their base and gather to jubilate (this could be a
 animation or a video in the game) after the players' death... # 
+
+REALLY COOL STUFF - editted by tomisin
