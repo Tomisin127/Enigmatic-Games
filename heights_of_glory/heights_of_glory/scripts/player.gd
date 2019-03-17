@@ -13,8 +13,21 @@ const FRICTION = -50000
 var GRAVITY :float = 9.81
 const JUMP_HEIGHT =-400
 const CLIMB_SPEED = 3
-
 const BOOST_UP = -2000
+
+
+
+
+
+#lazy edits
+var health : int
+# signal works best with health changes using global is overkill and will cause problem later
+signal sg_health_change
+signal sg_player_dead
+
+
+
+
 
 var acceleration = Vector2()
 
@@ -40,6 +53,11 @@ var is_shooting:bool = true
 
 func _ready() -> void:
 	
+	#lazy
+	connect("sg_player_dead",get_parent(),"revive_player")
+	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
+	health = 100
+	emit_signal("sg_health_change",health)
 
 	
 
@@ -72,7 +90,7 @@ func _physics_process(delta):
 			
 		
 		elif is_shooting and global.mana <= 5:
-			print("so freaking true")
+#			print("so freaking true")
 			is_shooting =false
 			
 		elif global.mana>=5 :
@@ -142,7 +160,7 @@ func get_tile_on_position(x,y):
 		var id = tilemap.get_cellv(map_pos)
 		if id > -1:
 			var tilename = tilemap.get_tileset().tile_get_name(id)
-			print("tilename : ", tilename)
+#			print("tilename : ", tilename)
 			return tilename
 		else:
 			return ""
@@ -168,7 +186,7 @@ func shoot(shoot_activate):
 		global.mana -= 10
 		
 	elif shoot_activate==false:
-		print("did i return here")
+#		print("did i return here")
 		return
 
 func is_able_to_use_magmum_skills() -> bool:
@@ -188,6 +206,18 @@ func take_damage(hit:int):
 		
 	else:
 		self.player_death_animation()"""
+		
+	
+	#Lazy 
+	
+	#clamp set a limit for the value
+	health = clamp((health - hit),0,100)
+	emit_signal("sg_health_change",health)
+	if health == 0:
+		die()
+	else:
+		#play hurt animation
+		pass
 
 func _on_health_depleted():
 	if global.player_health < 0:
@@ -209,16 +239,18 @@ func mana_delay_and_regenerate(change):
 			global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
 			wait_timer=0
 			
-		print(wait_timer)
+#		print(wait_timer)
 		
 		#global.mana = min(global.mana + 0 * get_physics_process_delta_time(),100)
 		
 	if global.mana ==0:
-		
+		pass
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
-		print("mana is zero")
+#		print("mana is zero")
 		
 func is_alive()->bool:
+	
+	#dieing is better if the player tells us by itself before dieing
 	return global.player_health >0
 	
 func _get_player_health():
@@ -241,3 +273,11 @@ func boost_up_super(value):
 		
 	pass
 
+#lazy
+func die():
+	#a dead man cant be walking around, downside is that no gravity is also applied to the body
+	set_physics_process(false)
+	#plays death animation
+	#use yield to hold the method
+	emit_signal("sg_player_dead",position)
+	queue_free()

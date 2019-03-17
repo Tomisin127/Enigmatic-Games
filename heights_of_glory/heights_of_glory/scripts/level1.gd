@@ -1,17 +1,26 @@
 extends Node
 
+onready var playerSC = load("res://scenes/player.tscn")
+
+
 func _ready():
 	#setting the target to player
 	get_node("enemy").target_player = get_node("player")
+	$player.connect("sg_health_change",$hud,"health_change")
 	
 	set_process(true)
 	pass
 	
 func _process(delta):
-	
-	$hud/CanvasLayer/Control/player_health.value=global.player_health
-	$hud/CanvasLayer/Control/player_mana.value=global.mana
 	pass
+
+
+func revive(pos : Vector2):
+	var player = playerSC.instance()
+	player.position = pos
+	add_child(player)
+	_ready()
+	
 
 
 func _on_ladder_area_body_entered(body):

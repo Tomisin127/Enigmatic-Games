@@ -41,6 +41,7 @@ tracks/0/keys = {
 script = ExtResource( 1 )
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+editor/display_folded = true
 scroll_ignore_camera_zoom = true
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -124,6 +125,7 @@ nam = "rightPad"
 [node name="hud" parent="." instance=ExtResource( 10 )]
 
 [node name="elevatonx" type="StaticBody2D" parent="."]
+editor/display_folded = true
 visible = false
 position = Vector2( 720, 210 )
 

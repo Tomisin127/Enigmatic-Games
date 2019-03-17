@@ -6,7 +6,7 @@ class_name player_bullet_class
 var velocity = Vector2()
 var speed =400
 
-onready var sprite = get_node("sprite")
+
 
 
 
