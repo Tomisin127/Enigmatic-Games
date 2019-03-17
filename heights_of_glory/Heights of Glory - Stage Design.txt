@@ -1,0 +1,70 @@
+# First Edition by bookofiyi -- 3/7/2019
+
+HEIGHTS OF GLORY -- Stage Design
+
+STORY MODE -- Objective
+MAIN Objective
+In the story mode, the player tries to overcome and kill zombies
+on the way to the top of the structure s/he finds him/herself in,
+where they'll have a boss fight and then be extracted by a
+helicopter.
+
+ADDITIONAL Objectives
+GEM RUSH Stage
+The objective is to collect as many gems while climbing to the top
+of the building.
+
+# Alternative GEM RUSH Stage ??? #
+In this stage, it plays as a fully horizontal stage where the player
+is automatically running towards the right side of the screen (like
+Jetpack Joyride, although this one won't be infinite) while shooting
+zombies and collecting as many gems as possible. The objective in this
+stage would be to get a specified number of points (and/or gems) before
+the stage comes to an end.
+
+SEARCH AND RESCUE Stage
+The objective is to rescue a civilian(s) and get them to the extraction
+point. You lose if the civilian(s) is/are killed or the player him/herself
+dies.
+
+SURVIVAL MODE
+The objective in this stage is to survive as long as possible. We can have
+a Google Play Games integration with this so that there can be a Leaderboard.
+(The Google Play Games integration should also allow the user to save his
+progress, the same way its done in other games, eg. Clash of Clans, Brawl
+Stars, NOVA Legacy, etc.)
+
+# MULTIPLAYER MODE  ???#
+# CO-OP MULTIPLAYER MODE #
+In this scenario, two (or more) players fight play as teammates while clearing
+the building (or whatever structure) of all the zombies (and/or if it's a SEARCH
+AND RESCUE Stage, rescuing several civilians). This may be either HOTSPOT or
+ONLINE MULTIPLAYER.
+
+# VERSUS MULTIPLAYER MODE #
+In this scenario, two (or more) players go head-to-head in a battle to capture as
+many positions as possible. The way it works is that, both players start on
+opposite sides of the ground floor. Then a random, neutral post will be located
+in the building. When a player stands on the post for 5 seconds, he gets a certain
+number of points (let's say 10). If he is killed or moves from the post he doesn't
+get the points. The post will be available for a total of 60 seconds (provided the
+maximum points that can be attained from the post are not attained) ## I may need to
+explain some more about this ##
+
+
+
+
+
+ACHIEVEMENTS (Will be updated over time) # can be used with Google Play Games integration #
+1. Finish Level 1
+2. Finish Level 10
+3. Finish Level *
+4. Unlock Minera
+5. Unlock *
+6. Participate in a CO-OP MULTIPLAYER MATCH
+7. Participate in * CO-OP MULTIPLAYER MATCHES
+8. Participate in a VERSUS MULTIPLAYER MATCH
+9. Participate in * VERSUS MULTIPLAYER MATCHES
+10. Win a VERSUS MULTIPLAYER MATCH
+11. Win * VERSUS MULTIPLAYER MATCHES
+12.
