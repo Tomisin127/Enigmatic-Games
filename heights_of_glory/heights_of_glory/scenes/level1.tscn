@@ -122,6 +122,11 @@ autoplay = "move_elevatonx"
 playback_speed = 0.2
 anims/move_elevatonx = SubResource( 4 )
 
+[node name="gem_container" type="Node" parent="."]
+
+[node name="gem_spawn_time" type="Timer" parent="."]
+
 [connection signal="body_entered" from="door_area" to="." method="_on_door_area_body_entered"]
 [connection signal="body_entered" from="ladder_area" to="." method="_on_ladder_area_body_entered"]
 [connection signal="body_exited" from="ladder_area" to="." method="_on_ladder_area_body_exited"]
+[connection signal="timeout" from="gem_spawn_time" to="." method="_on_gem_spawn_time_timeout"]
