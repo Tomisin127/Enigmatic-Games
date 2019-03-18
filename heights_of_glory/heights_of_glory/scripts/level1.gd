@@ -11,6 +11,10 @@ onready var gem_container = $gem_container
 
 
 func _ready():
+	#connect the signal that will flip the sprite when the analogy is moved
+	$hud/CanvasLayer/Control/Analog.connect("flip_left",$player,"flip_sprite_left")
+	$hud/CanvasLayer/Control/Analog.connect("flip_right", $player, "flip_sprite_right")
+	
 	#call the on spawn timeout, so that the gems can spawn on the screen
 	_on_gem_spawn_time_timeout()
 	
@@ -24,6 +28,8 @@ func _ready():
 	pass
 	
 func _process(delta):
+	#set the collected gems on the screen
+	$hud/CanvasLayer/Control/gems_collected.text=str(global.collected_gems)
 	pass
 	
 	#function that spawns the gems 

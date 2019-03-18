@@ -71,7 +71,7 @@ func easing(t):
 
 func emit_signal_shoot(value):
 		emit_signal('shoot_signal',easing(value))
-		print(value)
+
 
 func getIsDrag(event):
 	if event is InputEventMouseMotion or event is InputEventScreenDrag:

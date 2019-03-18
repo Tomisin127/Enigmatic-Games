@@ -75,6 +75,7 @@ func _ready() -> void:
 	pass
 
 func _physics_process(delta):
+
 	
 	#update the player's mana bar
 	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =player_mana
@@ -225,34 +226,35 @@ func is_able_to_use_magmum_skills() -> bool:
 
 #this is the function that takes
 func take_damage(hit:int):
-	player_health -= hit
-	
-	if player_health > 0:
-		player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,5000)
-	# prevent playing both stagger and death animation if health <= 0
-	"""if global.player_health > 0:
-		self.player_stagger_animation()
-		
-	else:
-		self.player_death_animation()"""
-		
-	
 	#Lazy 
-	
 	#clamp set a limit for the value
 	player_health = clamp((player_health - hit),0,5000)
 	emit_signal("sg_health_change",player_health)
-	if player_health == 0:
+	
+	print(player_health)
+	
+	if is_alive():
+		#stagger animation can be here 
+		player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,100)
+	
+	# player_dies
+	elif not is_alive():
 		die()
-	else:
-		#play hurt animation
-		pass
+		
+	pass
+
+
 
 #player as died
-func _on_health_depleted():
-	if player_health < 0:
-		set_physics_process(false)
-		
+func die():
+
+	#a dead man cant be walking around, downside is that no gravity is also applied to the body
+	set_physics_process(false)
+	#plays death animation
+	#use yield to hold the method
+	emit_signal("sg_player_dead",position)
+	print("I AM THE PLAYER AND I HAVE DIED")
+	pass
 
 func mana_delay_and_regenerate(change):
 	if player_mana >=5:
@@ -294,19 +296,10 @@ func boost_up_super(value):
 		
 	pass
 
-#lazy
-func die():
-	#a dead man cant be walking around, downside is that no gravity is also applied to the body
-	set_physics_process(false)
-	#plays death animation
-	#use yield to hold the method
-	emit_signal("sg_player_dead",position)
-	queue_free()
-	
-	pass
 	
 	#no explanation yet
 func move(delta):
+	
 	var velocity = Vector2()
 	var nextPosition = position
 
@@ -316,11 +309,29 @@ func move(delta):
 		velocity = velocity * speed
 	
 	nextPosition += velocity * delta
-	nextPosition.x = clamp(nextPosition.x, 0, screensize.x)
-	nextPosition.y = clamp(nextPosition.y, 0, screensize.y)
+	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
+	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
 
 	position = nextPosition
+	
 
 func _on_JoystickMove(vector):
 	joystickVector = vector
 
+
+#this function are emitted when the analog is flipped
+func flip_sprite_left():
+	print("function is emitted")
+	$sprite.flip_h=1
+	pass
+func flip_sprite_right():
+	$sprite.flip_h=0
+	pass
+
+func _on_player_area_area_entered(area):
+		#if the enemy is in the player area, the player takes damage
+	if area.is_in_group("enemy"):
+		print("ATTTCGGCGCHCHC")
+		#it takes damage and kills the player
+		take_damage(global.enemy_damage_to_player)
+	pass # Replace with function body.

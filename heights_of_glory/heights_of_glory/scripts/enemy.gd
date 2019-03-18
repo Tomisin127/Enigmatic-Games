@@ -127,18 +127,22 @@ func _on_timer_timeout():
 
 func enemy_jump_over_boxes(box_collision):
 	if box_collide==true:
-		print("jump over boxes")
+		#print("jump over boxes")
 		linear_velocity.y-=10
 
 	
 	elif box_collide==false:
 		box_collide=false
-		print("body collide is now false")
+		#print("body collide is now false")
 
 	pass
 
 
 func _on_zombie_body_entered(body):
+	
+	if body.is_in_group("player"):
+		print("eat player")
+		
 	#if zombie body is in body of box
 	if body.is_in_group("box"):
 		print("BOXES COLLIDE")

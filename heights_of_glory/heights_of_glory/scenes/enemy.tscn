@@ -20,7 +20,9 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="zombie" type="Area2D" parent="."]
+[node name="zombie" type="Area2D" parent="." groups=[
+"enemy",
+]]
 editor/display_folded = true
 
 [node name="sprite" type="Sprite" parent="zombie"]

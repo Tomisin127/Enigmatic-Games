@@ -1,5 +1,9 @@
 extends Node2D
 
+#flip sprite when the analog is moved left ot right
+signal flip_left
+signal flip_right
+
 signal move
 
 onready var bigCircle = $BigCircle
@@ -32,8 +36,11 @@ func _input(event):
 			return
 
 	if getIsDrag(event) and pressed == 1:
+			
+			
 		var dirBigCir_dirEnvt = event.position - bigCircle.get_global_position()
 		distance = getDistance(dirBigCir_dirEnvt.x, 0, dirBigCir_dirEnvt.y, 0)
+			
 		if distance > halfBigCircleSize:
 			smallCircle.set_position(dirBigCir_dirEnvt.normalized() * halfBigCircleSize)
 		else:
@@ -48,9 +55,13 @@ func _input(event):
 
 func _process(delta):
 		#normalized() reduces the magnitude of the vector to 1 while maintaining the direction
-		if thereIsEventInput and vectorToEmit:
-			emit_signal_move(vectorToEmit / halfBigCircleSize)
-			
+	if thereIsEventInput and vectorToEmit:
+		emit_signal_move(vectorToEmit / halfBigCircleSize)
+		
+	
+
+		
+		
 
 func toggleVisible(value):
 	self.visible = value
@@ -74,6 +85,17 @@ func getIsDrag(event):
 		return true
 
 func _on_Pressed(event):
+
+	#THIS CODE EMIT SIGNAL THAT WILL FLIP THE SPRITE ACCORDING TO THE MOVEMENT OF THE ANALOG
+	#IT WORKS BUT NOT PERFECTLY
+	
+	#if event.get_position().x <270:
+		#emit_signal("flip_left")
+			
+	#elif event.get_position().x >290:
+		#emit_signal("flip_right")
+		
+		
 	var eventPos = event.get_position()
 
 	if not eventPos or not eventPos.x or not eventPos.y:
