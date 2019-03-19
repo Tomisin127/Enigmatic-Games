@@ -73,8 +73,6 @@ func _ready() -> void:
 	connect("revive",self,"revive_player")
 	
 	#this emits signal for the player to be moved by the joysick
-	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
-	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
 	
 	
 	connect("sg_player_dead",get_parent(),"revive_player")
@@ -430,17 +428,17 @@ func boost_up_super(value):
 #	$sprite.flip_h=0
 #	pass
 
-	if joystickVector and joystickVector.length() != 0:
-		velocity += joystickVector
-	if velocity.length() > 0:
-		velocity = velocity * speed
-	
-	nextPosition += velocity * delta
-	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
-	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
-
-	position = nextPosition
-	
+#	if joystickVector and joystickVector.length() != 0:
+#		velocity += joystickVector
+#	if velocity.length() > 0:
+#		velocity = velocity * speed
+#
+#	nextPosition += velocity * delta
+#	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
+#	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
+#
+#	position = nextPosition
+#
 
 func _on_JoystickMove(vector):
 	joystickVector = vector

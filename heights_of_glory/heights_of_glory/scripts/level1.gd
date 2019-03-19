@@ -14,10 +14,7 @@ onready var gem_container = $gem_container
 
 func _ready():
 	#connect the signal that will flip the sprite when the analogy is moved
-	$hud/CanvasLayer/Control/Analog.connect("flip_left",$player,"flip_sprite_left")
-	$hud/CanvasLayer/Control/Analog.connect("flip_right", $player, "flip_sprite_right")
 	
-	#call the on spawn timeout, so that the gems can spawn on the screen
 	_on_gem_spawn_time_timeout()
 	
 	#setting the target to player
@@ -25,7 +22,7 @@ func _ready():
 	
 	#connect the health changes signal to the player
 	$player.connect("sg_health_change",$hud,"health_change")
-	
+	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
 	set_process(true)
 	
 

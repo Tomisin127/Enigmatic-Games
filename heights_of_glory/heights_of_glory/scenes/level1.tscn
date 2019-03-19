@@ -95,11 +95,9 @@ shape = SubResource( 2 )
 
 [node name="player" parent="." instance=ExtResource( 6 )]
 position = Vector2( 670, 390 )
-collision_mask = 1
 
 [node name="enemy" parent="." instance=ExtResource( 7 )]
 position = Vector2( 1124.22, 351.113 )
-collision_mask = 1
 
 [node name="box" parent="." instance=ExtResource( 8 )]
 position = Vector2( 921, 498.224 )
