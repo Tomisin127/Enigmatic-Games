@@ -120,12 +120,12 @@ func control_limits(e, type : String):
 	
 	
 	if type == "big_circle":
-		if (pos.x > 22 && pos.x <333 && pos.y > 335 && pos.y < 535):
+		if (pos.x > 720 && pos.x <909 && pos.y > 335 && pos.y < 535):
 			return true
 		else:
 			return false
 	if type == "small_circle":
-		if (pos.x > (22-halfBigCircle_x-100) && pos.x <(333 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
+		if (pos.x > (720-halfBigCircle_x-100) && pos.x <(909 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
 			return true
 		else:
 			return false

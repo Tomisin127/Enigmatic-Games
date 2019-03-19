@@ -5,7 +5,7 @@
 [ext_resource path="res://sprites/small_circle.png" type="Texture" id=3]
 
 [node name="shoot_joystick" type="Node2D"]
-position = Vector2( 909.123, 409.068 )
+position = Vector2( 909.123, 410.415 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
