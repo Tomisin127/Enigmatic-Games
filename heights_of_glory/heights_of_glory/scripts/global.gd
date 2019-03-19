@@ -13,3 +13,5 @@ var endurance : int = 300
 var magnum_skills:int = 0
 
 var enemy_damage_to_player: int =200
+
+var player_damage_to_enemy:int =70

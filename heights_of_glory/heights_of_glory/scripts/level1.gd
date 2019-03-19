@@ -1,5 +1,7 @@
 extends Node
 
+
+
 #load the player scene
 onready var playerSC = load("res://scenes/player.tscn")
 
@@ -14,7 +16,6 @@ func _ready():
 	#connect the signal that will flip the sprite when the analogy is moved
 	$hud/CanvasLayer/Control/Analog.connect("flip_left",$player,"flip_sprite_left")
 	$hud/CanvasLayer/Control/Analog.connect("flip_right", $player, "flip_sprite_right")
-	$hud/CanvasLayer/Control/Analog.connect("dir_changed", $player,"joystick_motion")
 	
 	#call the on spawn timeout, so that the gems can spawn on the screen
 	_on_gem_spawn_time_timeout()
@@ -26,11 +27,15 @@ func _ready():
 	$player.connect("sg_health_change",$hud,"health_change")
 	
 	set_process(true)
+	
+
 	pass
 	
 func _process(delta):
 	#set the collected gems on the screen
 	$hud/CanvasLayer/Control/gems_collected.text=str(global.collected_gems)
+	
+
 	pass
 	
 	#function that spawns the gems 
@@ -60,7 +65,7 @@ func spawn_gems(amount):
 	pass
 
 #revive the player to a initial position after the player dies
-func revive(pos : Vector2):
+func revive(pos : Vector2= Vector2(0,100)):
 	var player = playerSC.instance()
 	player.position = pos
 	add_child(player)

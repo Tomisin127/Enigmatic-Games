@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal revive
+
 class_name player
 
 var joystickVector
@@ -56,6 +58,8 @@ var on_ladder:bool = false
 var on_boost_up:bool = true
 var is_shooting:bool = true
 
+var is_dead:bool = true
+
 
 
 
@@ -65,6 +69,9 @@ var joystick_direction : Vector2
 
 
 func _ready() -> void:
+	#revive  the player after death, signal
+	connect("revive",self,"revive_player")
+	
 	#this emits signal for the player to be moved by the joysick
 	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
 	get_parent().get_node('hud/CanvasLayer/Control/shoot_joystick').connect('shoot_signal', self, 'shoot_a')
@@ -145,7 +152,7 @@ func _physics_process(delta):
 			is_shooting =false
 			
 		#if the mana recharges when its low, enable shooting
-		elif global.mana>=5 :
+		elif player_mana>=5 :
 			is_shooting=true
 		
 		shoot(is_shooting)
@@ -207,6 +214,10 @@ func _physics_process(delta):
 		
 	else:
 		GRAVITY=9.81
+	
+	#if player is dead or alive
+	dead_or_alive()
+	
 	pass
 
 
@@ -296,34 +307,55 @@ func is_able_to_use_magmum_skills() -> bool:
 
 #this is the function that takes
 func take_damage(hit:int):
+	
 	#Lazy 
 	#clamp set a limit for the value
 	player_health = clamp((player_health - hit),0,5000)
 	emit_signal("sg_health_change",player_health)
 	
+	#stagger animation can go here too
+	
 	print(player_health)
+
+	pass
+
+
+#dead or alive function called in the processs function
+func dead_or_alive():
 	
 	if is_alive():
-		#stagger animation can be here 
+		#regenerate player health a little
 		player_health = min(player_health + player_health_regen * get_physics_process_delta_time()  ,100)
 	
 	# player_dies
-	elif not is_alive():
-		die()
+	if not is_alive():
+		die(is_dead)
 		
 	pass
 
 
-
-#player as died
-func die():
-
-	#a dead man cant be walking around, downside is that no gravity is also applied to the body
-	set_physics_process(false)
-	#plays death animation
-	#use yield to hold the method
-	emit_signal("sg_player_dead",position)
-	print("I AM THE PLAYER AND I HAVE DIED")
+#player as died called in the dead or alive function
+func die(is_dead):
+	#player died 
+	if is_dead==true:
+		#a dead man cant be walking around, downside is that no gravity is also applied to the body
+		set_physics_process(false)
+		#plays death animation
+		#use yield to hold the method
+		emit_signal("sg_player_dead",position)
+		print("I AM THE PLAYER AND I HAVE DIED")
+		#disable all collisions
+		$player_area.monitorable=false
+		$player_area.monitoring=false
+	
+	$collision.disabled=true
+	
+	#is the player as died but still have this revive signal, then it should revive the player
+	if is_dead or get_signal_list().has("revive"):
+		print("i am in here, can another")
+		set_physics_process(true)
+		emit_signal("revive")
+		
 	pass
 
 func mana_delay_and_regenerate(change):
@@ -333,16 +365,15 @@ func mana_delay_and_regenerate(change):
 		
 	#when the player_mana is low, wait for 5 seconds and recharge the mana
 	elif player_mana <=5:
-		player_mana =0
 		
 		#update wait_timer with delta(change)
 		wait_timer +=change
-		if wait_timer>5:
+		if wait_timer>1 and wait_timer < 5:
 			player_mana = min(player_mana + mana_regen * get_physics_process_delta_time(),100)
 			wait_timer=0
 			
 		
-		print(wait_timer)
+		#print(wait_timer)
 		
 		
 	if player_mana ==0:
@@ -399,6 +430,31 @@ func boost_up_super(value):
 #	$sprite.flip_h=0
 #	pass
 
+	if joystickVector and joystickVector.length() != 0:
+		velocity += joystickVector
+	if velocity.length() > 0:
+		velocity = velocity * speed
+	
+	nextPosition += velocity * delta
+	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
+	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
+
+	position = nextPosition
+	
+
+func _on_JoystickMove(vector):
+	joystickVector = vector
+
+
+#this function are emitted when the analog is flipped
+func flip_sprite_left():
+	print("function is emitted")
+	$sprite.flip_h=1
+	pass
+func flip_sprite_right():
+	$sprite.flip_h=0
+	pass
+
 func _on_player_area_area_entered(area):
 		#if the enemy is in the player area, the player takes damage
 	if area.is_in_group("enemy"):
@@ -406,3 +462,20 @@ func _on_player_area_area_entered(area):
 		#it takes damage and kills the player
 		take_damage(global.enemy_damage_to_player)
 	pass # Replace with function body.
+	
+func revive_from_death():
+	$collision.disabled=false
+	$player_area/collision.disabled =false
+	set_physics_process(true)
+	player_health=5000
+	_ready()
+	
+	pass
+	
+	#revive the player to this particular position in the function
+func revive_player(revive_pos:Vector2=Vector2(0,100)):
+	print("function emits")
+	revive_from_death()
+	self.position = revive_pos
+	
+	pass

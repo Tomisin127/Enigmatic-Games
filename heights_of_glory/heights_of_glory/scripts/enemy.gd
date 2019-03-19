@@ -21,6 +21,7 @@ var target_player
 
 onready var bullet = preload("res://scenes/enemy_bullet.tscn")
 onready var enemy_bullet_container = get_node("enemy_bullet_container")
+onready var bubble_gems = preload("res://scenes/gems.tscn")
 
 #raycast to detect collision
 onready var detect_floor_left = $detect_floor_left
@@ -33,6 +34,8 @@ onready var sprite = $zombie/sprite
 
 #boolean to check if box is colliding
 var box_collide:bool =false
+
+var enemy_health : int =1000
 
 func _ready():
 	
@@ -102,7 +105,10 @@ func _physics_process(delta):
 				var diry = target_player.global_position.y- global_position.y
 				translate(Vector2(dirx,diry) * get_physics_process_delta_time())
 				#print("attack area body is in player area")
-	
+		
+		#enemy is dead
+	enemy_death()
+
 	pass
 	
 		#enemy shoot function
@@ -120,11 +126,54 @@ func _on_timer_timeout():
 	#pass # Replace with function body.
 
 
-
+func enemy_take_damage(hit:int):
+	if is_alive():
+		enemy_health -= hit
+		print("enemyhealth: ",enemy_health)
+	else:
+		return
+		
+	pass
 
 #THIS FUNCTION IS NOT NECCESSARY , IT DOESNT AFFECT THE GAME BUT I DECIDED TO LEAVE IT
 #BECAUSE ITS COOL, LOL :)
 
+func is_alive()->bool:
+	return enemy_health >0
+	
+	pass
+	
+#zombie disintegrate after death
+func disintegrate():
+	#spawn gems upon enemy_death
+	randomize()
+	spawn_bubble_gem(rand_range(1,5))
+	
+	set_physics_process(false)
+	print("enemy is dead")
+	enemy_health=0
+	
+	$physics_collision.disabled=true
+	$attack_area/collision.disabled=true
+	
+	$zombie.monitorable=false
+	$zombie.monitoring =false
+	
+	$attack_area.monitorable=false
+	$attack_area.monitoring=false
+	
+	#hide enemy
+	self.modulate=Color(1,1,1,0)
+	
+	pass
+
+#check if player is dead, called in the physics process function
+func enemy_death():
+		#enemy is dead
+	if not is_alive():
+		disintegrate()
+	pass
+	
 func enemy_jump_over_boxes(box_collision):
 	if box_collide==true:
 		#print("jump over boxes")
@@ -139,9 +188,6 @@ func enemy_jump_over_boxes(box_collision):
 
 
 func _on_zombie_body_entered(body):
-	
-	if body.is_in_group("player"):
-		print("eat player")
 		
 	#if zombie body is in body of box
 	if body.is_in_group("box"):
@@ -172,3 +218,23 @@ func _on_flytimer_timeout():
 
 func _on_attack_area_body_entered(body):
 	pass # Replace with function body.
+
+
+func _on_zombie_area_entered(area):
+	#when the zombie is hit by the player_bullet
+	if area.is_in_group("player_bullet"):
+		print("kill enemy")
+		enemy_take_damage(global.player_damage_to_enemy)
+		
+	pass # Replace with function body
+	
+#enemy spawn gems upon enemy death
+func spawn_bubble_gem(amount):
+	
+	for i in range(amount):
+		var bub = bubble_gems.instance()
+		$bubble_gem_container.add_child(bub)
+		bub.position = self.position
+	
+	pass 
+	
