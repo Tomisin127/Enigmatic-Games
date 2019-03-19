@@ -444,21 +444,13 @@ func _on_JoystickMove(vector):
 	joystickVector = vector
 
 
-#this function are emitted when the analog is flipped
-func flip_sprite_left():
-	print("function is emitted")
-	$sprite.flip_h=1
-	pass
-func flip_sprite_right():
-	$sprite.flip_h=0
-	pass
 
 func _on_player_area_area_entered(area):
-		#if the enemy is in the player area, the player takes damage
-	if area.is_in_group("enemy"):
-		print("ATTTCGGCGCHCHC")
-		#it takes damage and kills the player
-		take_damage(global.enemy_damage_to_player)
+#		#if the enemy is in the player area, the player takes damage
+#	if area.is_in_group("enemy"):
+#		print("ATTTCGGCGCHCHC")
+#		#it takes damage and kills the player
+#		take_damage(global.enemy_damage_to_player)
 	pass # Replace with function body.
 	
 func revive_from_death():

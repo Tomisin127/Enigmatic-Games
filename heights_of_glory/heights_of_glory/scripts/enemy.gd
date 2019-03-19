@@ -32,6 +32,14 @@ onready var detect_wall_right = $detect_wall_right
 
 onready var sprite = $zombie/sprite
 
+
+
+#player damage variables
+var player_body : Object
+export (int) var damage_point = 20
+export (float) var damage_time = 0.4
+var in_damage_time = 0
+
 #boolean to check if box is colliding
 var box_collide:bool =false
 
@@ -45,6 +53,23 @@ func _ready():
 
 
 func _physics_process(delta):
+	
+	
+	
+	#player damage code
+	#this code allow the enemy to do damage but at a time interval 
+	if player_body:
+		if in_damage_time == 0:
+			player_body.take_damage(damage_point)
+			in_damage_time = damage_time
+		else:
+			in_damage_time = clamp((in_damage_time - delta),0,damage_time)
+	elif player_body == null:
+		in_damage_time = 0
+	
+	
+	
+	
 	
 	var new_anim = "idle"
 	#if the enemy is presently walking
@@ -203,7 +228,13 @@ func _on_zombie_body_entered(body):
 		#once the fly time is up, it returns to normal
 		$flytimer.wait_time=3
 		$flytimer.start()
-		
+	
+	
+	
+	#let the enemy sense the player and tell the player get hurt
+	if body.name == "player":
+		player_body = body
+	
 	pass # Replace with function body.
 
 #on fly timer timeout, revert the fly effect
@@ -238,3 +269,13 @@ func spawn_bubble_gem(amount):
 	
 	pass 
 	
+
+
+
+
+
+func _on_zombie_body_exited(body):
+	
+	#i want to run the damage code per frame so i will run it in a process of physics process method
+	if body.name == "player":
+		player_body = null
