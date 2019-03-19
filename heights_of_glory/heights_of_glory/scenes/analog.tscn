@@ -20,3 +20,9 @@ texture = ExtResource( 3 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="opacityTween" type="Tween" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

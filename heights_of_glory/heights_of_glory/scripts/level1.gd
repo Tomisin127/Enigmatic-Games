@@ -14,6 +14,7 @@ func _ready():
 	#connect the signal that will flip the sprite when the analogy is moved
 	$hud/CanvasLayer/Control/Analog.connect("flip_left",$player,"flip_sprite_left")
 	$hud/CanvasLayer/Control/Analog.connect("flip_right", $player, "flip_sprite_right")
+	$hud/CanvasLayer/Control/Analog.connect("dir_changed", $player,"joystick_motion")
 	
 	#call the on spawn timeout, so that the gems can spawn on the screen
 	_on_gem_spawn_time_timeout()

@@ -1,115 +1,151 @@
 extends Node2D
 
-#flip sprite when the analog is moved left ot right
-signal flip_left
-signal flip_right
 
-signal move
+signal dir_changed
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
 
-onready var bigCircle = $BigCircle
-onready var smallCircle = $SmallCircle
+var halfBigCircle_x 
+var pressed = false
+var active = true
 
-var resetPosCircle
-var pressed = 0
-var halfBigCircleSize
-var thereIsEventInput = false
-var vectorToEmit
-var bigCircPos
-var distance
+var eve_iAn_range = false
 
+
+
+
+# Called when the node enters the scene tree for the first time.
 func _ready():
-	halfBigCircleSize = bigCircle.texture.get_size().x / 2
-	updateCachedCirclesPositions()
+	self.modulate = Color(1,1,1,0.3)
+	halfBigCircle_x = $BigCircle.texture.get_size().x/2
+	set_process(true)
+
+
+
 
 func _input(event):
-	if event is InputEventKey:
-		return
-	
-	_on_Pressed(event)
-	
-	if event is InputEventScreenTouch:
-		toggleVisible(event.pressed)
-		setSelfPosition(event.position)
-		updateCachedCirclesPositions()
-		if not event.pressed:
-			emit_signal_move(Vector2(0, 0))
-			return
-
-	if getIsDrag(event) and pressed == 1:
-			
-			
-		var dirBigCir_dirEnvt = event.position - bigCircle.get_global_position()
-		distance = getDistance(dirBigCir_dirEnvt.x, 0, dirBigCir_dirEnvt.y, 0)
-			
-		if distance > halfBigCircleSize:
-			smallCircle.set_position(dirBigCir_dirEnvt.normalized() * halfBigCircleSize)
-		else:
-			smallCircle.set_global_position(event.position)
-			
-	if isReleased(event):
-		pressed = 0
-		smallCircle.set_global_position(resetPosCircle)
-
-	vectorToEmit = smallCircle.get_position()
-	thereIsEventInput = true if event else false
-
-func _process(delta):
-		#normalized() reduces the magnitude of the vector to 1 while maintaining the direction
-	if thereIsEventInput and vectorToEmit:
-		emit_signal_move(vectorToEmit / halfBigCircleSize)
+	if active:
 		
-	
-
+		if event is  InputEventKey:
+			pass
+		
+		if event is InputEventScreenTouch:
 		
 		
+		
+			if event.is_pressed() && control_limits(event,"big_circle"):
+				$opacityTween.stop(self)
+				self.modulate = Color(1,1,1,1)
+				self.position = event.position
+				pressed = true
+				$Timer.stop()
+			if  not event.is_pressed() && control_limits(event,"small_circle"):
+				pressed = false
+				$Timer.start()
+				print("stop")
+				$SmallCircle.position = $BigCircle.position
+				emit_signal("dir_changed",check_small_circle_pos())
+				
+				
+				
+				
+		
+		if getIsDrag(event) && control_limits(event,"small_circle") :
+			var event_pos : Vector2 = event.position
+			var toBeSmallPos : Vector2 = event.position - self.global_position
+			
+			var distance : float = event_pos.distance_to(self.global_position)
+		
+				
+			if distance > halfBigCircle_x:
+				$SmallCircle.set_position(toBeSmallPos.normalized() * halfBigCircle_x)
+			else:
+				$SmallCircle.set_position(toBeSmallPos)
+		
+		
+		
+			emit_signal("dir_changed",check_small_circle_pos())
+	
 
-func toggleVisible(value):
-	self.visible = value
 
-func setSelfPosition(position):
-	self.position = position
-	smallCircle.set_global_position(position)
-
-func updateCachedCirclesPositions():
-	resetPosCircle = smallCircle.get_global_position()
-	bigCircPos = bigCircle.get_global_position()
-
-func easing(t):
-	return t*t*t
-
-func emit_signal_move(value):
-	emit_signal('move', easing(value))
 
 func getIsDrag(event):
-	if event is InputEventMouseMotion or event is InputEventScreenDrag:
+	
+	if event is InputEventScreenDrag:
 		return true
 
-func _on_Pressed(event):
 
-	#THIS CODE EMIT SIGNAL THAT WILL FLIP THE SPRITE ACCORDING TO THE MOVEMENT OF THE ANALOG
-	#IT WORKS BUT NOT PERFECTLY
+func _on_Timer_timeout():
+	$opacityTween.interpolate_property(self,"modulate",Color(1,1,1,1),Color(1,1,1,0.3),0.4,Tween.TRANS_LINEAR,Tween.EASE_IN)
+	$opacityTween.start()
 	
-	#if event.get_position().x <270:
-		#emit_signal("flip_left")
-			
-	#elif event.get_position().x >290:
-		#emit_signal("flip_right")
-		
-		
-	var eventPos = event.get_position()
 
-	if not eventPos or not eventPos.x or not eventPos.y:
-		return
+
+
+
+
+
+func check_small_circle_pos() -> Vector2:
+	var small_pos = $SmallCircle.global_position
+	var big_pos = $BigCircle.global_position
+	var smallPos_bigPos = small_pos - big_pos
+	var control : Vector2 = Vector2(0,0)
 	
-	var distCirc_eventPos = getDistance(eventPos.x, bigCircPos.x, bigCircPos.y, eventPos.y)
+	if smallPos_bigPos.x > 30:
+		control.x = 1
 	
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		if distCirc_eventPos <= halfBigCircleSize:
-			pressed = 1
+	if smallPos_bigPos.x < -30:
+		control.x = -1
+	
+#	if smallPos_bigPos.x <30 and small_pos.x > -30:
+#		control.x = 0
+	
+	if smallPos_bigPos.y > 30:
+		control.y = 1
+	
+	if smallPos_bigPos.y < -30:
+		control.y = -1
+	
+#	if smallPos_bigPos.y <30 and small_pos.y > -30:
+#		control.y = 0
+	
+	
+	print(control)
+	return control
 
-func isReleased(event):
-	if event is InputEventScreenTouch or event is InputEventMouseButton:
-		return !event.pressed
 
-func getDistance(x1, x2, y1, y2):
-	return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
+func control_limits(e, type : String):
+	var pos = e.position
+	
+	
+	if type == "big_circle":
+		if (pos.x > 22 && pos.x <333 && pos.y > 335 && pos.y < 535):
+			return true
+		else:
+			return false
+	if type == "small_circle":
+		if (pos.x > (22-halfBigCircle_x-100) && pos.x <(333 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
+			return true
+		else:
+			return false
+	
+	
+
+
+func hide_control():
+	active = false
+	self.hide()
+
+
+func show_control():
+	active = true
+
+
+
+
+func manage_events(event):
+	
+	
+	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
+		pass

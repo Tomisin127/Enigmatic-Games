@@ -56,6 +56,14 @@ var on_ladder:bool = false
 var on_boost_up:bool = true
 var is_shooting:bool = true
 
+
+
+
+var joystick_direction : Vector2
+
+
+
+
 func _ready() -> void:
 	#this emits signal for the player to be moved by the joysick
 	get_parent().get_node('hud/CanvasLayer/Control/Analog').connect('move', self, '_on_JoystickMove')
@@ -74,6 +82,14 @@ func _ready() -> void:
 	
 	pass
 
+
+
+
+
+
+
+
+
 func _physics_process(delta):
 
 	
@@ -81,7 +97,7 @@ func _physics_process(delta):
 	get_parent().get_node("hud/CanvasLayer/Control/player_mana").value =player_mana
 	
 	#this function for the shoot joystick
-	move(delta)
+	
 	
 	#rotation = (rotation +PI *2 *delta)
 	#get_node("bullet_spawn_pos").global_position = (get_node("bullet_spawn_pos").global_position+t.velocity *delta)
@@ -94,13 +110,29 @@ func _physics_process(delta):
 	acceleration.y += GRAVITY
 	
 	if Input.is_action_pressed("ui_left"):
-		acceleration.x -= ACCEL *delta
+		acceleration.x -= ACCEL 
 		get_node("sprite").flip_h=1
 		
 	elif Input.is_action_pressed("ui_right"):
-		acceleration.x += ACCEL *delta
+		acceleration.x += ACCEL 
 		get_node("sprite").flip_h =0
 		
+	
+	#adding joystick control
+	
+	if joystick_direction:
+		if joystick_direction.x == 1:
+			acceleration.x += ACCEL
+			get_node("sprite").flip_h =0
+		elif joystick_direction.x  == -1:
+			acceleration.x -= ACCEL
+			get_node("sprite").flip_h =1
+			
+	
+	
+	
+	
+	
 	elif Input.is_action_pressed("ui_accept"):
 		
 		#if the player still as mana , then he is able to shoot
@@ -127,9 +159,17 @@ func _physics_process(delta):
 			#after using boost up once, disable it 
 			on_boost_up=false
 		
+	
+	
+	
+	
 	#slowing down with linear interpolation
-	else:
-		acceleration.x = lerp(acceleration.x, 0, 0.2)
+	#this serve as friction even a standing object feels friction
+	acceleration.x = lerp(acceleration.x, 0, 0.2)
+	
+	
+	
+	
 	
 	#jumping settings
 	if is_on_floor() and ground_ray.is_colliding():
@@ -169,6 +209,21 @@ func _physics_process(delta):
 		GRAVITY=9.81
 	pass
 
+
+
+
+
+
+func joystick_motion(dir :Vector2):
+	
+	joystick_direction = dir
+
+
+
+
+
+
+
 #this function helps to know the exact tile the player is stepping on
 #this function isnt working well yet but it will soon
 func get_tile_on_position(x,y):
@@ -183,6 +238,14 @@ func get_tile_on_position(x,y):
 		else:
 			return ""
 
+
+
+
+
+
+
+
+
 #this is another shoot function for testing the second shoot joystick
 #but it will be removed
 func shoot_a():
@@ -193,6 +256,13 @@ func shoot_a():
 	player_mana -= 10
 	pass
 
+	
+	
+	
+	
+	
+	
+	
 	
 	# this is the real shoot function////shooting bullet 
 func shoot(shoot_activate):
@@ -297,36 +367,37 @@ func boost_up_super(value):
 	pass
 
 	
-	#no explanation yet
-func move(delta):
-	
-	var velocity = Vector2()
-	var nextPosition = position
-
-	if joystickVector and joystickVector.length() != 0:
-		velocity += joystickVector
-	if velocity.length() > 0:
-		velocity = velocity * speed
-	
-	nextPosition += velocity * delta
-	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
-	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
-
-	position = nextPosition
-	
-
-func _on_JoystickMove(vector):
-	joystickVector = vector
-
-
-#this function are emitted when the analog is flipped
-func flip_sprite_left():
-	print("function is emitted")
-	$sprite.flip_h=1
-	pass
-func flip_sprite_right():
-	$sprite.flip_h=0
-	pass
+#	#no explanation yet
+# i am turning this to a comment for now
+#func move(delta):
+#
+#	var velocity = Vector2()
+#	var nextPosition = position
+#
+#	if joystickVector and joystickVector.length() != 0:
+#		velocity += joystickVector
+#	if velocity.length() > 0:
+#		velocity = velocity * speed
+#
+#	nextPosition += velocity * delta
+#	nextPosition.x = clamp(nextPosition.x, -16, screensize.x+300)
+#	nextPosition.y = clamp(nextPosition.y, -16, screensize.y+300)
+#
+#	position = nextPosition
+#
+#
+#func _on_JoystickMove(vector):
+#	joystickVector = vector
+#
+#
+##this function are emitted when the analog is flipped
+#func flip_sprite_left():
+#	print("function is emitted")
+#	$sprite.flip_h=1
+#	pass
+#func flip_sprite_right():
+#	$sprite.flip_h=0
+#	pass
 
 func _on_player_area_area_entered(area):
 		#if the enemy is in the player area, the player takes damage
