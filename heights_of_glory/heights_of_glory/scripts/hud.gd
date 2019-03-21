@@ -12,4 +12,4 @@ func _ready():
 func health_change(health: int):
 	$CanvasLayer/Control/player_health/health_tween.interpolate_property($CanvasLayer/Control/player_health,"value",$CanvasLayer/Control/player_health.value,health,0.5,Tween.TRANS_LINEAR,Tween.EASE_IN)
 	$CanvasLayer/Control/player_health/health_tween.start()
-	print("change in health",health)
+	#print("change in health",health)

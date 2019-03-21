@@ -1,6 +1,9 @@
 extends Node2D
 
 
+signal player_shoot
+
+
 signal dir_changed
 # Declare member variables here. Examples:
 # var a = 2
@@ -14,39 +17,47 @@ var eve_iAn_range = false
 
 
 
-
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready(): 
+	
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
+	
 
 
 
+func _process(delta):
 
+	
+	#pass the shoot position in the function to the global script
+	check_small_circle_pos()
+
+	pass
+	
 func _input(event):
 	if active:
-		
 		if event is  InputEventKey:
 			pass
 		
 		if event is InputEventScreenTouch:
-		
-		
-		
+			
+				
 			if event.is_pressed() && control_limits(event,"big_circle"):
+				
 				$opacityTween.stop(self)
 				self.modulate = Color(1,1,1,1)
 				self.position = event.position
 				pressed = true
 				$Timer.stop()
-			if  not event.is_pressed() && control_limits(event,"small_circle"):
+				
+				
+			elif  not event.is_pressed() && control_limits(event,"small_circle"):
 				pressed = false
 				$Timer.start()
 				print("stop")
 				$SmallCircle.position = $BigCircle.position
 				emit_signal("dir_changed",check_small_circle_pos())
-				
 				
 				
 				
@@ -63,8 +74,6 @@ func _input(event):
 			else:
 				$SmallCircle.set_position(toBeSmallPos)
 		
-		
-		
 			emit_signal("dir_changed",check_small_circle_pos())
 	
 
@@ -72,8 +81,31 @@ func _input(event):
 
 func getIsDrag(event):
 	
+	#shoot if the small circle  is dragged 75m away from the the center
+	#then it shoots the target in any direction
 	if event is InputEventScreenDrag:
+		if control_limits(event,"small_circle"):
+			
+			if global.shoot_position.length()>75:
+				emit_signal("player_shoot", true)
+				print(global.shoot_position.length())
+				print("drag")
+		
+		elif !control_limits(event,"small_circle"):
+			if global.shoot_position.length()<75:
+				emit_signal("player_shoot",false)
+		
 		return true
+		
+	#if the shoot button is tapped once, it shoot,
+	#if its released , it stops shooting
+	if event is InputEventScreenTouch:
+		if event.pressed==true:
+			emit_signal("player_shoot",true)
+		
+		elif  !event.pressed and global.control_vec==Vector2(0,0):
+			print("control is zero")
+			emit_signal("player_shoot",false)
 
 
 func _on_Timer_timeout():
@@ -90,6 +122,7 @@ func check_small_circle_pos() -> Vector2:
 	var small_pos = $SmallCircle.global_position
 	var big_pos = $BigCircle.global_position
 	var smallPos_bigPos = small_pos - big_pos
+	
 	var control : Vector2 = Vector2(0,0)
 	
 	if smallPos_bigPos.x > 30:
@@ -109,6 +142,16 @@ func check_small_circle_pos() -> Vector2:
 	
 #	if smallPos_bigPos.y <30 and small_pos.y > -30:
 #		control.y = 0
+
+	#passs shoot position to the global script
+	global.shoot_position = smallPos_bigPos
+	
+	#pass control value to the global script
+	global.control_vec = control
+
+				
+	
+
 	
 	
 	
@@ -146,6 +189,6 @@ func show_control():
 
 func manage_events(event):
 	
-	
 	if event is InputEventScreenTouch and control_limits(event,"small_circle"):
 		pass
+		

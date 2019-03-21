@@ -36,6 +36,7 @@ onready var sprite = $zombie/sprite
 
 #player damage variables
 var player_body : Object
+
 export (int) var damage_point = 20
 export (float) var damage_time = 0.4
 var in_damage_time = 0
@@ -165,10 +166,10 @@ func shoot():
 #on ray timer timeout,shoot at player, this will be removed too
 #because zombies dont shoot
 func _on_timer_timeout():
-	shoot()
-	#pass # Replace with function body.
+	#shoot()
+	pass # Replace with function body.
 
-
+#enemy is damaged by the player bullet
 func enemy_take_damage(hit:int):
 	if is_alive():
 		enemy_health -= hit
@@ -216,6 +217,7 @@ func enemy_death():
 	if not is_alive():
 		disintegrate()
 	pass
+	
 	
 func enemy_jump_over_boxes(box_collision):
 	if box_collide==true:

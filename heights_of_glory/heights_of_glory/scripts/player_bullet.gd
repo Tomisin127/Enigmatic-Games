@@ -7,7 +7,7 @@ var velocity = Vector2()
 var speed =400
 
 func _ready():
-	
+
 	set_process(true)
 	
 	# getting players position and rotation
@@ -17,8 +17,10 @@ func start(dir,pos):
 	velocity = Vector2(speed,0).rotated(dir + 2*PI)
 	
 func _process(delta):
-	
-	#look_at(Vector2())
+	#player bullet looks at shoot position
+	self.look_at(global.shoot_position)
+	#get_parent().get_node(".").get_parent().get_parent().get_node("Node/Sprite").position =get_parent().get_parent().get_parent().get_node(".").get_node("hud/CanvasLayer/Control/shoot_joystick").position
+	#get_parent().get_node(".").get_parent().get_parent().get_node("Node/Sprite").position  = global.shoot_position
 	
 	randomize()
 	rotation = (rotation +PI *2 *delta)
