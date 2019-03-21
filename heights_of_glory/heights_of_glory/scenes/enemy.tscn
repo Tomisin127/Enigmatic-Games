@@ -35,7 +35,7 @@ position = Vector2( -8, -1 )
 shape = SubResource( 1 )
 
 [node name="enemyBody_Part" parent="zombie" instance=ExtResource( 3 )]
-position = Vector2( -8.65289, 5.76855 )
+position = Vector2( -7.8288, 18.9539 )
 scale = Vector2( 0.25, 0.25 )
 
 [node name="physics_collision" type="CollisionShape2D" parent="."]
