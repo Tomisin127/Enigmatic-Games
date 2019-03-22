@@ -46,10 +46,25 @@ var box_collide:bool =false
 
 var enemy_health : int =1000
 
+
+
+#Animated sprite variables
+var default_sprite_scale : Vector2
+
+
+
+
+
+
 func _ready():
 	
-	set_physics_process(true)
 	
+	
+	#there is no need to set physics process to true it true by defualt
+#	set_physics_process(true)
+	
+	#setting default scale of sprite
+	default_sprite_scale = $zombie/enemyBody_Part.scale
 	pass
 
 
@@ -83,7 +98,9 @@ func _physics_process(delta):
 		#if the ray cast is colliding the enemy changes direction and flips 
 		if detect_wall_left.is_colliding():
 			direction =1.0
-			$zombie/sprite.flip_h=0
+			#instead of flip_h we will be playing with scale here
+			$zombie/enemyBody_Part.scale.x = -default_sprite_scale.x
+			
 			
 			#if the collider on the left is player, the enemy stops walking
 			var c = detect_wall_left.get_collider()
@@ -94,8 +111,8 @@ func _physics_process(delta):
 		#if the ray cast is colliding the enemy changes direction and flips 
 		if detect_wall_right.is_colliding():
 			direction = -1.0
-			$zombie/sprite.flip_h=1
-			
+			#instead of flip_h we will be playing with scale here
+			$zombie/enemyBody_Part.scale.x = default_sprite_scale.x
 			var c = detect_wall_right.get_collider()
 			#if the collider on the left is player, the enemy stops walking
 			if c.name == "player":
@@ -106,6 +123,7 @@ func _physics_process(delta):
 		
 		#this is the bullet ray for the enemy, it will be removed
 		#because the enemy is a zombie and zombies dont shoot
+		#lazy: lols
 	if get_node("bullet_ray").is_colliding():
 		
 		get_node("bullet_ray/timer").start()

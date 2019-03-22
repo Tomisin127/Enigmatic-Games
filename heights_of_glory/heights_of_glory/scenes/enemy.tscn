@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
 [ext_resource path="res://sprites/zombie002.png" type="Texture" id=2]
+[ext_resource path="res://scenes/parts/enemyBody_Part.tscn" type="PackedScene" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 46.2446, 77.0887 )
@@ -25,12 +26,17 @@ __meta__ = {
 ]]
 
 [node name="sprite" type="Sprite" parent="zombie"]
+visible = false
 scale = Vector2( 0.2, 0.2 )
 texture = ExtResource( 2 )
 
 [node name="collision" type="CollisionShape2D" parent="zombie"]
 position = Vector2( -8, -1 )
 shape = SubResource( 1 )
+
+[node name="enemyBody_Part" parent="zombie" instance=ExtResource( 3 )]
+position = Vector2( -8.65289, 5.76855 )
+scale = Vector2( 0.25, 0.25 )
 
 [node name="physics_collision" type="CollisionShape2D" parent="."]
 position = Vector2( -6, 0 )
