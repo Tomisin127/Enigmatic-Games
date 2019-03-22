@@ -2,6 +2,7 @@ extends Area2D
 
 class_name player_bullet_class
 
+onready var player = get_parent().get_parent()
 
 var velocity = Vector2()
 var speed =400
@@ -23,11 +24,19 @@ func _process(delta):
 	#get_parent().get_node(".").get_parent().get_parent().get_node("Node/Sprite").position  = global.shoot_position
 	
 	randomize()
-	rotation = (rotation +PI *2 *delta)
-	
-	#bullet movement
-	position = (position+velocity *delta)
-	
+
+
+	#when the player is looking right, shoot in that direction
+	if player.get_node("sprite").flip_h==false:
+			#bullet movement
+		position = (position+velocity *delta)
+		rotation = (rotation +PI *2 *delta)
+		
+	#when the player is looking left, shoot in that direction
+	elif player.get_node("sprite").flip_h==true:
+			#bullet movement
+		position = (position-velocity *delta)
+		rotation = (rotation +PI *2 *delta)
 	pass
 	
 func _on_lifetimer_timeout():

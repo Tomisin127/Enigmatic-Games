@@ -133,6 +133,7 @@ func _physics_process(delta):
 		if joystick_direction.x == 1:
 			acceleration.x += ACCEL
 			get_node("sprite").flip_h =0
+			
 		elif joystick_direction.x  == -1:
 			acceleration.x -= ACCEL
 			get_node("sprite").flip_h =1
@@ -294,9 +295,10 @@ func shoot(shoot_activate):
 		var b= player_bullet.instance()
 		player_bullet_container.add_child(b)
 		
-		#the shoot analog angle and point the bullet to that angle
+		
 		b.start(global.shoot_position.angle(),get_node("bullet_spawn_pos").global_position)
-			
+
+		
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
 		
