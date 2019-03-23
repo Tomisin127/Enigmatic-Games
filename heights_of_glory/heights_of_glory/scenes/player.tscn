@@ -29,6 +29,7 @@ texture = ExtResource( 2 )
 [node name="collision" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 21 )
 shape = SubResource( 1 )
+one_way_collision = true
 
 [node name="camera" type="Camera2D" parent="."]
 current = true
@@ -59,6 +60,10 @@ autostart = true
 wait_time = 5.0
 autostart = true
 
+[node name="death_wait_time" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="area_entered" from="player_area" to="." method="_on_player_area_area_entered"]
 [connection signal="body_entered" from="player_area" to="." method="_on_player_area_body_entered"]
 [connection signal="timeout" from="WaitAfterIdle" to="." method="_on_WaitAfterIdle_timeout"]
+[connection signal="timeout" from="death_wait_time" to="." method="_on_death_wait_time_timeout"]

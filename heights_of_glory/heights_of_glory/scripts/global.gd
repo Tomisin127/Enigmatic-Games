@@ -9,8 +9,7 @@ var collected_gems = 0
 #first player
 var endurance : int = 300
 
-#player skills
-var magnum_skills:int = 0
+
 
 var enemy_damage_to_player: int =100
 
@@ -19,3 +18,7 @@ var player_damage_to_enemy:int =70
 var shoot_position 
 
 var control_vec:Vector2
+
+var magnum_skills:int = 0
+
+var gem_life_time : float

@@ -1,6 +1,10 @@
 extends KinematicBody2D
 
+signal activate_magnum_skill
+
 signal revive
+
+signal drop_gems
 
 class_name player
 
@@ -30,6 +34,7 @@ var player_health : int =5000
 var player_mana : int = 100
 var mana_regen : int = 100
 var player_health_regen : int= 2
+
 
 # signal works best with health changes using global is overkill and will cause problem later
 signal sg_health_change
@@ -197,11 +202,16 @@ func _physics_process(delta):
 	
 	
 	#using the magnum skill
-	if is_able_to_use_magmum_skills():
-		global.magmum_skills = 0
+	if is_able_to_use_magnum_skills():
+		global.magnum_skills = 0
 		#skill animation here and damage here
-		emit_signal("damage_enemy")
-		#player_bullet_script.start()
+		
+		#activate the skill button
+		emit_signal("activate_magnum_skill", true)
+		
+	elif not is_able_to_use_magnum_skills():
+		emit_signal("activate_magnum_skill",false)
+
 		
 	#this is use to delay and regenerate mana, see the function below
 	mana_delay_and_regenerate(delta)
@@ -297,7 +307,7 @@ func shoot(shoot_activate):
 		
 		
 		b.start(global.shoot_position.angle(),get_node("bullet_spawn_pos").global_position)
-
+		
 		
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
@@ -310,11 +320,11 @@ func shoot(shoot_activate):
 
 
 #magmum skill is the super ability of the player
-func is_able_to_use_magmum_skills() -> bool:
+func is_able_to_use_magnum_skills() -> bool:
 	"""
 	Returns true if the battler can perform an action
 	"""
-	return global.magnum_skills == 500
+	return global.magnum_skills == 100
 
 
 
@@ -323,7 +333,6 @@ func is_able_to_use_magmum_skills() -> bool:
 
 #this is the function that takes
 func take_damage(hit:int):
-	#player_health-=50
 	#Lazy 
 	#clamp set a limit for the value
 	player_health = clamp((player_health - hit),0,100)
@@ -356,8 +365,15 @@ func dead_or_alive():
 func die(is_dead):
 	#player died 
 	if is_dead==true:
+		
+		#upon dying, spawn the collected gems
+		emit_signal("drop_gems",global.collected_gems)
+		
+		global.collected_gems =0
+		
 		#a dead man cant be walking around, downside is that no gravity is also applied to the body
 		set_physics_process(false)
+		
 		#plays death animation
 		#use yield to hold the method
 		emit_signal("sg_player_dead",position)
@@ -365,15 +381,13 @@ func die(is_dead):
 		#disable all collisions
 		$player_area.monitorable=false
 		$player_area.monitoring=false
+		
+		$death_wait_time.wait_time =3
+		$death_wait_time.start()
 	
 	$collision.disabled=true
 	
-	#is the player as died but still have this revive signal, then it should revive the player
-	if is_dead or get_signal_list().has("revive"):
-		print("i am in here, can another")
-		set_physics_process(true)
-		emit_signal("revive")
-		
+	
 	pass
 
 func mana_delay_and_regenerate(change):
@@ -444,3 +458,10 @@ func revive_player(revive_pos:Vector2=Vector2(0,100)):
 	self.position = revive_pos
 	
 	pass
+
+#waiting after death time as timed out, then the player can now revive
+func _on_death_wait_time_timeout():
+	print("i am in here, can another")
+	set_physics_process(true)
+	emit_signal("revive")
+	pass # Replace with function body.

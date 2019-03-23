@@ -125,6 +125,8 @@ anims/move_elevatonx = SubResource( 4 )
 
 [node name="gem_spawn_time" type="Timer" parent="."]
 
+[node name="gems_dropped_container" type="Node" parent="."]
+
 [connection signal="body_entered" from="door_area" to="." method="_on_door_area_body_entered"]
 [connection signal="body_entered" from="ladder_area" to="." method="_on_ladder_area_body_entered"]
 [connection signal="body_exited" from="ladder_area" to="." method="_on_ladder_area_body_exited"]

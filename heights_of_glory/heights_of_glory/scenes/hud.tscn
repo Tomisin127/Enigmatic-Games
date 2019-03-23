@@ -3,19 +3,19 @@
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/health_bar.png" type="Texture" id=2]
 [ext_resource path="res://sprites/mana_bar.png" type="Texture" id=3]
-[ext_resource path="res://sprites/HUD_sprites/attack.png" type="Texture" id=4]
-[ext_resource path="res://scenes/analog.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/shoot_joystick.tscn" type="PackedScene" id=6]
-[ext_resource path="res://fonts/KenVector Future.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://scenes/analog.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/shoot_joystick.tscn" type="PackedScene" id=5]
+[ext_resource path="res://fonts/KenVector Future.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://sprites/HUD_sprites/super_attack.png" type="Texture" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
 outline_color = Color( 0.698039, 0.168627, 0.168627, 1 )
-font_data = ExtResource( 7 )
+font_data = ExtResource( 6 )
 
 [sub_resource type="DynamicFont" id=2]
 size = 25
-font_data = ExtResource( 7 )
+font_data = ExtResource( 6 )
 
 [node name="hud" type="Node"]
 script = ExtResource( 1 )
@@ -43,25 +43,10 @@ margin_bottom = 116.0
 rect_scale = Vector2( 0.5, 0.25 )
 texture_progress = ExtResource( 3 )
 
-[node name="attack" type="TextureButton" parent="CanvasLayer/Control"]
-margin_left = 760.0
-margin_top = 480.0
-margin_right = 1084.0
-margin_bottom = 804.0
-rect_scale = Vector2( 0.25, 0.25 )
-texture_normal = ExtResource( 4 )
-
-[node name="super_attack" type="TextureButton" parent="CanvasLayer/Control"]
-margin_left = 848.559
-margin_top = 368.958
-margin_right = 1172.56
-margin_bottom = 692.958
-rect_scale = Vector2( 0.5, 0.5 )
-
-[node name="Analog" parent="CanvasLayer/Control" instance=ExtResource( 5 )]
+[node name="Analog" parent="CanvasLayer/Control" instance=ExtResource( 4 )]
 position = Vector2( 130, 470 )
 
-[node name="shoot_joystick" parent="CanvasLayer/Control" instance=ExtResource( 6 )]
+[node name="shoot_joystick" parent="CanvasLayer/Control" instance=ExtResource( 5 )]
 position = Vector2( 920, 470 )
 
 [node name="gems_text" type="Label" parent="CanvasLayer/Control"]
@@ -84,3 +69,13 @@ text = "0
 "
 align = 1
 
+[node name="super_attack" type="TextureButton" parent="CanvasLayer/Control"]
+margin_left = 688.559
+margin_top = 468.958
+margin_right = 1012.56
+margin_bottom = 792.958
+rect_scale = Vector2( 0.35, 0.35 )
+disabled = true
+texture_normal = ExtResource( 7 )
+
+[connection signal="pressed" from="CanvasLayer/Control/super_attack" to="." method="_on_super_attack_pressed"]

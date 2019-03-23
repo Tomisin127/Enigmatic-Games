@@ -163,7 +163,7 @@ func control_limits(e, type : String):
 	
 	
 	if type == "big_circle":
-		if (pos.x > 720 && pos.x <909 && pos.y > 335 && pos.y < 535):
+		if (pos.x > 1720 && pos.x <909 && pos.y > 335 && pos.y < 535):
 			return true
 		else:
 			return false

@@ -305,6 +305,8 @@ tracks/11/keys = {
 }
 
 [node name="enemyBody_Part" type="Node2D"]
+position = Vector2( -7.829, 18.954 )
+scale = Vector2( 0.25, 0.25 )
 
 [node name="base" type="Node2D" parent="."]
 
@@ -325,7 +327,6 @@ __meta__ = {
 [node name="head" type="Sprite" parent="base/body"]
 position = Vector2( -48.8643, -144.56 )
 rotation = -0.0456473
-scale = Vector2( 1, 1 )
 texture = ExtResource( 2 )
 offset = Vector2( 2.29608, -91.1031 )
 __meta__ = {

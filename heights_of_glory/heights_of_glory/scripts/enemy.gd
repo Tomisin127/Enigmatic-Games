@@ -277,6 +277,7 @@ func _on_zombie_area_entered(area):
 		print("kill enemy")
 		enemy_take_damage(global.player_damage_to_enemy)
 		
+		
 	pass # Replace with function body
 	
 #enemy spawn gems upon enemy death
