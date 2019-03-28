@@ -49,13 +49,14 @@ func _input(event):
 				self.modulate = Color(1,1,1,1)
 				self.position = event.position
 				pressed = true
+				print(event.position)
 				$Timer.stop()
 				
 				
 			elif  not event.is_pressed() && control_limits(event,"small_circle"):
 				pressed = false
 				$Timer.start()
-				print("stop")
+				
 				$SmallCircle.position = $BigCircle.position
 				emit_signal("dir_changed",check_small_circle_pos())
 				
@@ -88,8 +89,6 @@ func getIsDrag(event):
 			
 			if global.shoot_position.length()>75:
 				emit_signal("player_shoot", true)
-				print(global.shoot_position.length())
-				print("drag")
 		
 		elif !control_limits(event,"small_circle"):
 			if global.shoot_position.length()<75:
@@ -104,7 +103,6 @@ func getIsDrag(event):
 			emit_signal("player_shoot",true)
 		
 		elif  !event.pressed and global.control_vec==Vector2(0,0):
-			print("control is zero")
 			emit_signal("player_shoot",false)
 
 
@@ -163,12 +161,12 @@ func control_limits(e, type : String):
 	
 	
 	if type == "big_circle":
-		if (pos.x > 720 && pos.x <909 && pos.y > 335 && pos.y < 535):
+		if (pos.x > 806 && pos.x <903 && pos.y > 400 && pos.y < 450):
 			return true
 		else:
 			return false
 	if type == "small_circle":
-		if (pos.x > (720-halfBigCircle_x-100) && pos.x <(909 + halfBigCircle_x +100) && pos.y > (335- halfBigCircle_x -100) && pos.y < (535+ halfBigCircle_x +100)):
+		if (pos.x > (806-halfBigCircle_x-50) && pos.x <(903 + halfBigCircle_x +50) && pos.y > (400- halfBigCircle_x -50) && pos.y < (450+ halfBigCircle_x +50)):
 			return true
 		else:
 			return false
