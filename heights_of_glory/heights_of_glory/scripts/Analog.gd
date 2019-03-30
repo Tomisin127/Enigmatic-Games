@@ -18,7 +18,7 @@ var eve_iAn_range = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	set_meta("active", false)
+	
 	self.modulate = Color(1,1,1,0.3)
 	halfBigCircle_x = $BigCircle.texture.get_size().x/2
 	set_process(true)
@@ -34,22 +34,25 @@ func _input(event):
 		
 		if event is InputEventScreenTouch:
 		
-		
-		
-			if event.is_pressed() && control_limits(event,"big_circle"):
+			if event.is_pressed() && control_limits(event,"small_circle"):
 				$opacityTween.stop(self)
 				self.modulate = Color(1,1,1,1)
 				self.position = event.position
 				pressed = true
 				$Timer.stop()
-			if  not event.is_pressed() && control_limits(event,"small_circle"):
+				
+				
+			elif  not event.is_pressed() && control_limits(event,"small_circle"):
 				pressed = false
 				$Timer.start()
 				print("stop")
 				$SmallCircle.position = $BigCircle.position
 				emit_signal("dir_changed",check_small_circle_pos())
-				
-				
+			
+			#if the pressed while still drag set the small circle position back to Vector(0,0)
+			#but this will only happen when the small circle is released
+			elif pressed==true:
+				$SmallCircle.position = Vector2(0,0)
 				
 				
 		
@@ -64,9 +67,8 @@ func _input(event):
 				$SmallCircle.set_position(toBeSmallPos.normalized() * halfBigCircle_x)
 			else:
 				$SmallCircle.set_position(toBeSmallPos)
-		
-		
-		
+				
+				
 			emit_signal("dir_changed",check_small_circle_pos())
 	
 
@@ -97,23 +99,19 @@ func check_small_circle_pos() -> Vector2:
 	if smallPos_bigPos.x > 30:
 		control.x = 1
 	
-	if smallPos_bigPos.x < -30:
+	elif smallPos_bigPos.x < -30:
 		control.x = -1
 	
-#	if smallPos_bigPos.x <30 and small_pos.x > -30:
-#		control.x = 0
-	
-	if smallPos_bigPos.y > 30:
+	elif smallPos_bigPos.y > 30:
 		control.y = 1
 	
-	if smallPos_bigPos.y < -30:
+	elif smallPos_bigPos.y < -30:
 		control.y = -1
-	
-#	if smallPos_bigPos.y <30 and small_pos.y > -30:
-#		control.y = 0
-	
-	
-	print(control)
+		
+	else:
+		control= Vector2(0,0)
+		$SmallCircle.position = Vector2(0,0)
+
 	return control
 
 

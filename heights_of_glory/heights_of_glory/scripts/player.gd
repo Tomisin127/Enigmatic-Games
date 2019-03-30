@@ -63,11 +63,7 @@ onready var player_bullet_script = load("res://scripts/player_bullet.gd").new()
 var on_ladder:bool = false
 var on_boost_up:bool = true
 var is_shooting:bool = true
-
 var is_dead:bool = true
-
-
-
 
 var joystick_direction : Vector2
 
@@ -78,6 +74,9 @@ func _ready() -> void:
 	
 	#player shoot by dragging shoot button
 	get_parent().get_node("hud/CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
+	
+	#auto attack for the player when he taps the shoot analog
+	get_parent().get_node("hud/CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
 	
 	#revive  the player after death, signal
 	connect("revive",self,"revive_player")
@@ -144,8 +143,9 @@ func _physics_process(delta):
 			acceleration.x -= ACCEL
 			get_node("sprite").flip_h =1
 			
-		#elif joystick_direction.y ==-1:
-			#acceleration.y =JUMP_HEIGHT
+		
+		elif joystick_direction.y ==-1 and is_on_floor():
+			acceleration.y =JUMP_HEIGHT
 
 	
 	
@@ -281,14 +281,38 @@ func get_tile_on_position(x,y):
 
 
 
-#this is another shoot function for testing the second shoot joystick
-#but it will be removed
-func shoot_a():
-	var b= player_bullet.instance()
-	player_bullet_container.add_child(b)
-	b.start(rotation,get_node("bullet_spawn_pos").global_position)
-	#reduce shooting mana
-	player_mana -= 10
+#the player can auto attack when the taps on the joystick and if he is close
+#to an enemy nearby
+func auto_shoot(activate):
+	
+	if activate==true:
+		var b= player_bullet.instance()
+		player_bullet_container.add_child(b)
+		
+		#the enemy is the police zombie(the one animated by lazy programmer while the enemy z is the enemy_zombie
+		#(the previous one)
+		
+		#get the distance from the player bullet position to the enemies
+		var bullet_distance_to_enemy= b.position.distance_to(get_parent().get_node("enemy").position)
+		var bullet_distance_to_enemy_zombie = b.position.distance_to(get_parent().get_node("enemy_z").position)
+		
+		
+		#if the distance of an enemy is shorter target the nearby one
+		#rotate the player bullet in the direction of that nearby enemy
+		if bullet_distance_to_enemy > bullet_distance_to_enemy_zombie:
+			b.start(get_parent().get_node("enemy").rotation,get_node("bullet_spawn_pos").global_position)
+			
+		
+		elif bullet_distance_to_enemy_zombie > bullet_distance_to_enemy:
+			b.start(get_parent().get_node("enemy_z").rotation,get_node("bullet_spawn_pos").global_position)
+		
+		#reduce shooting mana
+		player_mana -= 10
+		
+	else:
+		
+		return
+		
 	pass
 
 	
@@ -299,7 +323,7 @@ func shoot_a():
 	
 	
 	
-	# this is the real shoot function////shooting bullet 
+	# this is the real shoot function for when the shoot analog is dragged////shooting bullet 
 func shoot(shoot_activate):
 	
 	#if shoot is true, then shoot, dont mind all the nonsense like "if $sprite.flip_h==false"
@@ -319,9 +343,7 @@ func shoot(shoot_activate):
 		
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
 	elif shoot_activate==false:
-		
-		print("disable shooting")
-		
+		#print("disable shooting")
 		return
 		
 
@@ -329,9 +351,6 @@ func shoot(shoot_activate):
 
 #magmum skill is the super ability of the player
 func is_able_to_use_magnum_skills() -> bool:
-	"""
-	Returns true if the battler can perform an action
-	"""
 	return global.magnum_skills == 100
 
 
@@ -348,7 +367,7 @@ func take_damage(hit:int):
 	
 	#stagger animation can go here too
 	
-	print(player_health)
+	#print(player_health)
 	pass
 
 
@@ -385,7 +404,7 @@ func die(is_dead):
 		#plays death animation
 		#use yield to hold the method
 		emit_signal("sg_player_dead",position)
-		print("I AM THE PLAYER AND I HAVE DIED")
+		#print("I AM THE PLAYER AND I HAVE DIED")
 		#disable all collisions
 		$player_area.monitorable=false
 		$player_area.monitoring=false
@@ -418,7 +437,7 @@ func mana_delay_and_regenerate(change):
 		
 	if player_mana ==0:
 		#global.mana = min(global.mana + _get_mana_regen() * get_physics_process_delta_time(),100)
-		print("mana is zero")
+		#print("mana is zero")
 		
 		pass
 		
@@ -461,7 +480,7 @@ func revive_from_death():
 	
 	#revive the player to this particular position in the function
 func revive_player(revive_pos:Vector2=Vector2(0,100)):
-	print("function emits")
+	#print("function emits")
 	revive_from_death()
 	self.position = revive_pos
 	

@@ -21,6 +21,7 @@ func _ready():
 	get_node("enemy").target_player = get_node("player")
 	get_node("enemy_z").target_player = get_node("player")
 	
+	
 	#connect the health changes signal to the player
 	$player.connect("sg_health_change",$hud,"health_change")
 	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
