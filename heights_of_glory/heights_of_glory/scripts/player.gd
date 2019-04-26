@@ -1,5 +1,9 @@
 extends KinematicBody2D
 
+var p =0
+
+var revive_timer = 0
+
 class_name tothem
 
 signal activate_magnum_skill
@@ -65,20 +69,30 @@ onready var button_hud = get_parent().get_node("button_hud")
 var on_ladder:bool = false
 var on_boost_up:bool = true
 var is_shooting:bool = true
-var is_dead:bool = true
+var is_dead:bool = false
 
 var joystick_direction : Vector2
 
+export (NodePath) var joystick_one_path;
+export (NodePath) var joystick_two_path;
 
+var joystick_one;
+var joystick_two;
 
+var JOYSTICK_DEADZONE = 0.4
+var SHOOT_JOYSTICK_DEADZONE = 0.7
 
 func _ready() -> void:
 	
 	player_signals()
 	
+	player_mana = clamp(player_mana, 1,player_mana)
 	screensize = get_viewport_rect().size
 	
 	set_physics_process(true)
+	
+	joystick_one = get_node(joystick_one_path);
+	joystick_two = get_node(joystick_two_path);
 	
 	pass
 
@@ -87,6 +101,39 @@ func _ready() -> void:
 
 
 func _physics_process(delta):
+	print("the shoot state: ", joystick_two.shoot_pressed_and_release)
+		# Move based on the joystick, only if the joystick is farther than the dead zone.
+	if (joystick_one.joystick_vector.length() > JOYSTICK_DEADZONE/2):
+		move_and_slide(-joystick_one.joystick_vector * ACCEL);
+		
+	
+	#shoot based on drag 
+	
+	if joystick_two.joystick_vector.length()>SHOOT_JOYSTICK_DEADZONE:
+		p = joystick_two.joystick_vector.length()
+	
+	print("value in p : ", p)
+	
+	if (joystick_two.joystick_vector.length() >SHOOT_JOYSTICK_DEADZONE) and $shoot_timer.time_left<0.7 and is_mana_full():
+
+		shoot(true)
+
+	
+	elif (joystick_two.shoot_pressed_and_release==true  and $shoot_timer.time_left<0.3 and is_mana_full()):
+		auto_shoot(true if not p > SHOOT_JOYSTICK_DEADZONE else false)
+		p=0
+		joystick_two.shoot_pressed_and_release=false
+		
+		
+		
+	if not is_mana_full():
+		
+		auto_shoot(false)
+		shoot(false)
+		
+		pass
+		
+		
 	#pass player mana status to global script
 	global.player_mana_copy = player_mana
 	
@@ -140,11 +187,7 @@ func _physics_process(delta):
 		acceleration.rotated(joy_distance.angle())
 		#print("joystick angle: ",joy_angle)
 		
-		#accelerate in that direction
-		if !is_on_floor():
-			GRAVITY=0
-			#print("not on floor")
-			pass
+
 			
 		
 		#print("joy_diagonal: ", joy_diagonal)
@@ -277,8 +320,10 @@ func _physics_process(delta):
 		GRAVITY=9.81
 	
 	#if player is dead or alive
-	dead_or_alive()
+	dead_or_alive(delta)
 	
+	#revive after 3 seconds
+	revive_player()
 	
 	pass
 
@@ -320,6 +365,8 @@ func get_tile_on_position(x,y):
 #the player can auto attack when the taps on the joystick and if he is close
 #to an enemy nearby
 func auto_shoot(activate):
+	
+	$shoot_timer.start()
 	
 	if activate==true:
 		var b= player_bullet.instance()
@@ -378,6 +425,7 @@ func auto_shoot(activate):
 	# this is the real shoot function for when the shoot analog is dragged////shooting bullet 
 func shoot(shoot_activate):
 	
+	$shoot_timer.start()
 	#if shoot is true, then shoot, dont mind all the nonsense like "if $sprite.flip_h==false"
 	#it is used for testing something, like wen the player flips position,
 	#the shoot direction should flip too
@@ -427,7 +475,7 @@ func take_damage(hit:int):
 
 
 #dead or alive function called in the processs function
-func dead_or_alive():
+func dead_or_alive(change_in_time):
 	
 	if is_alive():
 		#regenerate player health a little
@@ -435,23 +483,30 @@ func dead_or_alive():
 		pass
 	# player_dies
 	if not is_alive():
-		die(is_dead)
+		die(change_in_time)
 		
 	pass
 
 
 #player as died called in the dead or alive function
-func die(is_dead):
+func die(change_in_time):
 	#player died 
-	if is_dead==true:
-		
+	if not is_alive():
+		print("NO LONGER ALIVE")
 		#upon dying, drop the collected gems
 		emit_signal("drop_gems",global.collected_gems)
 		
 		global.collected_gems =0
 		
 		#a dead man cant be walking around, downside is that no gravity is also applied to the body
-		set_physics_process(false)
+		#set_physics_process(false)
+		
+		$collision.disabled=true
+		$player_area/collision.disabled=true
+		
+		revive_timer +=change_in_time
+		
+		get_viewport().gui_disable_input=true
 		
 		#plays death animation
 		#use yield to hold the method
@@ -461,10 +516,9 @@ func die(is_dead):
 		$player_area.monitorable=false
 		$player_area.monitoring=false
 		
-		$death_wait_time.wait_time =3
-		$death_wait_time.start()
+		position= Vector2(20,20)
 		
-		$collision.disabled=true
+		hide()
 	
 	
 	pass
@@ -472,29 +526,26 @@ func die(is_dead):
 func mana_delay_and_regenerate(change):
 	#print("the player mana : " , player_mana)
 	#print("the divisions: ",player_mana_divisions)
-	if player_mana >=75:
-	#	regenerate mana very time the player mana goes down but not below 5
-		player_mana =min(player_mana + mana_regen *change ,100)
-		
-	elif player_mana >=50:
-		player_mana = min(player_mana + mana_regen *change,100)
 	
-	elif player_mana >=25:
+	
+	if player_mana >=0.1:
 		player_mana = min(player_mana + mana_regen *change ,100)
-	
-	#elif player_mana <=0:
-		#player_mana=0
-		#update wait_timer with delta(change)
-		#wait_timer +=change
-		#if wait_timer>1 and wait_timer < 5:
 		
-		#player_mana += min(player_mana + 50,100)
-		#wait_timer=0
+	elif player_mana <=0:
+		player_mana =0
+		wait_timer +=change
+		if wait_timer > 4:
+			player_mana = 100
+			wait_timer=0
+			print("playermana: ",player_mana)
+
+		
 		pass
 	
 		
 	#check if the player is alive
 func is_alive()->bool:
+	
 	#dieing is better if the player tells us by itself before dieing
 	return player_health >0
 
@@ -518,19 +569,21 @@ func _on_player_area_area_entered(area):
 	pass # Replace with function body.
 	
 func revive_from_death():
-	$collision.disabled=false
-	$player_area/collision.disabled =false
-	set_physics_process(true)
-	player_health=5000
-	request_ready()
+	if revive_timer >3:
+		request_ready()
+		$collision.disabled=false
+		$player_area/collision.disabled =false
+		#set_physics_process(true)
+		player_health=5000
+		show()
+		get_viewport().gui_disable_input=false
 	
 	pass
 	
 	#revive the player to this particular position in the function
-func revive_player(revive_pos:Vector2=Vector2(0,100)):
+func revive_player():
 	#print("function emits")
 	revive_from_death()
-	self.position = revive_pos
 	
 	pass
 
@@ -544,13 +597,13 @@ func _on_death_wait_time_timeout():
 func player_signals():
 	
 	#player shoot by button
-	button_hud.connect("shoot_by_button",self,"auto_shoot")
+	#button_hud.connect("shoot_by_button",self,"auto_shoot")
 	
 	#player shoot by dragging shoot button
-	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
+	#joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
 	
 	#auto attack for the player when he taps the shoot analog
-	joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
+	#joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
 	
 	#revive  the player after death, signal
 	connect("revive",self,"revive_player")
@@ -566,4 +619,6 @@ func player_signals():
 	
 	pass
 	
-	
+func is_mana_full():
+	return player_mana > 0
+	pass

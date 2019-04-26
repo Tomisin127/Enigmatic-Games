@@ -55,8 +55,6 @@ func _ready():
 	#spawn a gem upon start game
 	_on_gem_spawn_time_timeout()
 	
-	#setting the target to player
-	get_node("enemy_z").target_player = get_node("player")
 
 	
 
@@ -197,7 +195,7 @@ func all_signals():
 	$player.connect("sg_health_change",$hud,"health_change")
 	
 	#check the direction at which the move joystick analog is dragged too
-	$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
+	#$hud/CanvasLayer/Control/Analog.connect("dir_changed",$player,"joystick_motion")
 	
 	#when the player dies, drop the collected gems
 	get_node("player").connect("drop_gems",self, "drop_collected_gems")

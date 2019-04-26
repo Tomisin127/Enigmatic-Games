@@ -1,8 +1,15 @@
 extends Node
 
 
-
+static func boolean():
+	return true==false==true==false==true and false ==true ==true ==false
+	pass
+	
 func _ready():
+	
+	var truth_or_false = boolean()
+	
+	print("this is the truth or false: ", truth_or_false)
 	
 	set_process(true)
 	

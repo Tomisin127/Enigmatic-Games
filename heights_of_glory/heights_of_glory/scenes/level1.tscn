@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scripts/level1.gd" type="Script" id=1]
 [ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
@@ -9,8 +9,7 @@
 [ext_resource path="res://scenes/box.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=8]
 [ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=9]
-[ext_resource path="res://scenes/enemy_z.tscn" type="PackedScene" id=10]
-[ext_resource path="res://scenes/button_hud.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/button_hud.tscn" type="PackedScene" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 81.6724, 108.997 )
@@ -102,6 +101,8 @@ shape = SubResource( 2 )
 
 [node name="player" parent="." instance=ExtResource( 6 )]
 position = Vector2( 657.114, 419.235 )
+joystick_one_path = NodePath("../hud/CanvasLayer/Control/Joystick")
+joystick_two_path = NodePath("../hud/CanvasLayer/Control/Joystick2")
 
 [node name="box" parent="." instance=ExtResource( 7 )]
 position = Vector2( 921, 498.224 )
@@ -132,11 +133,7 @@ anims/move_elevatonx = SubResource( 4 )
 
 [node name="gems_dropped_container" type="Node" parent="."]
 
-[node name="enemy_z" parent="." instance=ExtResource( 10 )]
-visible = false
-position = Vector2( 540, 440 )
-
-[node name="button_hud" parent="." instance=ExtResource( 11 )]
+[node name="button_hud" parent="." instance=ExtResource( 10 )]
 
 [node name="police_enemy_container" type="Node" parent="."]
 
@@ -162,3 +159,5 @@ autostart = true
 [connection signal="body_exited" from="ladder_area" to="." method="_on_ladder_area_body_exited"]
 [connection signal="timeout" from="gem_spawn_time" to="." method="_on_gem_spawn_time_timeout"]
 [connection signal="timeout" from="fast_zombies_timer" to="." method="spawn_fast_zombies"]
+
+[editable path="hud"]

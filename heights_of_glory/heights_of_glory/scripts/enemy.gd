@@ -39,7 +39,7 @@ onready var sprite = $zombie/sprite
 #player damage variables
 var player_body : Object
 
-export (int) var damage_point = 1
+export (int) var damage_point = 10
 export (float) var damage_time = 0.4
 var in_damage_time = 0
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/health_bar.png" type="Texture" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://scenes/shoot_joystick.tscn" type="PackedScene" id=5]
 [ext_resource path="res://fonts/KenVector Future.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://sprites/HUD_sprites/super_attack.png" type="Texture" id=7]
+[ext_resource path="res://scenes/move_analog.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/shoot_joystk.tscn" type="PackedScene" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
@@ -44,9 +46,11 @@ rect_scale = Vector2( 0.5, 0.25 )
 texture_progress = ExtResource( 3 )
 
 [node name="Analog" parent="CanvasLayer/Control" instance=ExtResource( 4 )]
+visible = false
 position = Vector2( 130, 470 )
 
 [node name="shoot_joystick" parent="CanvasLayer/Control" instance=ExtResource( 5 )]
+visible = false
 position = Vector2( 920, 470 )
 
 [node name="gems_text" type="Label" parent="CanvasLayer/Control"]
@@ -78,5 +82,9 @@ rect_scale = Vector2( 0.35, 0.35 )
 disabled = true
 toggle_mode = true
 texture_normal = ExtResource( 7 )
+
+[node name="Joystick" parent="CanvasLayer/Control" instance=ExtResource( 8 )]
+
+[node name="Joystick2" parent="CanvasLayer/Control" instance=ExtResource( 9 )]
 
 [connection signal="toggled" from="CanvasLayer/Control/super_attack" to="." method="activate_skill_button"]
