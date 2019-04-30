@@ -46,7 +46,7 @@ func _process(delta):
 	
 	check_shooting_by_button()
 	
-	button_controller()
+	button_controller(delta)
 	#calculate the distance to the first and second enemy in the list
 	
 	#var player_distance_to_police0 = player.position.distance_to(level1.list_of_police_enemy[0].position if level1.list_of_enemy[0] else null)
@@ -112,7 +112,7 @@ func check_shooting_by_button():
 		
 	pass
 	
-func button_controller():
+func button_controller(change):
 	
 	if button_up==true:
 			#jumping settings
@@ -130,11 +130,11 @@ func button_controller():
 		
 	if button_center==true:
 		#start the timer
-		on_floor_timer +=get_process_delta_time()
+		on_floor_timer +=change
 		
 		#if the player is facing right and the timer is less than 1
 		#rotate the acceleration in 45 degree to the right and jump
-		if player.get_node("sprite").flip_h==false and on_floor_timer<1:
+		if player.get_node("sprite").flip_h==false and on_floor_timer<0.5:
 			player.acceleration.rotated(Vector2(1,-1).angle())
 			player.acceleration.x =200
 			player.acceleration.y =-200
@@ -142,9 +142,9 @@ func button_controller():
 		#if the player is facing right and the timer is less than 1
 		#rotate the acceleration in 45 degree to the right and jump
 		
-		elif player.get_node("sprite").flip_h==true and on_floor_timer<1:
-			player.acceleration.rotated(Vector2(1,-1).angle())
-			player.acceleration.x =200
+		elif player.get_node("sprite").flip_h==true and on_floor_timer<0.5:
+			player.acceleration.rotated(Vector2(-1,-1).angle())
+			player.acceleration.x =-200
 			player.acceleration.y =-200
 			
 		#if is still jumping and it as landed after time reset, jump immediately again

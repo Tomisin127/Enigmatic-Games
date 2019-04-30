@@ -46,7 +46,7 @@ var player_mana_divisions : int = player_mana /4
 
 # signal works best with health changes using global is overkill and will cause problem later
 signal sg_health_change
-signal sg_player_dead
+
 
 const BOOST_UP = -1000
 
@@ -65,6 +65,7 @@ onready var button_hud = get_parent().get_node("button_hud")
 
 #export(float, 0.0, 1.0) var success_chance : float
 
+var player_on_tile
 
 var on_ladder:bool = false
 var on_boost_up:bool = true
@@ -101,28 +102,47 @@ func _ready() -> void:
 
 
 func _physics_process(delta):
-	print("the shoot state: ", joystick_two.shoot_pressed_and_release)
-		# Move based on the joystick, only if the joystick is farther than the dead zone.
-	if (joystick_one.joystick_vector.length() > JOYSTICK_DEADZONE/2):
-		move_and_slide(-joystick_one.joystick_vector * ACCEL);
+	
+	randomize()
+	
+	global.player_mana_copy = player_mana
+	
+	player_on_tile = get_tile_on_position(rand_range(position.x-64,position.x+64), rand_range(position.y-64,position.y+64))
+	
+	if global.use_joystick==true:
+		#print("the shoot state: ", joystick_two.shoot_pressed_and_release)
+			# Move based on the joystick, only if the joystick is farther than the dead zone.
+		if (joystick_one.joystick_vector.length() > JOYSTICK_DEADZONE/2):
+			move_and_slide(-joystick_one.joystick_vector * ACCEL);
+			#rotate the player acceleration to the angle where the joystick is pointing
+			acceleration.rotated(joystick_one.joystick_vector.angle())
+			
 		
+		#shoot based on drag 
+		
+		if joystick_two.joystick_vector.length()>SHOOT_JOYSTICK_DEADZONE:
+			p = joystick_two.joystick_vector.length()
+			
+			print("joystick_two_vector: ", joystick_two.joystick_vector)
+			global.shoot_drag = p
+		
+		if sign(joystick_two.joystick_vector.x)==-1:
+			$sprite.flip_h=false
+			
+			
+		if sign(joystick_two.joystick_vector.x)==1:
+			$sprite.flip_h=true
+		
+		
+		if (joystick_two.joystick_vector.length() >SHOOT_JOYSTICK_DEADZONE) and $shoot_timer.time_left<0.7 and is_mana_full():
 	
-	#shoot based on drag 
+			shoot(true)
 	
-	if joystick_two.joystick_vector.length()>SHOOT_JOYSTICK_DEADZONE:
-		p = joystick_two.joystick_vector.length()
-	
-	print("value in p : ", p)
-	
-	if (joystick_two.joystick_vector.length() >SHOOT_JOYSTICK_DEADZONE) and $shoot_timer.time_left<0.7 and is_mana_full():
-
-		shoot(true)
-
-	
-	elif (joystick_two.shoot_pressed_and_release==true  and $shoot_timer.time_left<0.3 and is_mana_full()):
-		auto_shoot(true if not p > SHOOT_JOYSTICK_DEADZONE else false)
-		p=0
-		joystick_two.shoot_pressed_and_release=false
+		#if joystick_two.joystick_active==true:
+			#if (joystick_two.joystick_active==false and $shoot_timer.time_left<0.3 and is_mana_full()):
+				#auto_shoot(true if not p > SHOOT_JOYSTICK_DEADZONE else false)
+				#p=0
+			
 		
 		
 		
@@ -134,8 +154,7 @@ func _physics_process(delta):
 		pass
 		
 		
-	#pass player mana status to global script
-	global.player_mana_copy = player_mana
+	
 	
 	#if the shoot analog is dragged in the left or the right direction 
 	#the player faces that direction
@@ -156,8 +175,10 @@ func _physics_process(delta):
 	
 	#this will be used to know the tile that the player steps on
 	#its not working well yet
-	get_tile_on_position(position.x,position.y+35)
+
+	#var g = get_tile_on_position(position.x, position.y) == "floor1"
 	
+	#print("g: ", g)
 	#drag player down by gravity
 	acceleration.y += GRAVITY
 	if Input.is_action_pressed("ui_left"):
@@ -169,22 +190,22 @@ func _physics_process(delta):
 		get_node("sprite").flip_h =0
 		
 	
+
 	#adding joystick control
 	
-	if joystick_direction:
+#	if joystick_direction:
+#
+#
+#		#the distance from the center of the move analog which is the small_circle
+#		#from the direction that the joystick is pointing
+#		var joy_distance = (global.move_analog_center - joystick_direction)
+#
+#		var joy_diagonal =(joystick_direction.x-joystick_direction.y)/2
+#
+#		#print("joy diagonal length: ", joy_diagonal)
+#		var joy_angle = rad2deg(global.move_analog_center.angle_to(joystick_direction))
 		
 		
-		#the distance from the center of the move analog which is the small_circle
-		#from the direction that the joystick is pointing
-		var joy_distance = (global.move_analog_center - joystick_direction)
-		
-		var joy_diagonal =(joystick_direction.x-joystick_direction.y)/2
-		
-		#print("joy diagonal length: ", joy_diagonal)
-		var joy_angle = rad2deg(global.move_analog_center.angle_to(joystick_direction))
-		
-		#rotate the player acceleration to the angle where the joystick is pointing
-		acceleration.rotated(joy_distance.angle())
 		#print("joystick angle: ",joy_angle)
 		
 
@@ -193,45 +214,45 @@ func _physics_process(delta):
 		#print("joy_diagonal: ", joy_diagonal)
 		
 		#if the analog is dragged diagonally
-		if joy_diagonal==0.5:
-			
-			#start the timer
-			diagonal_timer +=delta
-			
-			#if timer is less than 1, jump diagonally
-			if diagonal_timer < 1:
-				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
-				
-			#if timer is more than 1 and is on the floor jump immediately upon landing
-			#reset the timer back to zero
-			
-			elif diagonal_timer >1 and is_on_floor():
-				diagonal_timer=0
-				
-		if joy_diagonal==-0.5:
-			diagonal_timer +=delta
-			#print(diagonal_timer)
-			if diagonal_timer < 1:
-				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
-			elif diagonal_timer >1 and is_on_floor():
-				diagonal_timer=0
-			
-			
-			#if  up, the jump up
-		elif joystick_direction.y ==-1 and is_on_floor():
-			
-			#print(joy_diagonal)
-			acceleration.y =JUMP_HEIGHT
-			
-			#move right
-		elif joystick_direction.x ==1 and is_on_floor():
-			acceleration.x += ACCEL 
-			$sprite.flip_h=0
-			
-			#move left
-		elif joystick_direction.x ==-1 and is_on_floor():
-			acceleration.x -=ACCEL
-			$sprite.flip_h=1
+#		if joy_diagonal==0.5:
+#
+#			#start the timer
+#			diagonal_timer +=delta
+#
+#			#if timer is less than 1, jump diagonally
+#			if diagonal_timer < 1:
+#				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
+#
+#			#if timer is more than 1 and is on the floor jump immediately upon landing
+#			#reset the timer back to zero
+#
+#			elif diagonal_timer >1 and is_on_floor():
+#				diagonal_timer=0
+#
+#		if joy_diagonal==-0.5:
+#			diagonal_timer +=delta
+#			#print(diagonal_timer)
+#			if diagonal_timer < 1:
+#				acceleration = Vector2(joy_distance.x, joy_distance.y)*5
+#			elif diagonal_timer >1 and is_on_floor():
+#				diagonal_timer=0
+#
+#
+#			#if  up, the jump up
+#		elif joystick_direction.y ==-1 and is_on_floor():
+#
+#			#print(joy_diagonal)
+#			acceleration.y =JUMP_HEIGHT
+#
+#			#move right
+#		elif joystick_direction.x ==1 and is_on_floor():
+#			acceleration.x += ACCEL 
+#			$sprite.flip_h=0
+#
+#			#move left
+#		elif joystick_direction.x ==-1 and is_on_floor():
+#			acceleration.x -=ACCEL
+#			$sprite.flip_h=1
 			
 		
 	
@@ -271,6 +292,8 @@ func _physics_process(delta):
 	#this serve as friction even a standing object feels friction
 	acceleration.x = lerp(acceleration.x, 0, 0.2)
 	
+	#if is_on_floor():
+		#print("accelerationY: ", acceleration.y)
 	
 	
 	#jumping settings
@@ -284,11 +307,13 @@ func _physics_process(delta):
 	#move and slide the velocity and detect the floor
 	acceleration = move_and_slide(acceleration,Vector2(0,-1))
 	
+	#acceleration = move_and_collide(acceleration
+	
 	#getting the number of times the player collided with a body
-	for i in get_slide_count():
-		var collision = get_slide_collision(i)
-		if collision:
-			emit_signal("collided", collision)
+#	for i in get_slide_count():
+#		var collision = get_slide_collision(i)
+#		if collision:
+#			emit_signal("collided", collision)
 	
 	#using the magnum skill
 	if is_able_to_use_magnum_skills():
@@ -296,6 +321,7 @@ func _physics_process(delta):
 		#skill animation here and damage here
 		#activate the skill button
 		emit_signal("activate_magnum_skill", true)
+		print("i am able to use magnum skill")
 		
 	elif not is_able_to_use_magnum_skills():
 		emit_signal("activate_magnum_skill",false)
@@ -325,6 +351,9 @@ func _physics_process(delta):
 	#revive after 3 seconds
 	revive_player()
 	
+	
+	#if player_on_tile == "floor1":
+		
 	pass
 
 
@@ -332,9 +361,9 @@ func _physics_process(delta):
 
 
 
-func joystick_motion(dir :Vector2):
-	
-	joystick_direction = dir
+#func joystick_motion(dir :Vector2):
+#
+#	joystick_direction = dir
 
 
 
@@ -348,8 +377,10 @@ func get_tile_on_position(x,y):
 	if not tilemap == null:
 		var map_pos = tilemap.world_to_map(Vector2(x,y))
 		var id = tilemap.get_cellv(map_pos)
+		
 		if id > -1:
 			var tilename = tilemap.get_tileset().tile_get_name(id)
+			print("tilename: ", tilename)
 			return tilename
 		else:
 			return ""
@@ -438,7 +469,7 @@ func shoot(shoot_activate):
 		player_bullet_container.add_child(b)
 		
 		
-		b.start(global.shoot_position.angle(),get_node("bullet_spawn_pos").global_position)
+		b.start(joystick_two.joystick_vector.angle()-PI,get_node("bullet_spawn_pos").global_position)
 		
 		
 	#if shoot is false, return keyword means, it shouldnt do anything(no shooting)
@@ -510,7 +541,6 @@ func die(change_in_time):
 		
 		#plays death animation
 		#use yield to hold the method
-		emit_signal("sg_player_dead",position)
 		#print("I AM THE PLAYER AND I HAVE DIED")
 		#disable all collisions
 		$player_area.monitorable=false
@@ -603,14 +633,11 @@ func player_signals():
 	#joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("player_shoot",self,"shoot")
 	
 	#auto attack for the player when he taps the shoot analog
-	#joystick_hud.get_node("CanvasLayer/Control/shoot_joystick").connect("auto_attack",self,"auto_shoot")
+	joystick_hud.get_node("CanvasLayer/Control/Joystick2").connect("auto_attack",self,"auto_shoot")
 	
 	#revive  the player after death, signal
 	connect("revive",self,"revive_player")
 	
-	#this emits signal for the player to be moved by the joysick
-	
-	connect("sg_player_dead",get_parent(),"revive_player")
 	
 	connect("sg_health_change",get_parent().get_node("hud"),"health_change")
 	

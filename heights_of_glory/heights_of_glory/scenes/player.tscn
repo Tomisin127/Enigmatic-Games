@@ -44,6 +44,7 @@ position = Vector2( 30, 20 )
 [node name="player_bullet_container" type="Node" parent="."]
 
 [node name="player_area" type="Area2D" parent="."]
+collision_mask = 2
 
 [node name="collision" type="CollisionShape2D" parent="player_area"]
 position = Vector2( 0, 18 )
@@ -57,4 +58,3 @@ wait_time = 5.0
 autostart = true
 
 [connection signal="area_entered" from="player_area" to="." method="_on_player_area_area_entered"]
-[connection signal="timeout" from="WaitAfterIdle" to="." method="_on_WaitAfterIdle_timeout"]

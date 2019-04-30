@@ -10,6 +10,7 @@ var use_joystick:bool
 
 var use_button:bool 
 
+var shoot_drag=0
 
 #gems collected by the player
 var collected_gems = 0

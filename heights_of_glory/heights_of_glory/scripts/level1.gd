@@ -32,12 +32,18 @@ onready var gizmo_line = $gizmo_line
 
 onready var gizmo
 
+var gem_on_tile
+
+var police_enemy_on_tile= null
+
+var enemy_spawn_count =0
 func _ready():
 	#all level1 signals are in this function
 	all_signals()
 	
+	
 	#spawn the enemy at a position and add it to a dictionary
-	spawn_police_enemy_at_position()
+	spawn_police_enemy_at_position(10)
 	
 	spawn_gizmo_at_position()
 	
@@ -63,7 +69,8 @@ func _ready():
 	pass
 	
 func _process(delta):
-	
+	print("enemy spawn count : ", enemy_spawn_count)
+	print("inside the list: ", list_of_police_enemy)
 	pass
 	
 	#function that spawns the gems 
@@ -82,26 +89,45 @@ func spawn_gems(amount):
 		position_to_spawn.y = rand_range(16, get_viewport().get_visible_rect().size.y-16)
 		
 		#set gems postion to the spawn position 
-		
+
 		#detect if the gem spawn on the tile
-		var tile_name = get_tile_on_position(position_to_spawn.x, position_to_spawn.y)
+		gem_on_tile = get_tile_on_position(rand_range(position_to_spawn.x-5,position_to_spawn.x+5), rand_range(position_to_spawn.y-5,position_to_spawn.y+5))
 		
-		print("tile name were gem collide: ", tile_name)
-		
-		#if the gem does not spawn on the tile , then it should spawn somewhere else
-		if !tile_name :
-			gem.position = position_to_spawn
+		print("tile name were gem collide: ", gem_on_tile)
+
+		gem.position = position_to_spawn
 			
 		#if the gem spawn on the tile, then it should delete that gem that spawn on that tile
-		elif tile_name == "floor0" or "floor1" or "floor2" or "floor3" or "floor4" or "floor5" or "floor6" or "floor7" or "wall":
+		if gem_on_tile == "wall":
 			gem.queue_free()
 			
-			print("spawned in wall")
-			return
+		elif gem_on_tile == "floor0":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor1":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor2":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor3":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor4":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor5":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor6":
+			gem.queue_free()
+			
+		elif gem_on_tile == "floor7":
+			gem.queue_free()
 			
 			
 		#the gem will spawn every 7 seconds
-		$gem_spawn_time.wait_time=7
+		$gem_spawn_time.wait_time=0.1
 		$gem_spawn_time.start()
 		print($gem_spawn_time.time_left)
 		
@@ -125,15 +151,15 @@ func drop_collected_gems(amount):
 	pass
 	
 	
-#revive the player to a initial position after the player dies
-func revive(pos : Vector2= Vector2(0,100)):
-	var player = playerSC.instance()
-	player.position = pos
-	add_child(player)
-	_ready()
-	
-	
-	pass
+##revive the player to a initial position after the player dies
+#func revive(pos : Vector2= Vector2(0,100)):
+#	var player = playerSC.instance()
+#	player.position = pos
+#	add_child(player)
+#	_ready()
+#
+#
+#	pass
 
 
 func _on_ladder_area_body_entered(body):
@@ -160,19 +186,6 @@ func _on_gem_spawn_time_timeout():
 	spawn_gems(1)
 	pass # Replace with function body.
 
-#player collide with tilemap
-func on_character_collided(collision):
-	if collision.collider is TileMap:
-		var tile_pos = collision.collider.world_to_map($player.position)
-		tile_pos -= collision.normal
-		var tile= collision.collider.get_cellv(tile_pos)
-		var tile_name = $tilemap.get_tileset().tile_get_name(tile)
-		if tile > 0:
-			print(tile_name)
-			
-			$tilemap.set_cellv(tile_pos, tile)
-		
-	pass
 	
 	
 	#second code for player colliding on tile map
@@ -188,7 +201,7 @@ func get_tile_on_position(x,y):
 			return tilename
 			
 		else:
-			return ""
+			return null
 			
 func all_signals():
 	#connect the health changes signal to the player
@@ -201,51 +214,101 @@ func all_signals():
 	get_node("player").connect("drop_gems",self, "drop_collected_gems")
 	
 	#checking player collision points
-	$player.connect("collided",self, "on_character_collided")
+	#$player.connect("collided",self, "on_character_collided")
 	
 	pass
 	
-func spawn_police_enemy_at_position():
-	list_of_police_enemy = []
+func spawn_police_enemy_at_position(amount):
 	
-	for i in range(1):
-		
-		randomize()
+	randomize()
+	
+	
+	
+	for i in range(amount):
+
 		
 		#create an instance of the police_enemy_scene
 		var police_enemy = police_enemy_scene.instance()
-		$police_enemy_container.add_child(police_enemy)
 		
-		#set the target of that enemy to the player
-		police_enemy.target_player=get_node("player")
-		
-		#add the enemy to a list
-		list_of_police_enemy.append(police_enemy)
-		
-		print("inside the list: ", list_of_police_enemy)
 		
 		#create a spawn position for the enemy
 		var spawn_position = Position2D.new()
-		add_child(spawn_position)
-		
-		#add the position to a list
-		list_of_police_enemy_position.append(spawn_position)
-		
+			
 		#create a variable to spawn the positions at a random_position
 		var position_to_spawn_the_created_position = Vector2()
 		
 		position_to_spawn_the_created_position.x = rand_range(16, get_viewport().get_visible_rect().size.x-16)
 		position_to_spawn_the_created_position.y = rand_range(16, get_viewport().get_visible_rect().size.y-16)
 		
+		
 		#set the spawn position to that random position
+		
+		$police_enemy_container.add_child(police_enemy)
+		
+		$police_enemy_pos.add_child(spawn_position)
+		
+		#set the target of that enemy to the player
+		police_enemy.target_player=get_node("player")
+		
 		spawn_position.position = position_to_spawn_the_created_position
 		
 		#set the instances of the police enemy to that spawn position
 		police_enemy.position = spawn_position.position
-		 
 		
+		police_enemy_on_tile = get_tile_on_position(rand_range(position_to_spawn_the_created_position.x+1000,position_to_spawn_the_created_position.x-1000),rand_range(position_to_spawn_the_created_position.y+1000,position_to_spawn_the_created_position.y-1000))
+		print("police_enemy_tile: ", police_enemy_on_tile)
+		
+		if police_enemy_on_tile == "wall":
+			
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		elif police_enemy_on_tile=="floor1":
+			
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		elif police_enemy_on_tile == "floor2":
+			
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		elif police_enemy_on_tile == "floor3":
+			
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		elif police_enemy_on_tile == "floor4":
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		elif police_enemy_on_tile == "floor5":
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		
+		elif police_enemy_on_tile == "floor6":
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+			
+		elif police_enemy_on_tile == "floor7":
+			$police_enemy_container.remove_child(police_enemy)
+			police_enemy.queue_free()
+			
+		 
+
+		
+		
+		#add the enemy to a list
+		list_of_police_enemy.append(police_enemy)
+		#add the position to a list
+		list_of_police_enemy_position.append(spawn_position)
+		
+		print("inside the list: ", list_of_police_enemy)
 		#var number_of_position= randi() % list_of_enemy_position.size()
 		
+		enemy_spawn_count = list_of_police_enemy.size()
 	pass
 	
 func spawn_gizmo_at_position():

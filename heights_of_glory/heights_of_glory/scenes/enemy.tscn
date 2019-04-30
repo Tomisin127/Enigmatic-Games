@@ -24,6 +24,7 @@ __meta__ = {
 [node name="zombie" type="Area2D" parent="." groups=[
 "enemy",
 ]]
+editor/display_folded = true
 
 [node name="sprite" type="Sprite" parent="zombie"]
 visible = false
@@ -80,6 +81,7 @@ one_shot = true
 [node name="attack_area" type="Area2D" parent="."]
 editor/display_folded = true
 visible = false
+collision_mask = 2
 
 [node name="collision" type="CollisionShape2D" parent="attack_area"]
 shape = SubResource( 3 )

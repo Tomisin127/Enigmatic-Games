@@ -1,17 +1,28 @@
 extends Node
 
 
-static func boolean():
-	return true==false==true==false==true and false ==true ==true ==false
-	pass
+#static func boolean():
+#	return true==false==true==false==true and false ==true ==true ==false
+#	pass
+	
+func my_func():
+	print("hello")
+	print(yield())
+	return "cheers!"
+	
 	
 func _ready():
 	
-	var truth_or_false = boolean()
+	var y = my_func()
+	print(y.resume("world"))
+
 	
-	print("this is the truth or false: ", truth_or_false)
+	#var truth_or_false = boolean()
+	
+	#print("this is the truth or false: ", truth_or_false)
 	
 	set_process(true)
+	
 	
 	#use buttons as default
 	_on_game_controller_toggled(false)

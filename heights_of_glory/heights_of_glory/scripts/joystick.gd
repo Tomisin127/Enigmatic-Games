@@ -9,7 +9,7 @@ signal Joystick_End;
 # Called every time the joystick updates
 signal Joystick_Updated;
 
-var shoot_pressed_and_release:bool
+#var shoot_pressed_and_release:bool
 
 # The radius of the circle that joystick_ring can stay within.
 export (float) var radius = 70;
@@ -85,7 +85,7 @@ func _input(event):
 	# If the event is a press/touch...
 	if event is InputEventScreenTouch or event is InputEventMouseButton:
 		
-		shoot_pressed_and_release=false
+		#shoot_pressed_and_release=false
 		
 		# We need to figure out if this is a press, or a release
 		var event_is_press = true;
@@ -184,8 +184,8 @@ func _input(event):
 		
 		# If the event is a release...
 		else:
-			shoot_pressed_and_release = true
-			print("shoot rlease: " , shoot_pressed_and_release)
+			#shoot_pressed_and_release = true
+			#print("shoot rlease: " , shoot_pressed_and_release)
 			# If the joystick is active...
 			if (joystick_active == true):
 				

@@ -21,6 +21,7 @@ func _process(delta):
 	#set the player mana bar
 	get_node("CanvasLayer/Control/player_mana").value = player.player_mana
 	
+
 	#set the collected gems on the screen
 	get_node("CanvasLayer/Control/gems_collected").text=str(global.collected_gems)
 	pass 
@@ -36,15 +37,22 @@ func health_change(health: int):
 func activate_skill_button(button_pressed):
 	#if ability is charged, disable the skill button
 	if button_pressed == true:
+		
+		
+		
 		$CanvasLayer/Control/super_attack.disabled=false
 		
 		#if skill is pressed, then player will use the skills and set the ability to zero again
 		if $CanvasLayer/Control/super_attack.pressed==true:
 			#print("skill button is activated")
 			global.magnum_skills=0
+			$CanvasLayer/Control/Joystick2.joystick_active=false
+			$CanvasLayer/Control/Joystick2.hide()
+			
 			
 		
 	else:
+		
 		#print("deactivate skill")
 		$CanvasLayer/Control/super_attack.disabled = true
 		$CanvasLayer/Control/super_attack.pressed=false
