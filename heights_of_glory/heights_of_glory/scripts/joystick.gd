@@ -13,7 +13,6 @@ signal Joystick_Updated;
 
 # The radius of the circle that joystick_ring can stay within.
 export (float) var radius = 70;
-
 # A boolean for deciding whether or not the joystick will use the screen rectangle
 # (Screen rectangle = A portion of the sceen where the player can press and a joystick will appear)
 export (bool) var use_screen_rectangle = false;

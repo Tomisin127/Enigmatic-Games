@@ -1,0 +1,27 @@
+
+{
+"1": {
+		
+		"Name": "Item1",
+		"Icon": "res://icon.png",
+		"Type": "consumable",
+		"Weight": 0.1,
+		"Stackable": true,
+		"Stashable":true,
+		"Description": ""
+	
+	},
+
+
+
+"2": {
+		
+		"Name": "Item2",
+		"Icon": "res://icon.png",
+		"Type": "non-consumable",
+		"Weight": 0.1,
+		"Stackable": false,
+		"Stashable":true,
+		"Description": ""
+	},
+}
