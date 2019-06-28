@@ -46,6 +46,9 @@ config/icon="res://icon.png"
 
 interactive_loader="*res://scripts/interactive_loader.gd"
 global="*res://scripts/global.gd"
+data_parser="*res://scripts/data_parser.gd"
+item_database="*res://scenes/inventory/item_database.gd"
+global_player_inventory="*res://scenes/inventory/global_player_inventory.gd"
 
 [display]
 

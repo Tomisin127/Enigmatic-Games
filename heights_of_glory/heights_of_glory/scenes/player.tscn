@@ -1,20 +1,20 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
-[ext_resource path="res://sprites/alienGreen_jump.png" type="Texture" id=2]
+[ext_resource path="res://sprites/hero 1/hero2.png" type="Texture" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 17.5125
-height = 22.9639
+radius = 39.8726
+height = 135.889
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 16.2607
-height = 26.0213
+radius = 39.7646
+height = 136.105
 
 [node name="player" type="KinematicBody2D" groups=[
 "player",
 ]]
-position = Vector2( 270, 108 )
+position = Vector2( 354.211, 152.321 )
 collision_mask = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -22,13 +22,15 @@ __meta__ = {
 }
 
 [node name="sprite" type="Sprite" parent="."]
-modulate = Color( 0, 0, 0, 1 )
-scale = Vector2( 0.4, 0.4 )
+scale = Vector2( 0.2, 0.2 )
 texture = ExtResource( 2 )
 
 [node name="collision" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 18 )
+position = Vector2( 1, -4 )
 shape = SubResource( 1 )
+__meta__ = {
+"_edit_ik_": true
+}
 
 [node name="camera" type="Camera2D" parent="."]
 current = true
@@ -37,6 +39,7 @@ smoothing_enabled = true
 [node name="ground_ray" type="RayCast2D" parent="."]
 position = Vector2( 0, 8 )
 enabled = true
+cast_to = Vector2( 0, 100 )
 
 [node name="bullet_spawn_pos" type="Position2D" parent="."]
 position = Vector2( 30, 20 )
@@ -47,7 +50,7 @@ position = Vector2( 30, 20 )
 collision_mask = 2
 
 [node name="collision" type="CollisionShape2D" parent="player_area"]
-position = Vector2( 0, 18 )
+position = Vector2( 0, -4 )
 shape = SubResource( 2 )
 
 [node name="shoot_timer" type="Timer" parent="."]
