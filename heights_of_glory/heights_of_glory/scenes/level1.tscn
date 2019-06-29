@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/level1.gd" type="Script" id=1]
 [ext_resource path="res://sprites/Back Ground 00.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://sprites/WBL/elevatorx.png" type="Texture" id=8]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/button_hud.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/simulation/bouncer.tscn" type="PackedScene" id=11]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 81.6724, 108.997 )
@@ -99,7 +100,7 @@ position = Vector2( 90, 200 )
 shape = SubResource( 2 )
 
 [node name="player" parent="." instance=ExtResource( 6 )]
-position = Vector2( 657.114, 419.235 )
+position = Vector2( 87.114, -50.765 )
 joystick_one_path = NodePath("../hud/CanvasLayer/Control/Joystick")
 joystick_two_path = NodePath("../hud/CanvasLayer/Control/Joystick2")
 
@@ -131,7 +132,6 @@ anims/move_elevatonx = SubResource( 4 )
 [node name="gems_dropped_container" type="Node" parent="."]
 
 [node name="hud" parent="." instance=ExtResource( 9 )]
-editor/display_folded = true
 
 [node name="button_hud" parent="." instance=ExtResource( 10 )]
 
@@ -153,6 +153,9 @@ rotation = -1.7145
 [node name="fast_zombies_timer" type="Timer" parent="."]
 wait_time = 7.0
 autostart = true
+
+[node name="bouncer" parent="." instance=ExtResource( 11 )]
+position = Vector2( 508.863, -294.452 )
 
 [connection signal="body_entered" from="door_area" to="." method="_on_door_area_body_entered"]
 [connection signal="body_entered" from="ladder_area" to="." method="_on_ladder_area_body_entered"]
